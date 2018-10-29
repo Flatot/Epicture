@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Epicture</string>
+    <string name="welcome">Welcome</string>
+    <string name="epicture">Epicture</string>
+    <string name="clientID">18acc2840b12049</string>
+    <string name="clientSecret">2889b294a2c0992132070fd5f359d33aa0dbffc6</string>
+    <string name="log_in_with_imgur">Log In with</string>
+    <string name="imgurlogo">ImgurLogo</string>
+</resources>
