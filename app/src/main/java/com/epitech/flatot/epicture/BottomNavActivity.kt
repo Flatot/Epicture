@@ -16,7 +16,7 @@ class BottomNavActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.navigation_home -> {
                 //message.setText(R.string.title_home)
-                val fragment = HomeFragment()
+                val fragment = HomeFragment.newInstance(access_token!!)
                 fragment.getAlbums()
                 createFragment(fragment)
                 return@OnNavigationItemSelectedListener true
