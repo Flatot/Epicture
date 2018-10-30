@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/epicture_background"
     tools:context=".HomeActivity">
 
     <TextView
@@ -17,6 +16,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
+        android:textColorHint="@color/colorWhite"
         android:textColor="@color/colorWhite"
         android:text="@string/welcome"
         app:layout_constraintBottom_toBottomOf="parent"
