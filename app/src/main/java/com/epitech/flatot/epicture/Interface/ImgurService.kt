@@ -1,6 +1,7 @@
-package com.epitech.flatot.epicture
+package com.epitech.flatot.epicture.Interface
 
-import io.reactivex.Observable
+import com.epitech.flatot.epicture.Model.AccessToken
+import com.epitech.flatot.epicture.Model.ImgurInterface
 import retrofit2.Call
 import retrofit2.http.*
 import retrofit2.http.POST

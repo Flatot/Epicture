@@ -1,4 +1,4 @@
-package com.epitech.flatot.epicture
+package com.epitech.flatot.epicture.Model
 
 import com.google.gson.annotations.SerializedName
 

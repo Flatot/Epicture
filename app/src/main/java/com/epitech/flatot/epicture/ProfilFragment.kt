@@ -14,7 +14,7 @@ class ProfilFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var rootView = inflater!!.inflate(R.layout.fragment_search, container, false)
+        var rootView = inflater!!.inflate(R.layout.fragment_profil, container, false)
         return rootView
     }
 }

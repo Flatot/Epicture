@@ -3,21 +3,12 @@ package com.epitech.flatot.epicture
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
-import com.squareup.moshi.Moshi
-import kotlinx.android.synthetic.main.activity_home.*
-import okhttp3.Call
-import okhttp3.Credentials
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
+import com.epitech.flatot.epicture.Interface.ImgurService
+import com.epitech.flatot.epicture.Model.ImgurInterface
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.Retrofit
-import java.io.IOException
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.adapter.rxjava2.Result.response
-import retrofit2.adapter.rxjava2.Result
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.moshi.MoshiConverterFactory
 
 
 class HomeActivity : AppCompatActivity(), Callback<ImgurInterface.Result> {
@@ -29,7 +20,6 @@ class HomeActivity : AppCompatActivity(), Callback<ImgurInterface.Result> {
         setContentView(R.layout.activity_home)
 
         access_token = intent.getStringExtra("access_token")
-        textViewtest.text = access_token
 
         val retrofit = Retrofit.Builder()
                 .baseUrl("https://api.imgur.com/")

@@ -1,4 +1,6 @@
-package com.epitech.flatot.epicture
+package com.epitech.flatot.epicture.Model
+
+import android.widget.ImageView
 
 class ImgurInterface {
 
@@ -31,4 +33,6 @@ class ImgurInterface {
     )
 
     data class Result (val data: List<Data>, val success: Boolean, val status: String)
+
+    data class ImgurItem (val title: String, val imgImgur: String, val description: String)
 }
