@@ -9,10 +9,23 @@ import retrofit2.http.FormUrlEncoded
 
 
 interface ImgurService {
-    @POST("/token")
+
+    @Headers("Accept: application/json")
+    @POST("/oauth2/token")
     @FormUrlEncoded
+    fun getAccessToken(@Field("client_id") clientId: String,
+                       @Field("client_secret") clientSecret: String,
+                       @Field("access_token") accessToken: String):
+            Call<AccessToken>
+
+    @GET("/3/account/me/images")
+    fun getUser(@Header("Authorization") authHeader: String): Call<ImgurInterface.Result>
+
+
     //@POST("/token")
-    fun getAccessToken(
-            @Field("code") code: String,
-            @Field("grant_type") grantType: String): Call<AccessToken>
+    //@FormUrlEncoded
+    //@POST("/token")
+    //fun getAccessToken(
+    //        @Field("code") code: String,
+    //        @Field("grant_type") grantType: String): Call<AccessToken>
 }
