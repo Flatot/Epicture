@@ -1,7 +1,9 @@
 package com.epitech.flatot.epicture
 
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +12,7 @@ import com.epitech.flatot.epicture.Adapter.LoadingAdapter
 import com.epitech.flatot.epicture.Interface.ILoadMore
 import com.epitech.flatot.epicture.Interface.ImgurService
 import com.epitech.flatot.epicture.Model.ImgurInterface
+import com.epitech.flatot.epicture.R.id.recyclerView
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.item_cardview.*
 import retrofit2.Call
@@ -18,6 +21,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.*
+import kotlin.collections.ArrayList
 
 class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
 
@@ -30,18 +34,21 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
         {
             items!!.add(null)
             adapter.notifyItemRemoved(items.size)
-            val index = items.size
-            val end = index + 10
 
-            for (i in index until end)
-            {
-                val name = "test"
-                val img_imgur = img_imgur;
-                val item = ImgurInterface.ImgurItem(name, "test", name)
-                items.add(item)
-            }
-            adapter.notifyDataSetChanged()
-            adapter.setLoaded()
+            Handler().postDelayed({
+                val index = items.size
+                val end = index + 10
+
+                for (i in index until end)
+                {
+                    val name = "test"
+                    val img_imgur = img_imgur
+                    val item = ImgurInterface.ImgurItem(name, "test", name)
+                    items.add(item)
+                }
+                adapter.notifyDataSetChanged()
+                adapter.setLoaded()
+            },3000)
         }
         else
         {
@@ -61,11 +68,6 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        //recyclerViewMyPic.layoutManager = LinearLayoutManager(context)
-        //adapter = LoadingAdapter(recyclerViewMyPic, this, items)
-
-        //adapter.setLoadMore()
     }
 
     fun getAlbums()
@@ -96,9 +98,13 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
                 //description.text = change.description
                 //title.text = change.title
                 //Picasso.with(context).load(change.link).into(img_imgur)
-                val item = ImgurInterface.ImgurItem(change.title, "test", change.description)
+                val item = ImgurInterface.ImgurItem("test", change.link, "test")
                 items.add(item)
             }
+            recyclerView.layoutManager = LinearLayoutManager(context)
+            adapter = LoadingAdapter(recyclerView, this, items)
+
+            adapter.setLoadMore()
         } else {
             Toast.makeText(context, response.message(), Toast.LENGTH_SHORT).show()
             System.out.println(response.errorBody())
