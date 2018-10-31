@@ -8,6 +8,8 @@ import com.epitech.flatot.epicture.Views.FragmentBottom.HomeFragment
 import com.epitech.flatot.epicture.Interface.ILoadMore
 import com.epitech.flatot.epicture.Model.ImgurInterface.ImgurItem
 import com.epitech.flatot.epicture.R
+import kotlinx.android.synthetic.main.item_cardview.view.*
+import kotlinx.android.synthetic.main.loading_layout.view.*
 
 internal class LoadingViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 {
