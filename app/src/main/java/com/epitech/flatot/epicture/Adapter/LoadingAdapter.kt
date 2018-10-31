@@ -8,17 +8,19 @@ import com.epitech.flatot.epicture.Views.FragmentBottom.HomeFragment
 import com.epitech.flatot.epicture.Interface.ILoadMore
 import com.epitech.flatot.epicture.Model.ImgurInterface.ImgurItem
 import com.epitech.flatot.epicture.R
+import kotlinx.android.synthetic.main.item_cardview.view.*
+import kotlinx.android.synthetic.main.loading_layout.view.*
 
 internal class LoadingViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 {
-    var progressBar = itemView.progressBar
+    var progressBar = itemView.progressBar!!
 }
 
 internal class ItemViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 {
-    var description = itemView.description
-    var title = itemView.title
-    var imageImgur = itemView.img_imgur
+    var description = itemView.description!!
+    var title = itemView.title!!
+    var imageImgur = itemView.img_imgur!!
 }
 
 class LoadingAdapter(recyclerView: RecyclerView, internal var activity: HomeFragment, internal var items:MutableList<ImgurItem?>) : RecyclerView.Adapter<RecyclerView.ViewHolder>()

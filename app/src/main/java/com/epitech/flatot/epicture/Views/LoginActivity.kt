@@ -35,6 +35,9 @@ class LoginActivity : AppCompatActivity() {
             if (uri.getQueryParameter("error") == null) {
                 val newUri = Uri.parse(uri.toString().replace('#', '?'))
                 accessToken = newUri.getQueryParameter("access_token")
+                //val account_username = newUri.getQueryParameter("account_username")
+                //val account_id = newUri.getQueryParameter("account_id")
+                //val refresh_token = newUri.getQueryParameter("refresh_token")
                 val myIntent = Intent(this@LoginActivity, BottomNavActivity::class.java)
                 myIntent.putExtra("access_token", accessToken)
                 startActivity(myIntent)

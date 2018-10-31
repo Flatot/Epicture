@@ -10,11 +10,14 @@ import com.epitech.flatot.epicture.Views.FragmentBottom.ProfilFragment
 import com.epitech.flatot.epicture.Views.FragmentBottom.SearchFragment
 import com.epitech.flatot.epicture.Views.FragmentBottom.UploadFragment
 import kotlinx.android.synthetic.main.activity_bottom_nav.*
+import kotlinx.android.synthetic.main.fragment_upload.*
 
 class BottomNavActivity : AppCompatActivity() {
 
     private var access_token: String? = null
     private val manager = supportFragmentManager
+    private var myUploadFragment: UploadFragment? = null
+
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
@@ -37,7 +40,7 @@ class BottomNavActivity : AppCompatActivity() {
             }
             R.id.navigation_upload -> {
                 //message.setText(R.string.title_dashboard)
-                createFragment(UploadFragment())
+                createFragment(myUploadFragment as Fragment)
                 return@OnNavigationItemSelectedListener true
             }
         }
@@ -60,9 +63,11 @@ class BottomNavActivity : AppCompatActivity() {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
         access_token = intent.getStringExtra("access_token")
+
+        myUploadFragment = UploadFragment()
+
         val fragment = HomeFragment.newInstance(access_token!!)
         fragment.getAlbums()
         createFragment(fragment)
-        //addFragment(fragment)
     }
 }
