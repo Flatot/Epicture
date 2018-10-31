@@ -22,6 +22,13 @@ interface ImgurService {
     @GET("/3/account/me/images")
     fun getUser(@Header("Authorization") authHeader: String): Call<ImgurInterface.Result>
 
+    @GET("/3/gallery/search/{{sort}}/{{window}}/{{page}}?q={{query}}")
+    fun searchGallery(@Header("Authorization") authHeader: String,
+                      @Path("sort") sort: String,
+                      @Path("window") window: String,
+                      @Path("page") page: String,
+                      @Path("query") query: String): Call<ImgurInterface.SearchResult>
+
 
     //@POST("/token")
     //@FormUrlEncoded
