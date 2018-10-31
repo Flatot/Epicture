@@ -1,4 +1,4 @@
-package com.epitech.flatot.epicture
+package com.epitech.flatot.epicture.Views.FragmentBottom
 
 import android.os.Bundle
 import android.os.Handler
@@ -9,18 +9,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.epitech.flatot.epicture.Adapter.LoadingAdapter
-import com.epitech.flatot.epicture.Interface.ILoadMore
-import com.epitech.flatot.epicture.Interface.ImgurService
 import com.epitech.flatot.epicture.Model.ImgurInterface
-import com.epitech.flatot.epicture.R.id.recyclerView
+import com.epitech.flatot.epicture.Model.RetrofitInterface
+import com.epitech.flatot.epicture.R
+import com.epitech.flatot.epicture.R.id.img_imgur
 import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.android.synthetic.main.item_cardview.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import java.util.*
 import kotlin.collections.ArrayList
 
 class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
@@ -72,12 +68,7 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
 
     fun getAlbums()
     {
-        val retrofit = Retrofit.Builder()
-                .baseUrl("https://api.imgur.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-
-        val imgurApi = retrofit.create(ImgurService::class.java)
+        val imgurApi = RetrofitInterface().createRetrofitBuilder()
 
         val token = arguments?.getString("access_token")
         val call = imgurApi.getUser("Bearer " + token)

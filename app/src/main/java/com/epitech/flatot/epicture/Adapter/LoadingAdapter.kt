@@ -2,15 +2,12 @@ package com.epitech.flatot.epicture.Adapter
 
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.epitech.flatot.epicture.HomeFragment
+import com.epitech.flatot.epicture.Views.FragmentBottom.HomeFragment
 import com.epitech.flatot.epicture.Interface.ILoadMore
 import com.epitech.flatot.epicture.Model.ImgurInterface.ImgurItem
 import com.epitech.flatot.epicture.R
-import kotlinx.android.synthetic.main.item_cardview.view.*
-import kotlinx.android.synthetic.main.loading_layout.view.*
 
 internal class LoadingViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
 {

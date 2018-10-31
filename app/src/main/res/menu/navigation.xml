@@ -12,6 +12,11 @@
         android:title="@string/search" />
 
     <item
+        android:id="@+id/navigation_upload"
+        android:icon="@drawable/ic_file_upload_black_24dp"
+        android:title="@string/upload_pictures" />
+
+    <item
         android:id="@+id/navigation_profil"
         android:icon="@drawable/ic_person_black_24dp"
         android:title="@string/profil" />

@@ -11,14 +11,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity" android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".Views.MainActivity" android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity" android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".Views.LoginActivity" android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -30,9 +30,8 @@
                     android:scheme="epicture" />
             </intent-filter>
         </activity>
-        <activity android:name=".HomeActivity" />
         <activity
-            android:name=".BottomNavActivity"
+            android:name=".Views.BottomNavActivity"
             android:label="@string/title_activity_bottom_nav" android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

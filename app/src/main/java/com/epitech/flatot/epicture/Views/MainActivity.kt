@@ -1,9 +1,10 @@
-package com.epitech.flatot.epicture
+package com.epitech.flatot.epicture.Views
 
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import com.epitech.flatot.epicture.R
 
 class MainActivity : AppCompatActivity() {
 

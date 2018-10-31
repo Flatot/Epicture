@@ -1,10 +1,14 @@
-package com.epitech.flatot.epicture
+package com.epitech.flatot.epicture.Views
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
+import com.epitech.flatot.epicture.R
+import com.epitech.flatot.epicture.Views.FragmentBottom.HomeFragment
+import com.epitech.flatot.epicture.Views.FragmentBottom.ProfilFragment
+import com.epitech.flatot.epicture.Views.FragmentBottom.SearchFragment
+import com.epitech.flatot.epicture.Views.FragmentBottom.UploadFragment
 import kotlinx.android.synthetic.main.activity_bottom_nav.*
 
 class BottomNavActivity : AppCompatActivity() {
@@ -29,6 +33,11 @@ class BottomNavActivity : AppCompatActivity() {
             R.id.navigation_profil -> {
                 //message.setText(R.string.title_notifications)
                 createFragment(ProfilFragment())
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.navigation_upload -> {
+                //message.setText(R.string.title_dashboard)
+                createFragment(UploadFragment())
                 return@OnNavigationItemSelectedListener true
             }
         }
