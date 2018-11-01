@@ -76,10 +76,16 @@ class ImgurInterface {
             val description_annotations: List<String>
     )
 
+    data class UploadData(
+            val id: String
+    )
+
 
     data class Result (val data: List<Data>, val success: Boolean, val status: String)
 
     data class SearchResult (val data: List<Data_search>, val success: Boolean, val status: String)
+
+    data class UploadResult (val data: UploadData, val success: Boolean, val status: String)
 
     data class ImgurItem (val title: String, val imgImgur: String, val description: String)
 }

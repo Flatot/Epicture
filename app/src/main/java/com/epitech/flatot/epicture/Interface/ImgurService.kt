@@ -2,10 +2,15 @@ package com.epitech.flatot.epicture.Interface
 
 import com.epitech.flatot.epicture.Model.AccessToken
 import com.epitech.flatot.epicture.Model.ImgurInterface
+import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.*
 import retrofit2.http.POST
 import retrofit2.http.FormUrlEncoded
+import okhttp3.RequestBody
+import retrofit2.http.Multipart
+
+
 
 
 
@@ -28,6 +33,13 @@ interface ImgurService {
                       @Path("window") window: String,
                       @Path("page") page: String,
                       @Path("query") query: String): Call<ImgurInterface.SearchResult>
+
+    @Multipart
+    @POST("/3/image")
+    fun uploadImage(@Header("Authorization") authHeader: String,
+                    @Part image: MultipartBody.Part,
+                    @PartMap queries: Map<String, @JvmSuppressWildcards RequestBody>): Call<ImgurInterface.UploadResult>
+    //@Part("image\"; filename=\"myfile.jpg\" ") file: RequestBody)
 
 
     //@POST("/token")

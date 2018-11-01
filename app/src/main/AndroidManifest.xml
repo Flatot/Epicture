@@ -3,9 +3,10 @@
     package="com.epitech.flatot.epicture">
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-feature
         android:name="android.hardware.camera.any"
         android:required="true" />
@@ -20,14 +21,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Views.MainActivity" android:theme="@style/AppTheme.NoActionBar">
+        <activity
+            android:name=".Views.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Views.LoginActivity" android:theme="@style/AppTheme.NoActionBar">
+        <activity
+            android:name=".Views.LoginActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -41,7 +46,8 @@
         </activity>
         <activity
             android:name=".Views.BottomNavActivity"
-            android:label="@string/title_activity_bottom_nav" android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/title_activity_bottom_nav"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

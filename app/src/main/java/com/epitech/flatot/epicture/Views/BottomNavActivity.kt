@@ -1,9 +1,16 @@
 package com.epitech.flatot.epicture.Views
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
+import android.support.v4.content.CursorLoader
 import android.support.v7.app.AppCompatActivity
+import android.widget.Toast
+import com.epitech.flatot.epicture.Model.ImgurInterface
+import com.epitech.flatot.epicture.Model.RetrofitInterface
 import com.epitech.flatot.epicture.R
 import com.epitech.flatot.epicture.Views.FragmentBottom.HomeFragment
 import com.epitech.flatot.epicture.Views.FragmentBottom.ProfilFragment
@@ -11,6 +18,12 @@ import com.epitech.flatot.epicture.Views.FragmentBottom.SearchFragment
 import com.epitech.flatot.epicture.Views.FragmentBottom.UploadFragment
 import kotlinx.android.synthetic.main.activity_bottom_nav.*
 import kotlinx.android.synthetic.main.fragment_upload.*
+import okhttp3.MediaType
+import okhttp3.RequestBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.io.File
 
 class BottomNavActivity : AppCompatActivity() {
 
@@ -64,7 +77,7 @@ class BottomNavActivity : AppCompatActivity() {
 
         access_token = intent.getStringExtra("access_token")
 
-        myUploadFragment = UploadFragment()
+        myUploadFragment = UploadFragment.newInstance(access_token!!)
 
         val fragment = HomeFragment.newInstance(access_token!!)
         fragment.getAlbums()

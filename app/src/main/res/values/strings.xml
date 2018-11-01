@@ -17,7 +17,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="upload_pictures">Upload Pictures</string>
     <string name="put_a_title_name">Put a title name</string>
-    <string name="put_a_description">Put a description</string>
     <string name="upload_to_imgur">Upload to Imgur</string>
     <string name="put_a_description">Put a description</string>
 </resources>
