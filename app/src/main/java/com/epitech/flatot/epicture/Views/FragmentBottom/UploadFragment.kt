@@ -147,14 +147,17 @@ class UploadFragment : Fragment() {
         val retrofit = RetrofitInterface().createRetrofitBuilder()
         val token = arguments?.getString("access_token")
         val call = retrofit.uploadImage("Bearer " + token, imageBody, optinalBodyMap)
+        progressUpload.visibility = View.VISIBLE
 
         call.enqueue(object: Callback<ImgurInterface.UploadResult> {
             override fun onFailure(call: Call<ImgurInterface.UploadResult>, t: Throwable) {
                     Toast.makeText(context, "Upload failed", Toast.LENGTH_SHORT).show()
+                    progressUpload.visibility = View.GONE
             }
             override fun onResponse(call: Call<ImgurInterface.UploadResult>, response: Response<ImgurInterface.UploadResult>) {
                 if (response.isSuccessful) {
                     Toast.makeText(context, "Uploaded Successfully", Toast.LENGTH_SHORT).show()
+                    progressUpload.visibility = View.GONE
                 }
             }
         })
