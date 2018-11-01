@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,36 +22,7 @@ import kotlin.collections.ArrayList
 
 class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
 
-    var items:MutableList<ImgurInterface.ImgurItem?> = ArrayList()
-    lateinit var adapter: LoadingAdapter
-
-    fun OnLoadMore()
-    {
-        if (items!!.size < 50)
-        {
-            items!!.add(null)
-            adapter.notifyItemRemoved(items.size)
-
-            Handler().postDelayed({
-                val index = items.size
-                val end = index + 10
-
-                for (i in index until end)
-                {
-                    val name = "test"
-                    val img_imgur = img_imgur
-                    val item = ImgurInterface.ImgurItem(name, "test", name)
-                    items.add(item)
-                }
-                adapter.notifyDataSetChanged()
-                adapter.setLoaded()
-            },3000)
-        }
-        else
-        {
-            Toast.makeText(context, "Max data is 50", Toast.LENGTH_SHORT).show()
-        }
-    }
+    var items: MutableList<ImgurInterface.ImgurItem>? = ArrayList()
 
     companion object {
         fun newInstance(access_token: String): HomeFragment {
@@ -88,14 +60,24 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
 
                 //description.text = change.description
                 //title.text = change.title
-                //Picasso.with(context).load(change.link).into(img_imgur)
-                val item = ImgurInterface.ImgurItem("test", change.link, "test")
-                items.add(item)
+                var title = " "
+                var description = " "
+                if (change.title != null)
+                    title = change.title
+                if (change.description != null)
+                    description = change.description
+                val item = ImgurInterface.ImgurItem(title, change.link, description)
+                items!!.add(item)
             }
-            recyclerView.layoutManager = LinearLayoutManager(context)
-            adapter = LoadingAdapter(recyclerView, this, items)
+            val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
-            adapter.setLoadMore()
+            recyclerView.layoutManager = layoutManager
+            val adapter = LoadingAdapter(context!!, items!!)
+            recyclerView.adapter = adapter
+            //recyclerView.layoutManager = LinearLayoutManager(context)
+            //adapter = LoadingAdapter(recyclerView, this, items)
+
+            //adapter.setLoadMore()
         } else {
             Toast.makeText(context, response.message(), Toast.LENGTH_SHORT).show()
             System.out.println(response.errorBody())
