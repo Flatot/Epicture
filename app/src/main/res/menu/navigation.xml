@@ -20,5 +20,4 @@
         android:id="@+id/navigation_profil"
         android:icon="@drawable/ic_person_black_24dp"
         android:title="@string/profil" />
-
 </menu>

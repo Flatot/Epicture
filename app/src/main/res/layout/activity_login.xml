@@ -40,8 +40,8 @@
 
     <ImageView
         android:id="@+id/imgurView"
-        android:layout_width="193dp"
-        android:layout_height="185dp"
+        android:layout_width="246dp"
+        android:layout_height="221dp"
         android:layout_marginTop="8dp"
         android:contentDescription="@string/imgurlogo"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -50,6 +50,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/appName"
         app:layout_constraintVertical_bias="0.333"
-        app:srcCompat="@drawable/imgur" />
+        app:srcCompat="@drawable/imgur_white" />
 
 </android.support.constraint.ConstraintLayout>

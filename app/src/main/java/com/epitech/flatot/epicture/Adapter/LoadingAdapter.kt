@@ -1,7 +1,9 @@
 package com.epitech.flatot.epicture.Adapter
 
+import android.annotation.TargetApi
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +16,7 @@ import com.epitech.flatot.epicture.R
 import com.epitech.flatot.epicture.Views.ZoomedActivity
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.item_cardview.view.*
+import kotlinx.android.synthetic.main.item_search_cardview.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -48,28 +51,40 @@ class LoadingAdapter(val access_token:String, val context: Context, val items:Mu
 
             itemView.favorite.setOnClickListener {
                 val imgurApi = RetrofitInterface().createRetrofitBuilder()
-
                 val call = imgurApi.favoriteImage("Bearer " + access_token, item!!.data.id)
+                InverseFavoriteDrawable(item)
                 call.enqueue(this)
             }
         }
 
         override fun onFailure(call: Call<ImgurInterface.FavoriteResult>, t: Throwable) {
-            Toast.makeText(context, "Failed to favorite this picture !", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
         }
 
         override fun onResponse(call: Call<ImgurInterface.FavoriteResult>, response: Response<ImgurInterface.FavoriteResult>) {
-            if (response.isSuccessful)
-                Toast.makeText(context, "Good", Toast.LENGTH_SHORT).show()
-            else
-                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+            if (!response.isSuccessful)
+                Toast.makeText(context, "Failed to favorite this picture !", Toast.LENGTH_SHORT).show()
         }
 
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+        fun InverseFavoriteDrawable(item: ImgurInterface.ImgurItem?)
+        {
+            if (item!!.data.favorite)
+                itemView.favorite.background = context.getDrawable(android.R.drawable.star_big_off)
+            else
+                itemView.favorite.background = context.getDrawable(android.R.drawable.star_big_on)
+        }
+
+        @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         fun setData(item: ImgurItem?, pos: Int)
         {
             //itemView.title.text = item!!.title
             //itemView.description.text = item!!.description
             Picasso.with(context).load(item!!.data.link).into(itemView.img_imgur)
+            if (item.data.favorite)
+                itemView.favorite.background = context.getDrawable(android.R.drawable.star_big_on)
+            else
+                itemView.favorite.background = context.getDrawable(android.R.drawable.star_big_off)
         }
     }
 }
