@@ -53,26 +53,20 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
 
     override fun onResponse(call: Call<ImgurInterface.Result>, response: Response<ImgurInterface.Result>) {
         if (response.isSuccessful()) {
-            val changesList = response.body()
-            changesList!!.data.forEach {
-                change -> System.out.println(change.link)
+            val picList = response.body()
+            picList!!.data.forEach {
+                pic ->
                 //Toast.makeText(context, change.link, Toast.LENGTH_SHORT).show()
 
                 //description.text = change.description
                 //title.text = change.title
-                var title = " "
-                var description = " "
-                if (change.title != null)
-                    title = change.title
-                if (change.description != null)
-                    description = change.description
-                val item = ImgurInterface.ImgurItem(title, change.link, description)
+                val item = ImgurInterface.ImgurItem(pic)
                 items!!.add(item)
             }
             val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
             recyclerView.layoutManager = layoutManager
-            val adapter = LoadingAdapter(context!!, items!!)
+            val adapter = LoadingAdapter(arguments?.getString("access_token")!!, context!!, items!!)
             recyclerView.adapter = adapter
             //recyclerView.layoutManager = LinearLayoutManager(context)
             //adapter = LoadingAdapter(recyclerView, this, items)

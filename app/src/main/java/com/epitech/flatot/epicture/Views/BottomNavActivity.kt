@@ -30,6 +30,7 @@ class BottomNavActivity : AppCompatActivity() {
     private var access_token: String? = null
     private val manager = supportFragmentManager
     private var myUploadFragment: UploadFragment? = null
+    private var mySearchFragment: SearchFragment? = null
 
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
@@ -43,7 +44,8 @@ class BottomNavActivity : AppCompatActivity() {
             }
             R.id.navigation_search -> {
                 //message.setText(R.string.title_dashboard)
-                createFragment(SearchFragment())
+                val fragment = SearchFragment.newInstance(access_token!!)
+                createFragment(fragment)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_profil -> {
@@ -78,6 +80,7 @@ class BottomNavActivity : AppCompatActivity() {
         access_token = intent.getStringExtra("access_token")
 
         myUploadFragment = UploadFragment.newInstance(access_token!!)
+        mySearchFragment = SearchFragment.newInstance(access_token!!)
 
         val fragment = HomeFragment.newInstance(access_token!!)
         fragment.getAlbums()

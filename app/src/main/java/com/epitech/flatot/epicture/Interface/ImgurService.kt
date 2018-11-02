@@ -27,19 +27,22 @@ interface ImgurService {
     @GET("/3/account/me/images")
     fun getUser(@Header("Authorization") authHeader: String): Call<ImgurInterface.Result>
 
-    @GET("/3/gallery/search/{{sort}}/{{window}}/{{page}}?q={{query}}")
+    @GET("/3/gallery/search/{sort}/{window}/{page}")
     fun searchGallery(@Header("Authorization") authHeader: String,
                       @Path("sort") sort: String,
                       @Path("window") window: String,
-                      @Path("page") page: String,
-                      @Path("query") query: String): Call<ImgurInterface.SearchResult>
+                      @Path("page") page: Int,
+                      @Query("q") query: String): Call<ImgurInterface.SearchResult>
+
+    @POST("/3/image/{imageHash}/favorite")
+    fun favoriteImage(@Header("Authorization") authHeader: String,
+                      @Path("imageHash") imageId: String): Call<ImgurInterface.FavoriteResult>
 
     @Multipart
     @POST("/3/image")
     fun uploadImage(@Header("Authorization") authHeader: String,
                     @Part image: MultipartBody.Part,
                     @PartMap queries: Map<String, @JvmSuppressWildcards RequestBody>): Call<ImgurInterface.UploadResult>
-    //@Part("image\"; filename=\"myfile.jpg\" ") file: RequestBody)
 
 
     //@POST("/token")

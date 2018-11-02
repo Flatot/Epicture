@@ -8,20 +8,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.epitech.flatot.epicture.Model.ImgurInterface
-import com.epitech.flatot.epicture.Model.ImgurInterface.ImgurItem
 import com.epitech.flatot.epicture.Model.RetrofitInterface
 import com.epitech.flatot.epicture.R
 import com.epitech.flatot.epicture.Views.ZoomedActivity
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.item_cardview.view.*
+import kotlinx.android.synthetic.main.item_search_cardview.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class LoadingAdapter(val access_token:String, val context: Context, val items:MutableList<ImgurItem>) : RecyclerView.Adapter<LoadingAdapter.MyViewHolder>()
+class SearchAdapter(val access_token:String, val context: Context, val items:MutableList<ImgurInterface.ImgurSearchItem>) : RecyclerView.Adapter<SearchAdapter.MyViewHolder>()
 {
-    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): LoadingAdapter.MyViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.item_cardview, p0, false)
+    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): SearchAdapter.MyViewHolder {
+        val view = LayoutInflater.from(context).inflate(R.layout.item_search_cardview, p0, false)
+
         return MyViewHolder(view)
     }
 
@@ -37,16 +37,28 @@ class LoadingAdapter(val access_token:String, val context: Context, val items:Mu
 
     inner class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView), Callback<ImgurInterface.FavoriteResult> {
 
-        fun setZoomedClick (item: ImgurItem?, pos: Int) {
+        fun setZoomedClick (item: ImgurInterface.ImgurSearchItem?, pos: Int) {
             itemView.setOnClickListener {
                 val intent = Intent(context, ZoomedActivity::class.java)
                 intent.putExtra("title", item!!.data.title)
                 intent.putExtra("img_imgur", item.data.link)
                 intent.putExtra("description", item.data.description)
+                var list_link: MutableList<String> = ArrayList()
+                item.data.images.forEach {
+                    img ->
+                    list_link.add(img.link)
+                }
+                var list_description: MutableList<String> = ArrayList()
+                item.data.images.forEach {
+                    img ->
+                    list_description.add(img.link)
+                }
+                intent.putStringArrayListExtra("list_link", list_link as ArrayList<String>)
+                intent.putStringArrayListExtra("list_description", list_description as ArrayList<String>)
                 context.startActivity(intent)
             }
 
-            itemView.favorite.setOnClickListener {
+            itemView.favorite2.setOnClickListener {
                 val imgurApi = RetrofitInterface().createRetrofitBuilder()
 
                 val call = imgurApi.favoriteImage("Bearer " + access_token, item!!.data.id)
@@ -65,11 +77,14 @@ class LoadingAdapter(val access_token:String, val context: Context, val items:Mu
                 Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
         }
 
-        fun setData(item: ImgurItem?, pos: Int)
+        fun setData(item: ImgurInterface.ImgurSearchItem?, pos: Int)
         {
             //itemView.title.text = item!!.title
             //itemView.description.text = item!!.description
-            Picasso.with(context).load(item!!.data.link).into(itemView.img_imgur)
+            if (item!!.data.images != null && !item!!.data.images.isEmpty())
+                Picasso.with(context).load(item.data.images[0].link).into(itemView.img_imgur2)
+            else
+                Picasso.with(context).load(item!!.data.link).into(itemView.img_imgur2)
         }
     }
 }

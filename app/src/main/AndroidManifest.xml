@@ -48,6 +48,7 @@
             android:name=".Views.BottomNavActivity"
             android:label="@string/title_activity_bottom_nav"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Views.ZoomedActivity"></activity>
     </application>
 
 </manifest>

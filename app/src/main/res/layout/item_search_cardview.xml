@@ -10,9 +10,9 @@
     android:layout_marginBottom="4dp">
 
     <ImageView
-        android:id="@+id/img_imgur"
+        android:id="@+id/img_imgur2"
         android:layout_width="match_parent"
-        android:layout_height="150dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
@@ -54,11 +54,11 @@
         app:srcCompat="@drawable/ic_file_upload_black_24dp" />
 
     <ImageButton
-        android:id="@+id/favorite"
+        android:id="@+id/favorite2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginStart="112dp"
+        android:layout_marginLeft="112dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
