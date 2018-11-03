@@ -16,6 +16,8 @@ class LoginActivity : AppCompatActivity() {
     private val redirectUrl: String? = "epicture://callback"
     private val baseUrl = "https://api.imgur.com/oauth2/authorize"
     private var accessToken: String? = null
+    private var accountUsername: String? = null
+    private var refreshToken: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,11 +37,12 @@ class LoginActivity : AppCompatActivity() {
             if (uri.getQueryParameter("error") == null) {
                 val newUri = Uri.parse(uri.toString().replace('#', '?'))
                 accessToken = newUri.getQueryParameter("access_token")
-                //val account_username = newUri.getQueryParameter("account_username")
-                //val account_id = newUri.getQueryParameter("account_id")
-                //val refresh_token = newUri.getQueryParameter("refresh_token")
+                refreshToken = newUri.getQueryParameter("refresh_token")
+                accountUsername = newUri.getQueryParameter("account_username")
                 val myIntent = Intent(this@LoginActivity, BottomNavActivity::class.java)
                 myIntent.putExtra("access_token", accessToken)
+                myIntent.putExtra("refresh_token", refreshToken)
+                myIntent.putExtra("account_username", accountUsername)
                 startActivity(myIntent)
             }
         }

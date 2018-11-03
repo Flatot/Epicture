@@ -28,9 +28,12 @@ import java.io.File
 class BottomNavActivity : AppCompatActivity() {
 
     private var access_token: String? = null
+    private var refresh_token: String? = null
+    private var username: String? = null
     private val manager = supportFragmentManager
     private var myUploadFragment: UploadFragment? = null
     private var mySearchFragment: SearchFragment? = null
+    private var myProfilFragment: ProfilFragment? = null
 
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
@@ -50,7 +53,8 @@ class BottomNavActivity : AppCompatActivity() {
             }
             R.id.navigation_profil -> {
                 //message.setText(R.string.title_notifications)
-                createFragment(ProfilFragment())
+                val fragment = ProfilFragment.newInstance(access_token!!, refresh_token!!, username!!)
+                createFragment(fragment)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_upload -> {
@@ -78,9 +82,12 @@ class BottomNavActivity : AppCompatActivity() {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
         access_token = intent.getStringExtra("access_token")
+        refresh_token = intent.getStringExtra("refresh_token")
+        username = intent.getStringExtra("account_username")
 
         myUploadFragment = UploadFragment.newInstance(access_token!!)
         mySearchFragment = SearchFragment.newInstance(access_token!!)
+        myProfilFragment = ProfilFragment.newInstance(access_token!!, refresh_token!!, username!!)
 
         val fragment = HomeFragment.newInstance(access_token!!)
         fragment.getAlbums()

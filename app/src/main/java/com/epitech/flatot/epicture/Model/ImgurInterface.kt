@@ -115,6 +115,12 @@ class ImgurInterface {
             val id: String
     )
 
+    data class ProfilData(
+            val username: String,
+            val bio: String
+    )
+
+    data class ProfilResult (val data: List<ProfilData>, val success: Boolean, val status: String)
 
     data class Result (val data: List<Data>, val success: Boolean, val status: String)
 
