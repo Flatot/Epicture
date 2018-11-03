@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
-import com.epitech.flatot.epicture.Adapter.SearchAdapter
 import com.epitech.flatot.epicture.Model.ImgurInterface
 import com.epitech.flatot.epicture.Model.RetrofitInterface
 import com.epitech.flatot.epicture.R
@@ -61,9 +60,9 @@ class ProfilFragment : Fragment(), Callback<ImgurInterface.ProfilResult> {
 
     override fun onResponse(call: Call<ImgurInterface.ProfilResult>, response: Response<ImgurInterface.ProfilResult>) {
         if (response.isSuccessful) {
-            txt_name.text = ""
-            txt_bio.text = ""
-            txt_time.text = ""
+            txt_name.text = "OK"
+            txt_bio.text = "OK"
+            txt_time.text = "OK"
         }
         else {
             txt_name.text = "Server response: null"

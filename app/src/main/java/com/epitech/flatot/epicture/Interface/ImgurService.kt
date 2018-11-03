@@ -27,9 +27,6 @@ interface ImgurService {
     @GET("/3/account/me/images")
     fun getUser(@Header("Authorization") authHeader: String): Call<ImgurInterface.Result>
 
-    @GET("/3/account/me/settings")
-    fun myProfil(@Header("Authorization") authHeader: String): Call<ImgurInterface.ProfilResult>
-
     @GET("/3/gallery/search/{sort}/{window}/{page}")
     fun searchGallery(@Header("Authorization") authHeader: String,
                       @Path("sort") sort: String,
@@ -47,6 +44,8 @@ interface ImgurService {
                     @Part image: MultipartBody.Part,
                     @PartMap queries: Map<String, @JvmSuppressWildcards RequestBody>): Call<ImgurInterface.UploadResult>
 
+    @GET("/3/account/me/settings")
+    fun myProfil(@Header("Authorization") authHeader: String): Call<ImgurInterface.ProfilResult>
 
     //@POST("/token")
     //@FormUrlEncoded
