@@ -12,10 +12,7 @@ import android.widget.Toast
 import com.epitech.flatot.epicture.Model.ImgurInterface
 import com.epitech.flatot.epicture.Model.RetrofitInterface
 import com.epitech.flatot.epicture.R
-import com.epitech.flatot.epicture.Views.FragmentBottom.HomeFragment
-import com.epitech.flatot.epicture.Views.FragmentBottom.ProfilFragment
-import com.epitech.flatot.epicture.Views.FragmentBottom.SearchFragment
-import com.epitech.flatot.epicture.Views.FragmentBottom.UploadFragment
+import com.epitech.flatot.epicture.Views.FragmentBottom.*
 import kotlinx.android.synthetic.main.activity_bottom_nav.*
 import kotlinx.android.synthetic.main.fragment_upload.*
 import okhttp3.MediaType
@@ -34,6 +31,7 @@ class BottomNavActivity : AppCompatActivity() {
     private var myUploadFragment: UploadFragment? = null
     private var mySearchFragment: SearchFragment? = null
     private var myProfilFragment: ProfilFragment? = null
+    private var myFavoriteFragment: FavoriteFragment? = null
 
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
@@ -48,6 +46,12 @@ class BottomNavActivity : AppCompatActivity() {
             R.id.navigation_search -> {
                 //message.setText(R.string.title_dashboard)
                 val fragment = SearchFragment.newInstance(access_token!!)
+                createFragment(fragment)
+                return@OnNavigationItemSelectedListener true
+            }
+            R.id.navigation_favoris -> {
+                //message.setText(R.string.title_dashboard)
+                val fragment = FavoriteFragment.newInstance(access_token!!)
                 createFragment(fragment)
                 return@OnNavigationItemSelectedListener true
             }
@@ -87,6 +91,7 @@ class BottomNavActivity : AppCompatActivity() {
 
         myUploadFragment = UploadFragment.newInstance(access_token!!)
         mySearchFragment = SearchFragment.newInstance(access_token!!)
+        myFavoriteFragment = FavoriteFragment.newInstance(access_token!!)
         myProfilFragment = ProfilFragment.newInstance(access_token!!, refresh_token!!, username!!)
 
         val fragment = HomeFragment.newInstance(access_token!!)

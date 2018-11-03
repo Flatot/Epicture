@@ -60,6 +60,38 @@ class ImgurInterface {
             val link: String
     )
 
+    data class Data_favorite(
+            val id: String,
+            val title: String,
+            val description: String,
+            val datetime: Int,
+            val type: String,
+            val animated: Boolean,
+            val width: Int,
+            val height: Int,
+            val size: Int,
+            val views: Int,
+            val bandwidth: Long,
+            val vote: Int,
+            val favorite: Boolean,
+            val nsfw: Boolean,
+            val section: String,
+            val account_url: String,
+            val account_id: String,
+            val is_ad: Boolean,
+            val has_sound: Boolean,
+            val tags: List<Data_tags>,
+            val images: List<ImageData>,
+            val link: String,
+            val in_gallery: Boolean,
+            val comment_count: Int,
+            val favorite_count: Int,
+            val ups: Int,
+            val downs: Int,
+            val points: Int,
+            val is_album: Boolean
+    )
+
     data class ImageData(
             val id: String,
             val title: String,
@@ -80,7 +112,6 @@ class ImgurInterface {
             val account_id: Long,
             val is_ad: Boolean,
             val has_sound: Boolean,
-            val is_most_viral: Boolean,
             val tags: List<String>,
             val in_gallery: Boolean,
             val deletehash: String,
@@ -133,7 +164,11 @@ class ImgurInterface {
 
     data class FavoriteResult (val data: String, val success: Boolean, val status: String)
 
+    data class GetFavoriteResult (val data: List<Data_favorite>, val success: Boolean, val status: String)
+
     data class ImgurItem (val data: Data)
 
     data class ImgurSearchItem (val data: Data_search)
+
+    data class ImgurFavoriteItem (val data: Data_favorite)
 }

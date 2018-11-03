@@ -34,6 +34,9 @@ interface ImgurService {
                       @Path("page") page: Int,
                       @Query("q") query: String): Call<ImgurInterface.SearchResult>
 
+    @GET("/3/account/me/favorites")
+    fun getFavorite(@Header("Authorization") authHeader: String): Call<ImgurInterface.GetFavoriteResult>
+
     @POST("/3/image/{imageHash}/favorite")
     fun favoriteImage(@Header("Authorization") authHeader: String,
                       @Path("imageHash") imageId: String): Call<ImgurInterface.FavoriteResult>
