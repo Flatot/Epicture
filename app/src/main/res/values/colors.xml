@@ -6,6 +6,7 @@
     <color name="colorWhite">#ffffff</color>
     <color name="colorGrey">#786f6f</color>
     <color name="colorBlack">#000000</color>
+    <color name="colorCardViewLegend">#A3A3A3</color>
     <color name="blue">#ffb700</color>
     <color name="yellow">#ffb700</color>
     <color name="red_dark">#a30202</color>

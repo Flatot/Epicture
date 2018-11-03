@@ -45,8 +45,8 @@ class BottomNavActivity : AppCompatActivity() {
             }
             R.id.navigation_search -> {
                 //message.setText(R.string.title_dashboard)
-                val fragment = SearchFragment.newInstance(access_token!!)
-                createFragment(fragment)
+                //val fragment = SearchFragment.newInstance(access_token!!)
+                createFragment(mySearchFragment as Fragment)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_favoris -> {

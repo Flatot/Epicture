@@ -25,7 +25,7 @@ import retrofit2.Response
 
 class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult> {
 
-    var items:MutableList<ImgurInterface.ImgurSearchItem> = ArrayList()
+    var items: MutableList<ImgurInterface.ImgurSearchItem>? = null
     var searchQuery: String? = null
 
     companion object {
@@ -44,6 +44,14 @@ class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult> {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var rootView = inflater!!.inflate(R.layout.fragment_search, container, false)
+        if (items != null)
+        {
+            rootView.recyclerViewSearch.layoutManager = LinearLayoutManager(context)
+            val adapter = SearchAdapter(arguments?.getString("access_token")!!, context!!, items!!)
+            rootView.recyclerViewSearch.adapter = adapter
+        }
+        else
+            rootView.searchView.isIconified = false;
         rootView.searchView.queryHint = "Search Pictures in Imgur"
         rootView.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
 
@@ -53,12 +61,12 @@ class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult> {
 
             override fun onQueryTextSubmit(query: String): Boolean {
                 searchQuery = query
+                items = ArrayList()
+                searchView.isIconified = true
                 GetSearch()
                 return true
             }
-
         })
-
         return rootView
     }
 
@@ -86,7 +94,6 @@ class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult> {
                 items!!.add(item)
             }
             recyclerViewSearch.layoutManager = LinearLayoutManager(context)
-
             val adapter = SearchAdapter(arguments?.getString("access_token")!!, context!!, items!!)
             recyclerViewSearch.adapter = adapter
         }
