@@ -39,12 +39,14 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginBottom="8dp"
+            android:text="Data"
             android:textColor="@color/colorWhite"
             app:layout_constraintBottom_toTopOf="@+id/txt_bio"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.501"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profil_pic"
-            app:layout_constraintVertical_bias="0.111" />
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
             android:id="@+id/txt_bio"
@@ -54,10 +56,12 @@
             android:layout_marginLeft="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
-            android:layout_marginBottom="224dp"
+            android:layout_marginBottom="236dp"
+            android:text="Data"
             android:textColor="@color/colorWhite"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.501"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
@@ -69,15 +73,14 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="180dp"
+            android:text="Data"
             android:textColor="@color/colorWhite"
-            android:text="Updated : "
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.067"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.904" />
+            app:layout_constraintTop_toBottomOf="@+id/txt_bio" />
 
     </android.support.constraint.ConstraintLayout>
 

@@ -117,10 +117,13 @@ class ImgurInterface {
 
     data class ProfilData(
             val account_url: String,
-            val email: String
+            val email: String,
+            val birthdate: String,
+            val gender: String,
+            val avatar: String
     )
 
-    data class ProfilResult (val data: List<ProfilData>, val success: Boolean, val status: String)
+    data class ProfilResult (val data: ProfilData, val success: Boolean, val status: String)
 
     data class Result (val data: List<Data>, val success: Boolean, val status: String)
 

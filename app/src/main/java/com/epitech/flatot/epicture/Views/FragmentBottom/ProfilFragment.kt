@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.item_cardview.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.DayOfWeek
 
 class ProfilFragment : Fragment(), Callback<ImgurInterface.ProfilResult> {
 
@@ -60,9 +61,9 @@ class ProfilFragment : Fragment(), Callback<ImgurInterface.ProfilResult> {
 
     override fun onResponse(call: Call<ImgurInterface.ProfilResult>, response: Response<ImgurInterface.ProfilResult>) {
         if (response.isSuccessful) {
-            txt_name.text = "OK"
-            txt_bio.text = "OK"
-            txt_time.text = "OK"
+            txt_name.text = response.body()?.data?.account_url
+            txt_bio.text = response.body()?.data?.email
+            txt_time.text = response.body()?.data?.birthdate
         }
         else {
             txt_name.text = "Server response: null"
