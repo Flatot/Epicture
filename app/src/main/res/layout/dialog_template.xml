@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content">
+
+    <EditText
+        android:id="@+id/dialogTitle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:hint="@string/put_a_title_name"/>
+
+    <EditText
+        android:id="@+id/dialogDescription"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:hint="@string/put_a_description"/>
+
+    <Button
+        android:id="@+id/dialogSave"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/save"
+        android:layout_gravity="center"
+        android:layout_marginTop="8dp" />
+
+</LinearLayout>

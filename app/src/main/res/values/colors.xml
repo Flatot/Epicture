@@ -14,4 +14,5 @@
     <color name="green_dark">#006400</color>
     <color name="darkviolet">#290156</color>
     <color name="violet">#700ae2</color>
+    <color name="colorDialogLinear">#eaeaea</color>
 </resources>

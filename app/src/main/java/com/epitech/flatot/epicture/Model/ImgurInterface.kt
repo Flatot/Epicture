@@ -158,6 +158,8 @@ class ImgurInterface {
 
     data class Result (val data: List<Data>, val success: Boolean, val status: String)
 
+    data class AddAlbumResult (val data: Boolean, val success: Boolean, val status: String)
+
     data class SearchResult (val data: List<Data_search>, val success: Boolean, val status: String)
 
     data class UploadResult (val data: UploadData, val success: Boolean, val status: String)

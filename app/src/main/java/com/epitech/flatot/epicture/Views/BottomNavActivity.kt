@@ -1,26 +1,13 @@
 package com.epitech.flatot.epicture.Views
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
-import android.support.v4.content.CursorLoader
 import android.support.v7.app.AppCompatActivity
-import android.widget.Toast
-import com.epitech.flatot.epicture.Model.ImgurInterface
-import com.epitech.flatot.epicture.Model.RetrofitInterface
 import com.epitech.flatot.epicture.R
 import com.epitech.flatot.epicture.Views.FragmentBottom.*
+import com.epitech.flatot.epicture.Views.FragmentBottom.TabLayoutHome.HomeFragment
 import kotlinx.android.synthetic.main.activity_bottom_nav.*
-import kotlinx.android.synthetic.main.fragment_upload.*
-import okhttp3.MediaType
-import okhttp3.RequestBody
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import java.io.File
 
 class BottomNavActivity : AppCompatActivity() {
 
@@ -39,7 +26,6 @@ class BottomNavActivity : AppCompatActivity() {
             R.id.navigation_home -> {
                 //message.setText(R.string.title_home)
                 val fragment = HomeFragment.newInstance(access_token!!)
-                fragment.getAlbums()
                 createFragment(fragment)
                 return@OnNavigationItemSelectedListener true
             }
@@ -95,7 +81,6 @@ class BottomNavActivity : AppCompatActivity() {
         myProfilFragment = ProfilFragment.newInstance(access_token!!, refresh_token!!, username!!)
 
         val fragment = HomeFragment.newInstance(access_token!!)
-        fragment.getAlbums()
         createFragment(fragment)
     }
 }

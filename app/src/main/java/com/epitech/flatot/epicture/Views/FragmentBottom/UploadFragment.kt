@@ -1,11 +1,13 @@
 package com.epitech.flatot.epicture.Views.FragmentBottom
 
 import android.Manifest
+import android.annotation.TargetApi
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v4.app.ActivityCompat
@@ -13,8 +15,6 @@ import android.support.v4.app.Fragment
 import android.support.v4.content.CursorLoader
 import android.support.v4.content.PermissionChecker.checkSelfPermission
 import android.support.v7.app.AlertDialog
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,7 +23,6 @@ import com.epitech.flatot.epicture.Model.ImgurInterface
 import com.epitech.flatot.epicture.Model.RetrofitInterface
 
 import com.epitech.flatot.epicture.R
-import com.epitech.flatot.epicture.R.id.*
 import kotlinx.android.synthetic.main.fragment_upload.*
 import kotlinx.android.synthetic.main.fragment_upload.view.*
 import okhttp3.MediaType
@@ -40,23 +39,10 @@ class UploadFragment : Fragment() {
     private val GALLERY = 1
     private val CAMERA = 2
     private var MyPicBinary: Uri? = null
+    private var ids: ArrayList<RequestBody>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-    }
-
-    fun showPictureDialog() {
-        val pictureDialog = AlertDialog.Builder(view!!.context)
-        pictureDialog.setTitle("Select Action")
-        val pictureDialogItems = arrayOf("Select photo from gallery", "Capture photo from camera")
-        pictureDialog.setItems(pictureDialogItems
-        ) { dialog, which ->
-            when (which) {
-                0 -> choosePhotoFromGallary()
-                1 -> takePhotoFromCamera()
-            }
-        }
-        pictureDialog.show()
     }
 
     private fun takePhotoFromCamera() {
@@ -73,6 +59,7 @@ class UploadFragment : Fragment() {
         startActivityForResult(galleryIntent, GALLERY)
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onActivityResult(requestCode:Int, resultCode:Int, data: Intent?) {
 
         super.onActivityResult(requestCode, resultCode, data)
@@ -82,6 +69,7 @@ class UploadFragment : Fragment() {
             {
                 MyPicBinary = data.data
                 val inputStream = activity!!.contentResolver.openInputStream(MyPicBinary)
+                imageView.background = null
                 imageView.setImageBitmap(BitmapFactory.decodeStream(inputStream))
                 Toast.makeText(context, "Image Saved!", Toast.LENGTH_SHORT).show()
 
@@ -108,6 +96,11 @@ class UploadFragment : Fragment() {
         }
     }
 
+    fun createFromString(string: String): RequestBody {
+        return RequestBody.create(MediaType.parse("text"), string)
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
@@ -117,10 +110,12 @@ class UploadFragment : Fragment() {
                     arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
                     777)
         }
+        ids = ArrayList()
         choosePhotoFromGallary()
         //TODO revenir sur l'ancienne nav
         //if (rootView.imageView.drawable == null)
         rootView.btn_upload_imgur.setOnClickListener {
+            //showPictureDialog()
             upload_on_imgur()
         }
         rootView.imageView.setOnClickListener {
@@ -156,6 +151,7 @@ class UploadFragment : Fragment() {
             }
             override fun onResponse(call: Call<ImgurInterface.UploadResult>, response: Response<ImgurInterface.UploadResult>) {
                 if (response.isSuccessful) {
+                    ids!!.add(createFromString(response.body()!!.data.id))
                     Toast.makeText(context, "Uploaded Successfully", Toast.LENGTH_SHORT).show()
                     progressUpload.visibility = View.GONE
                 }
