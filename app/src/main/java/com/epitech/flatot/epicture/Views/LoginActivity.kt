@@ -44,6 +44,7 @@ class LoginActivity : AppCompatActivity() {
                 myIntent.putExtra("refresh_token", refreshToken)
                 myIntent.putExtra("account_username", accountUsername)
                 startActivity(myIntent)
+                finish()
             }
         }
     }

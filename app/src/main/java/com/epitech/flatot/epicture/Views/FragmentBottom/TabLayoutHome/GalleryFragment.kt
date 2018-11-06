@@ -1,9 +1,7 @@
-package com.epitech.flatot.epicture.Views.FragmentBottom
+package com.epitech.flatot.epicture.Views.FragmentBottom.TabLayoutHome
 
 import android.os.Bundle
-import android.os.Handler
 import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -13,22 +11,23 @@ import com.epitech.flatot.epicture.Adapter.LoadingAdapter
 import com.epitech.flatot.epicture.Model.ImgurInterface
 import com.epitech.flatot.epicture.Model.RetrofitInterface
 import com.epitech.flatot.epicture.R
-import com.epitech.flatot.epicture.R.id.img_imgur
+import kotlinx.android.synthetic.main.fragment_gallery.*
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_home.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import kotlin.collections.ArrayList
 
-class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
+class GalleryFragment : Fragment(), Callback<ImgurInterface.Result> {
 
     var items: MutableList<ImgurInterface.ImgurItem>? = ArrayList()
 
     companion object {
-        fun newInstance(access_token: String): HomeFragment {
+        fun newInstance(access_token: String): GalleryFragment {
             val args = Bundle()
             args.putString("access_token", access_token)
-            val fragment = HomeFragment()
+            val fragment = GalleryFragment()
             fragment.arguments = args
             return fragment
         }
@@ -53,25 +52,18 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
 
     override fun onResponse(call: Call<ImgurInterface.Result>, response: Response<ImgurInterface.Result>) {
         if (response.isSuccessful()) {
+            items = ArrayList()
             val picList = response.body()
             picList!!.data.forEach {
                 pic ->
-                //Toast.makeText(context, change.link, Toast.LENGTH_SHORT).show()
-
-                //description.text = change.description
-                //title.text = change.title
                 val item = ImgurInterface.ImgurItem(pic)
                 items!!.add(item)
             }
             val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
-            recyclerView.layoutManager = layoutManager
+            galleryRecyclerView.layoutManager = layoutManager
             val adapter = LoadingAdapter(arguments?.getString("access_token")!!, context!!, items!!)
-            recyclerView.adapter = adapter
-            //recyclerView.layoutManager = LinearLayoutManager(context)
-            //adapter = LoadingAdapter(recyclerView, this, items)
-
-            //adapter.setLoadMore()
+            galleryRecyclerView.adapter = adapter
         } else {
             Toast.makeText(context, response.message(), Toast.LENGTH_SHORT).show()
             System.out.println(response.errorBody())
@@ -79,7 +71,8 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        var rootView = inflater!!.inflate(R.layout.fragment_home, container, false)
+        var rootView = inflater!!.inflate(R.layout.fragment_gallery, container, false)
+        getAlbums()
         return rootView
     }
 

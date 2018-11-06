@@ -18,4 +18,15 @@
     <string name="upload_to_imgur">Upload to Imgur</string>
     <string name="put_a_description">Put a description</string>
     <string name="favoris">Favoris</string>
+    <string name="save">Save</string>
+    <string name="available_album">Available album :</string>
+    <string name="title_activity_album">AlbumActivity</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+    <string name="tab_text_3">Tab 3</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="gallery">Gallery</string>
+    <string name="albums">Albums</string>
+    <string name="title_activity_test">TestActivity</string>
 </resources>

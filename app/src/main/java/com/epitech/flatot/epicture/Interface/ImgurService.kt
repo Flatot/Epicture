@@ -47,6 +47,24 @@ interface ImgurService {
                     @Part image: MultipartBody.Part,
                     @PartMap queries: Map<String, @JvmSuppressWildcards RequestBody>): Call<ImgurInterface.UploadResult>
 
+    @Multipart
+    @POST("/3/album")
+    fun createAlbum(@Header("Authorization") authHeader: String,
+                    @PartMap queries: Map<String, @JvmSuppressWildcards RequestBody>): Call<ImgurInterface.UploadResult>
+
+    @Multipart
+    @POST("/3/album/{albumId}/add")
+    fun addToAlbum(@Header("Authorization") authHeader: String,
+                   @Path("albumId") albumId: String,
+                   @PartMap queries: Map<String, @JvmSuppressWildcards RequestBody>): Call<ImgurInterface.AddAlbumResult>
+
+    @GET("/3/account/me/albums")
+    fun getAlbums(@Header("Authorization") authHeader: String): Call<ImgurInterface.Result>
+
+    @GET("/3/account/me/album/{albumId}")
+    fun getAlbum(@Header("Authorization") authHeader: String,
+                 @Path("albumId") albumId: String): Call<ImgurInterface.SearchResult>
+
     @GET("/3/account/me/settings")
     fun myProfil(@Header("Authorization") authHeader: String): Call<ImgurInterface.ProfilResult>
 
