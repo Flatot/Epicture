@@ -48,7 +48,7 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
     }
 
     override fun onResponse(call: Call<ImgurInterface.Result>, response: Response<ImgurInterface.Result>) {
-        if (response.isSuccessful()) {
+        if (response.isSuccessful) {
             items = ArrayList()
             val picList = response.body()
             picList!!.data.forEach {
