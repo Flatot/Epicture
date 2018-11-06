@@ -13,6 +13,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.epitech.flatot.epicture.Model.ImgurInterface
 import com.epitech.flatot.epicture.Model.ImgurInterface.ImgurItem
 import com.epitech.flatot.epicture.Model.RetrofitInterface
@@ -22,6 +24,7 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.dialog_add_to_album.*
 import kotlinx.android.synthetic.main.dialog_template.*
 import kotlinx.android.synthetic.main.item_cardview.view.*
+import kotlinx.android.synthetic.main.item_search_cardview.view.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -182,19 +185,29 @@ class LoadingAdapter(val access_token:String, val context: Context, val items:Mu
         fun InverseFavoriteDrawable(item: ImgurInterface.ImgurItem?)
         {
             if (item!!.data.favorite)
-                itemView.favorite.background = context.getDrawable(android.R.drawable.star_big_off)
+                itemView.favorite.background = context.getDrawable(R.drawable.ic_favorite_border_black_24dp)
             else
-                itemView.favorite.background = context.getDrawable(android.R.drawable.star_big_on)
+                itemView.favorite.background = context.getDrawable(R.drawable.ic_favorite_black_24dp)
         }
 
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         fun setData(item: ImgurItem?, pos: Int)
         {
-            Picasso.with(context).load(item!!.data.link).into(itemView.img_imgur)
-            if (item.data.favorite)
-                itemView.favorite.background = context.getDrawable(android.R.drawable.star_big_on)
+            if (item!!.data.type == "image/gif")
+                Glide.with(context).asGif()
+                        .load(item!!.data.link)
+                        .apply(RequestOptions()
+                                .fitCenter())
+                        .into(itemView.img_imgur)
             else
-                itemView.favorite.background = context.getDrawable(android.R.drawable.star_big_off)
+                Glide.with(context).load(item!!.data.link)
+                        .apply(RequestOptions()
+                                .fitCenter())
+                        .into(itemView.img_imgur)
+            if (item.data.favorite)
+                itemView.favorite.background = context.getDrawable(R.drawable.ic_favorite_black_24dp)
+            else
+                itemView.favorite.background = context.getDrawable(R.drawable.ic_favorite_border_black_24dp)
         }
     }
 }

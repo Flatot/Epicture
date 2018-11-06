@@ -6,27 +6,20 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
-import android.view.*
-import android.widget.SearchView
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.Toast
 import com.epitech.flatot.epicture.Adapter.SearchAdapter
 import com.epitech.flatot.epicture.Model.ImgurInterface
 import com.epitech.flatot.epicture.Model.RetrofitInterface
 import com.epitech.flatot.epicture.R
-import com.epitech.flatot.epicture.Views.BottomNavActivity
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.android.synthetic.main.fragment_search.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import android.widget.EditText
-import android.widget.ImageView
-import com.epitech.flatot.epicture.R.id.searchView
-
-
-
-
-
 
 class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult> {
 

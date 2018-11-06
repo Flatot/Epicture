@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.epitech.flatot.epicture.Model.ImgurInterface
 import com.epitech.flatot.epicture.R
 import com.epitech.flatot.epicture.Views.ZoomedActivity
@@ -69,10 +71,29 @@ class FavoriteAdapter(val context: Context, val items:MutableList<ImgurInterface
 
         fun setData(item: ImgurInterface.ImgurFavoriteItem?, pos: Int)
         {
-            if (item!!.data.images != null && !item!!.data.images.isEmpty())
-                Picasso.with(context).load(item.data.images[0].link).into(itemView.favoriteImg)
+            if (item!!.data.images != null && !item!!.data.images.isEmpty()) {
+                if (item!!.data.images[0].type == "image/gif")
+                    Glide.with(context).asGif()
+                            .load(item.data.images[0].link)
+                            .apply(RequestOptions()
+                                    .fitCenter())
+                            .into(itemView.favoriteImg)
+                else
+                    Picasso.with(context).load(item.data.images[0].link)
+                            .into(itemView.favoriteImg)
+            }
             else
-                Picasso.with(context).load(item!!.data.link).into(itemView.favoriteImg)
+            {
+                if (item!!.data.type == "image/gif")
+                    Glide.with(context).asGif()
+                            .load(item!!.data.link)
+                            .apply(RequestOptions()
+                                    .fitCenter())
+                            .into(itemView.favoriteImg)
+                else
+                    Picasso.with(context).load(item!!.data.link)
+                            .into(itemView.favoriteImg)
+            }
         }
     }
 }
