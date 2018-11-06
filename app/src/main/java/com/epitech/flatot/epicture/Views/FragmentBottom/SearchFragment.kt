@@ -1,27 +1,32 @@
 package com.epitech.flatot.epicture.Views.FragmentBottom
 
+import android.annotation.TargetApi
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.StaggeredGridLayoutManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.SearchView
-import android.widget.TextView
 import android.widget.Toast
-import com.epitech.flatot.epicture.Adapter.LoadingAdapter
 import com.epitech.flatot.epicture.Adapter.SearchAdapter
 import com.epitech.flatot.epicture.Model.ImgurInterface
 import com.epitech.flatot.epicture.Model.RetrofitInterface
 import com.epitech.flatot.epicture.R
-import kotlinx.android.synthetic.main.fragment_home.*
+import com.epitech.flatot.epicture.Views.BottomNavActivity
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.android.synthetic.main.fragment_search.view.*
-import kotlinx.android.synthetic.main.item_cardview.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.widget.EditText
+import android.widget.ImageView
+import com.epitech.flatot.epicture.R.id.searchView
+
+
+
+
+
 
 class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult> {
 
@@ -42,6 +47,7 @@ class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult> {
         super.onCreate(savedInstanceState)
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var rootView = inflater!!.inflate(R.layout.fragment_search, container, false)
         if (items != null)
@@ -50,10 +56,12 @@ class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult> {
             val adapter = SearchAdapter(arguments?.getString("access_token")!!, context!!, items!!)
             rootView.recyclerViewSearch.adapter = adapter
         }
-        else
-            rootView.searchView.isIconified = false;
+        val search = rootView.findViewById(R.id.searchView) as android.support.v7.widget.SearchView
+        val searchEditText = search.findViewById<View>(android.support.v7.appcompat.R.id.search_src_text) as EditText
+        searchEditText.setTextColor(ContextCompat.getColor(context!!, R.color.colorWhite))
+        searchEditText.setHintTextColor(ContextCompat.getColor(context!!, R.color.colorWhite))
         rootView.searchView.queryHint = "Search Pictures in Imgur"
-        rootView.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+        rootView.searchView.setOnQueryTextListener(object : android.support.v7.widget.SearchView.OnQueryTextListener {
 
             override fun onQueryTextChange(newText: String): Boolean {
                 return false
