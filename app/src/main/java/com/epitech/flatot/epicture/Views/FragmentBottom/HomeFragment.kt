@@ -19,6 +19,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import kotlin.collections.ArrayList
+import android.support.v7.app.AppCompatActivity
+
+
 
 class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
 
@@ -80,6 +83,10 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var rootView = inflater!!.inflate(R.layout.fragment_home, container, false)
+        (activity as AppCompatActivity).setSupportActionBar(toolbar)
+
+        //Set Title in Toolbar
+        (activity as AppCompatActivity).setTitle("")
         return rootView
     }
 
