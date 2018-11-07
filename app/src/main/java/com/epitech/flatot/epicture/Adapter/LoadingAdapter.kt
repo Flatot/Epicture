@@ -44,8 +44,8 @@ class LoadingAdapter(val access_token:String, val context: Context, val items:Mu
 
     override fun onBindViewHolder(p0: MyViewHolder, p1: Int) {
         val item = items[p1]
-        p0.setData(item, p1)
-        p0.setZoomedClick(item, p1)
+        if (p0.setData(item, p1))
+            p0.setZoomedClick(item, p1)
     }
 
     inner class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView), Callback<ImgurInterface.FavoriteResult> {
@@ -191,23 +191,27 @@ class LoadingAdapter(val access_token:String, val context: Context, val items:Mu
         }
 
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-        fun setData(item: ImgurItem?, pos: Int)
-        {
-            if (item!!.data.type == "image/gif")
-                Glide.with(context).asGif()
-                        .load(item!!.data.link)
-                        .apply(RequestOptions()
-                                .fitCenter())
-                        .into(itemView.img_imgur)
+        fun setData(item: ImgurItem?, pos: Int) : Boolean {
+            if (itemView.img_imgur.drawable == null) {
+                if (item!!.data.type == "image/gif")
+                    Glide.with(context).asGif()
+                            .load(item!!.data.link)
+                            .apply(RequestOptions()
+                                    .fitCenter())
+                            .into(itemView.img_imgur)
+                else
+                    Glide.with(context).load(item!!.data.link)
+                            .apply(RequestOptions()
+                                    .fitCenter())
+                            .into(itemView.img_imgur)
+                if (item.data.favorite)
+                    itemView.favorite.background = context.getDrawable(R.drawable.ic_favorite_black_24dp)
+                else
+                    itemView.favorite.background = context.getDrawable(R.drawable.ic_favorite_border_black_24dp)
+                return true
+            }
             else
-                Glide.with(context).load(item!!.data.link)
-                        .apply(RequestOptions()
-                                .fitCenter())
-                        .into(itemView.img_imgur)
-            if (item.data.favorite)
-                itemView.favorite.background = context.getDrawable(R.drawable.ic_favorite_black_24dp)
-            else
-                itemView.favorite.background = context.getDrawable(R.drawable.ic_favorite_border_black_24dp)
+                return false
         }
     }
 }
