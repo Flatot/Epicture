@@ -1,8 +1,5 @@
 package com.epitech.flatot.epicture.Model
 
-import java.lang.reflect.Array
-import android.widget.ImageView
-
 class ImgurInterface {
 
     data class Data(
@@ -34,7 +31,6 @@ class ImgurInterface {
     )
 
     data class Data_search(
-
             val id: String,
             val title: String,
             val description: String,

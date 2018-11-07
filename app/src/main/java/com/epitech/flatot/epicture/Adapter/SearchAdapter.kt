@@ -49,13 +49,11 @@ class SearchAdapter(val myRecyclerView: RecyclerView, val access_token:String, v
                 super.onScrolled(recyclerView, dx, dy)
                 totalItemCount = linearLayoutManager.itemCount
                 lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition()
-                println("totalItemCount => $totalItemCount")
-                println("lastVisibleItem => $lastVisibleItem + visibleThreshold => $visibleThreshold")
                 if (!isLoading && totalItemCount <= lastVisibleItem + visibleThreshold) {
                     if (loadMore != null) {
-                        isLoading = true
                         loadMore!!.OnLoadMore()
                     }
+                    isLoading = true
                 }
             }
         })
@@ -76,6 +74,15 @@ class SearchAdapter(val myRecyclerView: RecyclerView, val access_token:String, v
 
     override fun getItemCount(): Int {
         return items.size
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        if (items[position].data.id == "null" &&
+                items[position].data.account_id == "null" &&
+                items[position].data.link == "null")// || position == totalItemCount - 1)
+            return VIEW_LOADINGTYPE
+         else
+            return VIEW_ITEMTYPE
     }
 
     fun setLoaded()

@@ -8,25 +8,18 @@ import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
-import android.widget.SearchView
 import android.widget.Toast
 import com.epitech.flatot.epicture.Adapter.SearchAdapter
 import com.epitech.flatot.epicture.Model.ImgurInterface
 import com.epitech.flatot.epicture.Model.RetrofitInterface
 import com.epitech.flatot.epicture.R
-import com.epitech.flatot.epicture.Views.BottomNavActivity
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.android.synthetic.main.fragment_search.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.widget.EditText
-import android.widget.ImageView
 import com.epitech.flatot.epicture.Interface.ILoadMore
-import com.epitech.flatot.epicture.R.id.recyclerViewSearch
-import com.epitech.flatot.epicture.R.id.searchView
-
-
 
 class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult>, ILoadMore {
 
@@ -37,24 +30,26 @@ class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult>, ILoadM
 
     override fun OnLoadMore() {
         //if (new_items!!.size < 50) {
-            //new_items!!.add(null)
-            //adapter.notifyItemInserted(new_items!!.size-1)
-            Handler().postDelayed({
-                //new_items!!.removeAt(new_items!!.size-1)
-                //adapter.notifyItemRemoved(new_items!!.size)
+        val data = ImgurInterface.Data_search("null", "null", "null", 0, "null", false, 0, 0, 0, 0, 0, 0, false, false, "null", "null", "null", false, false, false, emptyList(), emptyList(), "null")
+        val item = ImgurInterface.ImgurSearchItem(data)
+        new_items!!.add(item)
+        adapter.notifyItemInserted(new_items!!.size-1)
+        Handler().postDelayed({
+            new_items!!.removeAt(new_items!!.size-1)
+            adapter.notifyItemRemoved(new_items!!.size)
 
-                var count = new_items!!.size
-                val need = count + 9
+            var count = new_items!!.size
+            val need = count + 9
 
-                while (count != items!!.size && count < need)
-                {
-                    new_items!!.add(items!![count])
-                    count++
-                }
+            while (count != items!!.size && count < need)
+            {
+                new_items!!.add(items!![count])
+                count++
+            }
 
-                adapter.notifyDataSetChanged()
-                adapter.setLoaded()
-            }, 3000)
+            adapter.notifyDataSetChanged()
+            adapter.setLoaded()
+        }, 3000)
         //}
     }
 
