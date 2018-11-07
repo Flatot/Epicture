@@ -23,6 +23,7 @@ import retrofit2.Response
 import android.widget.EditText
 import android.widget.ImageView
 import com.epitech.flatot.epicture.Interface.ILoadMore
+import com.epitech.flatot.epicture.R.id.recyclerViewSearch
 import com.epitech.flatot.epicture.R.id.searchView
 
 
@@ -35,25 +36,26 @@ class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult>, ILoadM
     lateinit var adapter: SearchAdapter
 
     override fun OnLoadMore() {
-        if (new_items!!.size < 50) {
+        //if (new_items!!.size < 50) {
             //new_items!!.add(null)
-            adapter.notifyItemInserted(items!!.size-1)
+            //adapter.notifyItemInserted(new_items!!.size-1)
             Handler().postDelayed({
-                items!!.removeAt(items!!.size-1)
-                adapter.notifyItemRemoved(items!!.size)
+                //new_items!!.removeAt(new_items!!.size-1)
+                //adapter.notifyItemRemoved(new_items!!.size)
 
                 var count = new_items!!.size
+                val need = count + 9
 
-                while (count < count + 10)
+                while (count != items!!.size && count < need)
                 {
-                    new_items!![count] = items!![count]
+                    new_items!!.add(items!![count])
                     count++
                 }
 
                 adapter.notifyDataSetChanged()
                 adapter.setLoaded()
             }, 3000)
-        }
+        //}
     }
 
     companion object {
@@ -76,7 +78,7 @@ class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult>, ILoadM
         if (items != null)
         {
             rootView.recyclerViewSearch.layoutManager = LinearLayoutManager(context)
-            val adapter = SearchAdapter(rootView.recyclerViewSearch, arguments?.getString("access_token")!!, context!!, items!!)
+            adapter = SearchAdapter(rootView.recyclerViewSearch, arguments?.getString("access_token")!!, context!!, items!!)
             rootView.recyclerViewSearch.adapter = adapter
         }
         val search = rootView.findViewById(R.id.searchView) as android.support.v7.widget.SearchView
@@ -93,7 +95,6 @@ class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult>, ILoadM
             override fun onQueryTextSubmit(query: String): Boolean {
                 searchQuery = query
                 items = ArrayList()
-                new_items = ArrayList()
                 searchView.isIconified = true
                 GetSearch()
                 return true
@@ -116,9 +117,10 @@ class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult>, ILoadM
     fun get_first_items(items: MutableList<ImgurInterface.ImgurSearchItem>) {
         var count = 0
 
-        while (count < 9)
+        new_items = ArrayList()
+        while (count != items.size && count < 8)
         {
-            new_items!![count] = items[count]
+            new_items!!.add(items[count])
             count++
         }
 
@@ -138,7 +140,7 @@ class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult>, ILoadM
             }
             get_first_items(items!!)
             recyclerViewSearch.layoutManager = LinearLayoutManager(context)
-            val adapter = SearchAdapter(recyclerViewSearch, arguments?.getString("access_token")!!, context!!, new_items!!)
+            adapter = SearchAdapter(recyclerViewSearch, arguments?.getString("access_token")!!, context!!, new_items!!)
             recyclerViewSearch.adapter = adapter
 
             adapter.setLoadMore(this)

@@ -31,14 +31,13 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class SearchAdapter(val myRecyclerView: RecyclerView, val access_token:String, val context: Context, val items:MutableList<ImgurInterface.ImgurSearchItem>) : RecyclerView.Adapter<SearchAdapter.MyViewHolder>()
+class SearchAdapter(val myRecyclerView: RecyclerView, val access_token:String, val context: Context, val items:MutableList<ImgurInterface.ImgurSearchItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 {
-
     val VIEW_ITEMTYPE = 0
     val VIEW_LOADINGTYPE = 1
     internal var loadMore: ILoadMore? = null
     internal var isLoading: Boolean = false
-    internal var visibleThreshold = 5
+    internal var visibleThreshold = 1
     internal var lastVisibleItem: Int = 0
     internal var totalItemCount: Int = 0
 
@@ -50,18 +49,28 @@ class SearchAdapter(val myRecyclerView: RecyclerView, val access_token:String, v
                 super.onScrolled(recyclerView, dx, dy)
                 totalItemCount = linearLayoutManager.itemCount
                 lastVisibleItem = linearLayoutManager.findLastVisibleItemPosition()
-                if (!isLoading && totalItemCount <= lastVisibleItem + visibleThreshold)
-                    if (loadMore != null)
+                println("totalItemCount => $totalItemCount")
+                println("lastVisibleItem => $lastVisibleItem + visibleThreshold => $visibleThreshold")
+                if (!isLoading && totalItemCount <= lastVisibleItem + visibleThreshold) {
+                    if (loadMore != null) {
+                        isLoading = true
                         loadMore!!.OnLoadMore()
-                isLoading = true
+                    }
+                }
             }
         })
     }
 
-
-    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): SearchAdapter.MyViewHolder {
+    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): RecyclerView.ViewHolder {
+        if (p1 == VIEW_ITEMTYPE) {
+            val view = LayoutInflater.from(context).inflate(R.layout.item_search_cardview, p0, false)
+            return MyViewHolder(view)
+        }
+        else if (p1 == VIEW_LOADINGTYPE) {
+            val view = LayoutInflater.from(context).inflate(R.layout.loading_layout, p0, false)
+            return LoadingViewHolder(view)
+        }
         val view = LayoutInflater.from(context).inflate(R.layout.item_search_cardview, p0, false)
-
         return MyViewHolder(view)
     }
 
@@ -79,20 +88,22 @@ class SearchAdapter(val myRecyclerView: RecyclerView, val access_token:String, v
         this.loadMore = iLoadMore
     }
 
-    internal class LoadingViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
-    {
-        var progressBar = itemView.progressBarSearch
-    }
 
-    override fun onBindViewHolder(p0: MyViewHolder, p1: Int) {
+    override fun onBindViewHolder(p0: RecyclerView.ViewHolder, p1: Int) {
         val item = items[p1]
         if (p0 is MyViewHolder) {
             p0.setData(item, p1)
             p0.setZoomedClick(item, p1)
         }
-        else if (p0 is MyViewHolder) {
-            p0.itemView.progressBarSearch.isIndeterminate = true
+        else if (p0 is LoadingViewHolder) {
+            p0.progressBar.isIndeterminate = true
         }
+    }
+
+
+    inner class LoadingViewHolder(itemView: View): RecyclerView.ViewHolder(itemView)
+    {
+        var progressBar = itemView.progressBarSearch
     }
 
     inner class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView), Callback<ImgurInterface.FavoriteResult> {
