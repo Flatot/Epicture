@@ -1,6 +1,10 @@
 package com.epitech.flatot.epicture.Views.FragmentBottom.TabLayoutHome
 
+import android.app.AlertDialog
+import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
+import android.support.asynclayoutinflater.R.id.title
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v7.widget.StaggeredGridLayoutManager
@@ -19,6 +23,10 @@ import kotlinx.android.synthetic.main.fragment_home.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.support.v7.app.AppCompatActivity
+import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.dialog_filters.*
+import kotlinx.android.synthetic.main.dialog_template.*
 
 class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
 
@@ -71,6 +79,23 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
         super.onCreate(savedInstanceState)
     }
 
+    fun openFilters(rootView: View, context: Context) { //jpeg, png, gif && all time, last week && views
+        rootView.header_filters.setOnClickListener {
+            val myDialog = android.support.v7.app.AlertDialog.Builder(context)
+            val myDialogView = LayoutInflater.from(context).inflate(R.layout.dialog_filters, null)
+            myDialog.setView(myDialogView)
+            //myDialog.setCancelable(false)
+            val customDialog = myDialog.create()
+            customDialog.show()
+            customDialog.back.setOnClickListener {
+                customDialog.hide()
+            }
+            customDialog.save.setOnClickListener {
+                customDialog.hide()
+            }
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater!!.inflate(R.layout.fragment_home, container, false)
         getAlbums()
@@ -79,6 +104,8 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
         val fm = TabLayoutAdapter(arguments?.getString("access_token")!!, galFrag, activity!!.supportFragmentManager)
         rootView.viewpager_main.adapter = fm
         rootView.tabLayout.setupWithViewPager(viewpager_main)*/
+
+        openFilters(rootView, context!!)
         return rootView
     }
 
