@@ -32,6 +32,17 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
 
     var items: MutableList<ImgurInterface.ImgurItem>? = ArrayList()
 
+    var jpeg: Boolean = false
+    var png: Boolean = false
+    var gif: Boolean = false
+
+    var last_week: Boolean = false
+    var all_time: Boolean = false
+
+    var sup_100: Boolean = false
+    var inf_100: Boolean = false
+
+
     companion object {
         fun newInstance(access_token: String): HomeFragment {
             val args = Bundle()
@@ -79,6 +90,49 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
         super.onCreate(savedInstanceState)
     }
 
+    fun checkTrue(customDialog: android.support.v7.app.AlertDialog) {
+        if (inf_100 === true) customDialog.view_100.setChecked(true) else customDialog.view_100.setChecked(false)
+        if (sup_100 === true) customDialog.view_500.setChecked(true) else customDialog.view_500.setChecked(false)
+        if (png === true) customDialog.cb_png.setChecked(true) else customDialog.cb_png.setChecked(false)
+        if (jpeg === true) customDialog.cb_jpeg.setChecked(true) else customDialog.cb_jpeg.setChecked(false)
+        if (gif === true) customDialog.cb_gif.setChecked(true) else customDialog.cb_gif.setChecked(false)
+        if (last_week === true) customDialog.cb_week.setChecked(true) else customDialog.cb_week.setChecked(false)
+        if (all_time === true) customDialog.cb_single.setChecked(true) else customDialog.cb_single.setChecked(false)
+    }
+
+    fun getCheckbox(customDialog: android.support.v7.app.AlertDialog) {
+        customDialog.view_100.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) inf_100 = true else inf_100 = false
+        }
+        customDialog.view_500.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) sup_100 = true else sup_100 = false
+        }
+        customDialog.cb_single.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) all_time = true else all_time = false
+        }
+        customDialog.cb_week.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) last_week = true else last_week = false
+        }
+        customDialog.cb_gif.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) gif = true else gif = false
+        }
+        customDialog.cb_jpeg.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) jpeg = true else jpeg = false
+        }
+        customDialog.cb_png.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) png = true else png = false
+        }
+    }
+
+    fun leaveFilters(customDialog: android.support.v7.app.AlertDialog) {
+        customDialog.back.setOnClickListener {
+            customDialog.hide()
+        }
+        customDialog.save.setOnClickListener {
+            customDialog.hide()
+        }
+    }
+
     fun openFilters(rootView: View, context: Context) { //jpeg, png, gif && all time, last week && views
         rootView.header_filters.setOnClickListener {
             val myDialog = android.support.v7.app.AlertDialog.Builder(context)
@@ -87,12 +141,9 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
             //myDialog.setCancelable(false)
             val customDialog = myDialog.create()
             customDialog.show()
-            customDialog.back.setOnClickListener {
-                customDialog.hide()
-            }
-            customDialog.save.setOnClickListener {
-                customDialog.hide()
-            }
+            checkTrue(customDialog)
+            getCheckbox(customDialog)
+            leaveFilters(customDialog)
         }
     }
 
