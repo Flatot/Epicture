@@ -27,20 +27,23 @@ import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_filters.*
 import kotlinx.android.synthetic.main.dialog_template.*
+import java.text.SimpleDateFormat
+import java.util.*
+
 
 class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
 
     var items: MutableList<ImgurInterface.ImgurItem>? = ArrayList()
 
-    var jpeg: Boolean = false
-    var png: Boolean = false
-    var gif: Boolean = false
+    var jpeg: Boolean = true
+    var png: Boolean = true
+    var gif: Boolean = true
 
-    var last_week: Boolean = false
-    var all_time: Boolean = false
+    var last_week: Boolean = true
+    var all_time: Boolean = true
 
-    var sup_100: Boolean = false
-    var inf_100: Boolean = false
+    var sup_100: Boolean = true
+    var inf_100: Boolean = true
 
 
     companion object {
@@ -66,6 +69,48 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
         Toast.makeText(context, "fail", Toast.LENGTH_SHORT).show()
     }
 
+    fun ValidType(item: ImgurInterface.ImgurItem): Boolean {
+        if (png && gif && jpeg)
+            return (true)
+        if (png && item.data.type === "image/png")
+            return (true)
+        if (jpeg && item.data.type === "image/jpeg")
+            return (true)
+        if (gif && item.data.type === "image/gif")
+            return (true)
+        return (false)
+    }
+
+    fun ValidPeriod(item: ImgurInterface.ImgurItem): Boolean {
+        val myDate = Date()
+        val sevenDay = Date(myDate.getTime() - 604800000L) // 7 * 24 * 60 * 60 * 1000
+        val valueSeven = sevenDay.getTime()
+        if (last_week && all_time)
+            return (true)
+        if (last_week && item.data.datetime >= valueSeven)
+            return (true)
+        if (all_time)
+            return (true)
+        return (false)
+    }
+
+    fun ValidViews(item: ImgurInterface.ImgurItem): Boolean {
+        if (sup_100 && inf_100)
+            return (true)
+        if (inf_100 && item.data.views < 100)
+            return (true)
+        if (sup_100 && item.data.views > 100)
+            return (true)
+        return (false)
+    }
+
+    fun getValidItem(item: ImgurInterface.ImgurItem): Boolean {
+        if (ValidViews(item) && ValidPeriod(item) && ValidType(item))
+            return (true)
+        else
+            return (false)
+    }
+
     override fun onResponse(call: Call<ImgurInterface.Result>, response: Response<ImgurInterface.Result>) {
         if (response.isSuccessful) {
             items = ArrayList()
@@ -73,7 +118,8 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
             picList!!.data.forEach {
                 pic ->
                 val item = ImgurInterface.ImgurItem(pic)
-                items!!.add(item)
+                if (getValidItem(item))
+                    items!!.add(item)
             }
             val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
@@ -130,6 +176,7 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
         }
         customDialog.save.setOnClickListener {
             customDialog.hide()
+            getAlbums()
         }
     }
 
