@@ -72,11 +72,11 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
     fun ValidType(item: ImgurInterface.ImgurItem): Boolean {
         if (png && gif && jpeg)
             return (true)
-        if (png && item.data.type === "image/png")
+        if (png && item.data.type == "image/png")
             return (true)
-        if (jpeg && item.data.type === "image/jpeg")
+        if (jpeg && item.data.type == "image/jpeg")
             return (true)
-        if (gif && item.data.type === "image/gif")
+        if (gif && item.data.type == "image/gif")
             return (true)
         return (false)
     }
@@ -84,7 +84,7 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
     fun ValidPeriod(item: ImgurInterface.ImgurItem): Boolean {
         val myDate = Date()
         val sevenDay = Date(myDate.getTime() - 604800000L) // 7 * 24 * 60 * 60 * 1000
-        val valueSeven = sevenDay.getTime()
+        val valueSeven = sevenDay.getTime() / 1000
         if (last_week && all_time)
             return (true)
         if (last_week && item.data.datetime >= valueSeven)
