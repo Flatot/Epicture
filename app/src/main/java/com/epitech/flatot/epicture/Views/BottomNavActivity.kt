@@ -19,14 +19,14 @@ class BottomNavActivity : AppCompatActivity() {
     private var mySearchFragment: SearchFragment? = null
     private var myProfilFragment: ProfilFragment? = null
     private var myFavoriteFragment: FavoriteFragment? = null
+    private var myHomeFragment: HomeFragment? = null
 
 
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
                 //message.setText(R.string.title_home)
-                val fragment = HomeFragment.newInstance(access_token!!)
-                createFragment(fragment)
+                createFragment(myHomeFragment as Fragment)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_search -> {
@@ -80,7 +80,7 @@ class BottomNavActivity : AppCompatActivity() {
         myFavoriteFragment = FavoriteFragment.newInstance(access_token!!)
         myProfilFragment = ProfilFragment.newInstance(access_token!!, refresh_token!!, username!!)
 
-        val fragment = HomeFragment.newInstance(access_token!!)
-        createFragment(fragment)
+        myHomeFragment = HomeFragment.newInstance(access_token!!)
+        createFragment(myHomeFragment as Fragment)
     }
 }

@@ -115,7 +115,6 @@ class UploadFragment : Fragment() {
         //TODO revenir sur l'ancienne nav
         //if (rootView.imageView.drawable == null)
         rootView.btn_upload_imgur.setOnClickListener {
-            //showPictureDialog()
             upload_on_imgur()
         }
         rootView.imageView.setOnClickListener {
