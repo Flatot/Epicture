@@ -1,8 +1,11 @@
 package com.epitech.flatot.epicture.Views.FragmentBottom
 
+import android.content.Context
+import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -97,8 +100,12 @@ class ProfilFragment : Fragment() {
             override fun onResponse(call: Call<ImgurInterface.AvatarResult>, response: Response<ImgurInterface.AvatarResult>) {
                 if (response.isSuccessful)
                 {
-                    Picasso.with(context).load(response.body()!!.data.avatar).into(profil_pic)
+                    if (response.body()!!.data.avatar == null || response.body()!!.data.avatar == "")
+                        profil_pic.setImageDrawable(ContextCompat.getDrawable(context!!, R.drawable.grow))
+                    else
+                        Picasso.with(context).load(response.body()!!.data.avatar).into(profil_pic)
                 }
+                else
             }
 
         })
