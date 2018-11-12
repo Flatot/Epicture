@@ -145,9 +145,25 @@ class ImgurInterface {
     data class ProfilData(
             val account_url: String,
             val email: String,
+            val avatar: String,
             val birthdate: String,
-            val gender: String,
-            val avatar: String
+            val gender: String
+    )
+
+
+    data class Data_avatar(
+            val avatar: String,
+            val avatar_name: String
+    )
+
+    data class DataBio(
+            val bio: String,
+            val avatar: String,
+            val avatar_name: String,
+            val reputation: Int,
+            val reputation_name: String,
+            val created: String,
+            val cover: String
     )
 
     data class ProfilResult (val data: ProfilData, val success: Boolean, val status: String)
@@ -170,8 +186,7 @@ class ImgurInterface {
 
     data class ImgurFavoriteItem (val data: Data_favorite)
 
-    data class Data_avatar(val avatar: String,
-                           val avatar_name: String)
-
     data class AvatarResult(val data: Data_avatar, val success: Boolean, val status: String)
+
+    data class BioResult(val data: DataBio, val success: Boolean, val status: String)
 }
