@@ -105,7 +105,9 @@ class ProfilFragment : Fragment() {
                     else
                         Picasso.with(context).load(response.body()!!.data.avatar).into(profil_pic)
                 }
-                else
+                else {
+                    Picasso.with(context).load(response.body()!!.data.avatar).into(profil_pic)
+                }
             }
 
         })
