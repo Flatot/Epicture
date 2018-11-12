@@ -33,7 +33,7 @@ import java.util.*
 
 class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
 
-    var items: MutableList<ImgurInterface.ImgurItem>? = ArrayList()
+    var items: MutableList<ImgurInterface.ImgurItem>? = null
 
     var jpeg: Boolean = true
     var png: Boolean = true
@@ -72,11 +72,11 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
     fun ValidType(item: ImgurInterface.ImgurItem): Boolean {
         if (png && gif && jpeg)
             return (true)
-        if (png && item.data.type === "image/png")
+        if (png && item.data.type == "image/png")
             return (true)
-        if (jpeg && item.data.type === "image/jpeg")
+        if (jpeg && item.data.type == "image/jpeg")
             return (true)
-        if (gif && item.data.type === "image/gif")
+        if (gif && item.data.type == "image/gif")
             return (true)
         return (false)
     }
@@ -84,7 +84,7 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
     fun ValidPeriod(item: ImgurInterface.ImgurItem): Boolean {
         val myDate = Date()
         val sevenDay = Date(myDate.getTime() - 604800000L) // 7 * 24 * 60 * 60 * 1000
-        val valueSeven = sevenDay.getTime()
+        val valueSeven = sevenDay.getTime() / 1000
         if (last_week && all_time)
             return (true)
         if (last_week && item.data.datetime >= valueSeven)
@@ -137,13 +137,13 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
     }
 
     fun checkTrue(customDialog: android.support.v7.app.AlertDialog) {
-        if (inf_100 === true) customDialog.view_100.setChecked(true) else customDialog.view_100.setChecked(false)
-        if (sup_100 === true) customDialog.view_500.setChecked(true) else customDialog.view_500.setChecked(false)
-        if (png === true) customDialog.cb_png.setChecked(true) else customDialog.cb_png.setChecked(false)
-        if (jpeg === true) customDialog.cb_jpeg.setChecked(true) else customDialog.cb_jpeg.setChecked(false)
-        if (gif === true) customDialog.cb_gif.setChecked(true) else customDialog.cb_gif.setChecked(false)
-        if (last_week === true) customDialog.cb_week.setChecked(true) else customDialog.cb_week.setChecked(false)
-        if (all_time === true) customDialog.cb_single.setChecked(true) else customDialog.cb_single.setChecked(false)
+        if (inf_100) customDialog.view_100.setChecked(true) else customDialog.view_100.setChecked(false)
+        if (sup_100) customDialog.view_500.setChecked(true) else customDialog.view_500.setChecked(false)
+        if (png) customDialog.cb_png.setChecked(true) else customDialog.cb_png.setChecked(false)
+        if (jpeg) customDialog.cb_jpeg.setChecked(true) else customDialog.cb_jpeg.setChecked(false)
+        if (gif) customDialog.cb_gif.setChecked(true) else customDialog.cb_gif.setChecked(false)
+        if (last_week) customDialog.cb_week.setChecked(true) else customDialog.cb_week.setChecked(false)
+        if (all_time) customDialog.cb_single.setChecked(true) else customDialog.cb_single.setChecked(false)
     }
 
     fun getCheckbox(customDialog: android.support.v7.app.AlertDialog) {
@@ -196,7 +196,16 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater!!.inflate(R.layout.fragment_home, container, false)
-        getAlbums()
+        if (items != null && items!!.isNotEmpty())
+        {
+            val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+
+            rootView.HomeRecyclerView.layoutManager = layoutManager
+            val adapter = LoadingAdapter(arguments?.getString("access_token")!!, context!!, items!!)
+            rootView.HomeRecyclerView.adapter = adapter
+        }
+        else
+            getAlbums()
         /*val galFrag = GalleryFragment.newInstance(arguments?.getString("access_token")!!)
         AlbumsFragment.newInstance(arguments?.getString("access_token")!!)
         val fm = TabLayoutAdapter(arguments?.getString("access_token")!!, galFrag, activity!!.supportFragmentManager)
