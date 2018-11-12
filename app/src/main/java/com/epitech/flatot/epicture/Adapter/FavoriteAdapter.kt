@@ -72,7 +72,7 @@ class FavoriteAdapter(val context: Context, val items:MutableList<ImgurInterface
 
         fun setData(item: ImgurInterface.ImgurFavoriteItem?, pos: Int) : Boolean
         {
-            if (itemView.img_imgur.drawable == null) {
+            //if (itemView.img_imgur.drawable == null) {
                 if (item!!.data.images != null && !item!!.data.images.isEmpty()) {
                     if (item!!.data.images[0].type == "image/gif")
                         Glide.with(context).asGif()
@@ -95,8 +95,8 @@ class FavoriteAdapter(val context: Context, val items:MutableList<ImgurInterface
                                 .into(itemView.favoriteImg)
                 }
                 return true
-            }
-            return false
+            //}
+            //return false
         }
     }
 }

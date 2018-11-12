@@ -24,6 +24,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_filters.*
 import kotlinx.android.synthetic.main.dialog_template.*
@@ -118,10 +119,10 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
             picList!!.data.forEach {
                 pic ->
                 val item = ImgurInterface.ImgurItem(pic)
-                if (getValidItem(item))
+                //if (getValidItem(item))
                     items!!.add(item)
             }
-            val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
             HomeRecyclerView.layoutManager = layoutManager
             val adapter = LoadingAdapter(arguments?.getString("access_token")!!, context!!, items!!)
             HomeRecyclerView.adapter = adapter
@@ -197,7 +198,7 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
         val rootView = inflater!!.inflate(R.layout.fragment_home, container, false)
         if (items != null && items!!.isNotEmpty())
         {
-            val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+            val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
             rootView.HomeRecyclerView.layoutManager = layoutManager
             val adapter = LoadingAdapter(arguments?.getString("access_token")!!, context!!, items!!)
@@ -205,12 +206,6 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
         }
         else
             getAlbums()
-        /*val galFrag = GalleryFragment.newInstance(arguments?.getString("access_token")!!)
-        AlbumsFragment.newInstance(arguments?.getString("access_token")!!)
-        val fm = TabLayoutAdapter(arguments?.getString("access_token")!!, galFrag, activity!!.supportFragmentManager)
-        rootView.viewpager_main.adapter = fm
-        rootView.tabLayout.setupWithViewPager(viewpager_main)*/
-
         openFilters(rootView, context!!)
         return rootView
     }
