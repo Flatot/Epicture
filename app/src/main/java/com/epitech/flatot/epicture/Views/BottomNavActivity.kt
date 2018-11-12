@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import com.epitech.flatot.epicture.R
 import com.epitech.flatot.epicture.Views.FragmentBottom.*
-import com.epitech.flatot.epicture.Views.FragmentBottom.TabLayoutHome.HomeFragment
 import kotlinx.android.synthetic.main.activity_bottom_nav.*
 
 class BottomNavActivity : AppCompatActivity() {

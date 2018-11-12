@@ -1,36 +1,24 @@
-package com.epitech.flatot.epicture.Views.FragmentBottom.TabLayoutHome
+package com.epitech.flatot.epicture.Views.FragmentBottom
 
-import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.os.Bundle
-import android.support.asynclayoutinflater.R.id.title
-import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
-import android.support.v7.widget.StaggeredGridLayoutManager
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TabHost
 import android.widget.Toast
 import com.epitech.flatot.epicture.Adapter.LoadingAdapter
-import com.epitech.flatot.epicture.Adapter.TabLayoutAdapter
+import com.epitech.flatot.epicture.Adapter.SearchAdapter
 import com.epitech.flatot.epicture.Model.ImgurInterface
 import com.epitech.flatot.epicture.Model.RetrofitInterface
 import com.epitech.flatot.epicture.R
+import kotlinx.android.synthetic.main.dialog_filters.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import com.epitech.flatot.epicture.Adapter.SearchAdapter
-import com.epitech.flatot.epicture.R.string.*
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.dialog_filters.*
-import kotlinx.android.synthetic.main.dialog_template.*
-import java.text.SimpleDateFormat
 import java.util.*
 
 
