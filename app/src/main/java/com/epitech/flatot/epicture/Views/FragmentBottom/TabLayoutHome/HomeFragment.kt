@@ -33,7 +33,7 @@ import java.util.*
 
 class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
 
-    var items: MutableList<ImgurInterface.ImgurItem>? = ArrayList()
+    var items: MutableList<ImgurInterface.ImgurItem>? = null
 
     var jpeg: Boolean = true
     var png: Boolean = true
@@ -122,7 +122,6 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
                     items!!.add(item)
             }
             val layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-
             HomeRecyclerView.layoutManager = layoutManager
             val adapter = LoadingAdapter(arguments?.getString("access_token")!!, context!!, items!!)
             HomeRecyclerView.adapter = adapter
