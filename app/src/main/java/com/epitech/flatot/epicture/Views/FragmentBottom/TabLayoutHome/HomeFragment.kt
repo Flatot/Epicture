@@ -257,7 +257,14 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater!!.inflate(R.layout.fragment_home, container, false)
-        if (items != null && items!!.isNotEmpty())
+        if (bool_album && albums_items != null && albums_items!!.isNotEmpty())
+        {
+            val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
+            rootView.HomeRecyclerView.layoutManager = layoutManager
+            val adapter = SearchAdapter(rootView.HomeRecyclerView, arguments?.getString("access_token")!!, context!!, albums_items!!)
+            rootView.HomeRecyclerView.adapter = adapter
+        }
+        else if (items != null && items!!.isNotEmpty())
         {
             val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
