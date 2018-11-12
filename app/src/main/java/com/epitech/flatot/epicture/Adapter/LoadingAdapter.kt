@@ -56,6 +56,7 @@ class LoadingAdapter(val access_token:String, val context: Context, val items:Mu
                 intent.putExtra("title", item!!.data.title)
                 intent.putExtra("img_imgur", item.data.link)
                 intent.putExtra("description", item.data.description)
+                intent.putExtra("type", item.data.type)
                 context.startActivity(intent)
             }
 

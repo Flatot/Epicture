@@ -61,9 +61,9 @@ interface ImgurService {
     @GET("/3/account/me/albums")
     fun getAlbums(@Header("Authorization") authHeader: String): Call<ImgurInterface.Result>
 
-    @GET("/3/account/me/album/{albumId}")
+    @GET("/3/album/{albumId}")
     fun getAlbum(@Header("Authorization") authHeader: String,
-                 @Path("albumId") albumId: String): Call<ImgurInterface.SearchResult>
+                 @Path("albumId") albumId: String): Call<ImgurInterface.ImgurSearchItem>
 
     @GET("/3/account/me/settings")
     fun myProfil(@Header("Authorization") authHeader: String): Call<ImgurInterface.ProfilResult>
