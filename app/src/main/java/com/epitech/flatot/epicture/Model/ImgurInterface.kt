@@ -174,4 +174,13 @@ class ImgurInterface {
                            val avatar_name: String)
 
     data class AvatarResult(val data: Data_avatar, val success: Boolean, val status: String)
+
+    data class Available_avatar(val name: String,
+                                val location: String)
+
+    data class Data_available_avatar(val available_avatars: List<Available_avatar>,
+            val available_avatars_count: Int,
+            val avatars_are_default: Boolean)
+
+    data class AvailableAvatarResult(val data: Data_available_avatar, val success: Boolean, val status: String)
 }
