@@ -25,6 +25,8 @@ import retrofit2.Callback
 import retrofit2.Response
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import com.epitech.flatot.epicture.Adapter.SearchAdapter
+import com.epitech.flatot.epicture.R.string.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_filters.*
 import kotlinx.android.synthetic.main.dialog_template.*
@@ -35,6 +37,9 @@ import java.util.*
 class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
 
     var items: MutableList<ImgurInterface.ImgurItem>? = null
+    var albums_items: MutableList<ImgurInterface.ImgurSearchItem>? = null
+
+    var bool_album: Boolean = false
 
     var jpeg: Boolean = true
     var png: Boolean = true
@@ -57,7 +62,56 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
         }
     }
 
-    fun getAlbums()
+    private fun getAlbums() {
+        val imgurApi = RetrofitInterface().createRetrofitBuilder()
+
+        val token = arguments?.getString("access_token")
+        val call = imgurApi.getAlbums("Bearer " + token)
+        call.enqueue(object: Callback<ImgurInterface.Result> {
+            override fun onFailure(call: Call<ImgurInterface.Result>, t: Throwable) {
+                Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onResponse(call: Call<ImgurInterface.Result>, response: Response<ImgurInterface.Result>) {
+                if (response.isSuccessful)
+                {
+                    albums_items = ArrayList()
+                    val picList = response.body()
+                    picList!!.data.forEach {
+                        pic ->
+                        val album = imgurApi.getAlbum("Bearer " + token, pic.id)
+                        album.enqueue(object: Callback<ImgurInterface.ImgurSearchItem> {
+                            override fun onFailure(call: Call<ImgurInterface.ImgurSearchItem>, t: Throwable) {
+                                Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
+                            }
+
+                            override fun onResponse(call: Call<ImgurInterface.ImgurSearchItem>, response: Response<ImgurInterface.ImgurSearchItem>) {
+                                if (response.isSuccessful) {
+                                    val albumList = response.body()
+                                    val alb_item = ImgurInterface.ImgurSearchItem(albumList!!.data)
+                                    albums_items!!.add(alb_item)
+
+                                    if (albums_items!!.size == picList.data.size)
+                                    {
+                                        val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
+                                        HomeRecyclerView.layoutManager = layoutManager
+                                        val adapter = SearchAdapter(HomeRecyclerView, arguments?.getString("access_token")!!, context!!, albums_items!!)
+                                        HomeRecyclerView.adapter = adapter
+                                    }
+                                }
+                                else
+                                    Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+                            }
+                        })
+                    }
+                }
+                else
+                    Toast.makeText(context, "Failed load album", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+    fun getGallery()
     {
         val imgurApi = RetrofitInterface().createRetrofitBuilder()
 
@@ -119,7 +173,7 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
             picList!!.data.forEach {
                 pic ->
                 val item = ImgurInterface.ImgurItem(pic)
-                //if (getValidItem(item))
+                if (getValidItem(item))
                     items!!.add(item)
             }
             val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
@@ -144,6 +198,7 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
         if (gif) customDialog.cb_gif.setChecked(true) else customDialog.cb_gif.setChecked(false)
         if (last_week) customDialog.cb_week.setChecked(true) else customDialog.cb_week.setChecked(false)
         if (all_time) customDialog.cb_single.setChecked(true) else customDialog.cb_single.setChecked(false)
+        if (bool_album) customDialog.radio_album.setChecked(true) else customDialog.radio_album.setChecked(false)
     }
 
     fun getCheckbox(customDialog: android.support.v7.app.AlertDialog) {
@@ -168,6 +223,9 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
         customDialog.cb_png.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) png = true else png = false
         }
+        customDialog.radio_album.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) bool_album = true else bool_album = false
+        }
     }
 
     fun leaveFilters(customDialog: android.support.v7.app.AlertDialog) {
@@ -176,7 +234,10 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
         }
         customDialog.save.setOnClickListener {
             customDialog.hide()
-            getAlbums()
+            if (bool_album)
+                getAlbums()
+            else
+                getGallery()
         }
     }
 
@@ -196,7 +257,14 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater!!.inflate(R.layout.fragment_home, container, false)
-        if (items != null && items!!.isNotEmpty())
+        if (bool_album && albums_items != null && albums_items!!.isNotEmpty())
+        {
+            val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
+            rootView.HomeRecyclerView.layoutManager = layoutManager
+            val adapter = SearchAdapter(rootView.HomeRecyclerView, arguments?.getString("access_token")!!, context!!, albums_items!!)
+            rootView.HomeRecyclerView.adapter = adapter
+        }
+        else if (items != null && items!!.isNotEmpty())
         {
             val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
@@ -205,7 +273,7 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
             rootView.HomeRecyclerView?.adapter = adapter
         }
         else
-            getAlbums()
+            getGallery()
         openFilters(rootView, context!!)
         return rootView
     }

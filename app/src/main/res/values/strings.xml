@@ -17,7 +17,6 @@
     <string name="upload_to_imgur">Upload to Imgur</string>
     <string name="put_a_description">Put a description</string>
     <string name="favoris">Favoris</string>
-    <string name="save">Save</string>
     <string name="available_album">Available album :</string>
     <string name="title_activity_album">AlbumActivity</string>
     <string name="tab_text_1">Tab 1</string>
@@ -31,4 +30,20 @@
     <string name="settings">Settings</string>
     <string name="search">Search</string>
     <string name="edit_profile">Edit profile</string>
+    <string name="display_albums">Display albums</string>
+    <string name="back">Back</string>
+    <string name="save">Save</string>
+    <string name="_100_views">+ 100 views</string>
+    <string name="_min_100_views">- 100 views</string>
+    <string name="view_s">View(s)</string>
+    <string name="last_week">Last week</string>
+    <string name="all_time">All time</string>
+    <string name="period">Period</string>
+    <string name="gif">GIF</string>
+    <string name="png">PNG</string>
+    <string name="jpeg">JPEG</string>
+    <string name="which_type_of_picture">Which type of picture</string>
+    <string name="no">No</string>
+    <string name="yes">Yes</string>
+    <string name="show_albums">Show albums</string>
 </resources>

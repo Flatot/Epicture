@@ -45,6 +45,7 @@ class FavoriteAdapter(val context: Context, val items:MutableList<ImgurInterface
                 intent.putExtra("title", item!!.data.title)
                 intent.putExtra("img_imgur", item.data.link)
                 intent.putExtra("description", item.data.description)
+                intent.putExtra("type", item.data.type)
                 if (item.data.images != null) {
                     var list_link: MutableList<String> = ArrayList()
                     item.data.images.forEach { img ->

@@ -64,6 +64,7 @@ class SearchAdapter(val myRecyclerView: RecyclerView, val access_token:String, v
                 intent.putExtra("title", item!!.data.title)
                 intent.putExtra("img_imgur", item.data.link)
                 intent.putExtra("description", item.data.description)
+                intent.putExtra("type", item.data.type)
                 if (item.data.images != null) {
                     var list_link: MutableList<String> = ArrayList()
                     item.data.images.forEach { img ->
@@ -73,6 +74,11 @@ class SearchAdapter(val myRecyclerView: RecyclerView, val access_token:String, v
                     item.data.images.forEach { img ->
                         list_description.add(img.description)
                     }
+                    var list_type: MutableList<String> = ArrayList()
+                    item.data.images.forEach { img ->
+                        list_type.add(img.type)
+                    }
+                    intent.putStringArrayListExtra("list_type", list_type as ArrayList<String>)
                     intent.putStringArrayListExtra("list_link", list_link as ArrayList<String>)
                     intent.putStringArrayListExtra("list_description", list_description as ArrayList<String>)
                 }
