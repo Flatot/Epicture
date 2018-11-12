@@ -68,6 +68,10 @@ interface ImgurService {
     @GET("/3/account/me/settings")
     fun myProfil(@Header("Authorization") authHeader: String): Call<ImgurInterface.ProfilResult>
 
+    @GET("/3/account/{username}/avatar")
+    fun myAvatar(@Header("Authorization") authHeader: String,
+            @Path("username") username: String): Call<ImgurInterface.AvatarResult>
+
     //@POST("/token")
     //@FormUrlEncoded
     //@POST("/token")

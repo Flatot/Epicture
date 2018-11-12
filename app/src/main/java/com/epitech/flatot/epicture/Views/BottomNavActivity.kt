@@ -21,7 +21,6 @@ class BottomNavActivity : AppCompatActivity() {
     private var myFavoriteFragment: FavoriteFragment? = null
     private var myHomeFragment: HomeFragment? = null
 
-
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_home -> {
@@ -37,14 +36,14 @@ class BottomNavActivity : AppCompatActivity() {
             }
             R.id.navigation_favoris -> {
                 //message.setText(R.string.title_dashboard)
-                val fragment = FavoriteFragment.newInstance(access_token!!)
-                createFragment(fragment)
+                createFragment(myFavoriteFragment as Fragment)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_profil -> {
                 //message.setText(R.string.title_notifications)
-                val fragment = ProfilFragment.newInstance(access_token!!, refresh_token!!, username!!)
-                createFragment(fragment)
+                createFragment(myProfilFragment as Fragment)
+                //val fragment = ProfilFragment.newInstance(access_token!!, refresh_token!!, username!!)
+                //createFragment(fragment)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_upload -> {

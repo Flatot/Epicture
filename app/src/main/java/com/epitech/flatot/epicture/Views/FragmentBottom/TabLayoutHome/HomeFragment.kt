@@ -200,9 +200,9 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
         {
             val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
-            rootView.HomeRecyclerView.layoutManager = layoutManager
+            rootView.HomeRecyclerView?.layoutManager = layoutManager
             val adapter = LoadingAdapter(arguments?.getString("access_token")!!, context!!, items!!)
-            rootView.HomeRecyclerView.adapter = adapter
+            rootView.HomeRecyclerView?.adapter = adapter
         }
         else
             getAlbums()

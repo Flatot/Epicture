@@ -169,4 +169,9 @@ class ImgurInterface {
     data class ImgurSearchItem (val data: Data_search)
 
     data class ImgurFavoriteItem (val data: Data_favorite)
+
+    data class Data_avatar(val avatar: String,
+                           val avatar_name: String)
+
+    data class AvatarResult(val data: Data_avatar, val success: Boolean, val status: String)
 }

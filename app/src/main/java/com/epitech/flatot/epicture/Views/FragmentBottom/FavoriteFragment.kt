@@ -123,7 +123,6 @@ class FavoriteFragment : Fragment(), Callback<ImgurInterface.GetFavoriteResult> 
                     items!!.add(item)
             }
             val layoutManager = LinearLayoutManager(context)
-
             FavoriteRecyclerView.layoutManager = layoutManager
             val adapter = FavoriteAdapter(context!!, items!!)
             FavoriteRecyclerView.adapter = adapter
@@ -193,7 +192,16 @@ class FavoriteFragment : Fragment(), Callback<ImgurInterface.GetFavoriteResult> 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater!!.inflate(R.layout.fragment_favorite, container, false)
-        getFavorites()
+        if (items != null && items!!.isNotEmpty())
+        {
+            val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+
+            rootView.FavoriteRecyclerView?.layoutManager = layoutManager
+            val adapter = FavoriteAdapter(context!!, items!!)
+            rootView.FavoriteRecyclerView?.adapter = adapter
+        }
+        else
+            getFavorites()
         openFiltersFav(rootView, context!!)
         return rootView
     }
