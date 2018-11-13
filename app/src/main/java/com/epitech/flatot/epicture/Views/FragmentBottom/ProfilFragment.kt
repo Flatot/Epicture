@@ -14,13 +14,14 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import com.epitech.flatot.epicture.Adapter.LoadingAdapter
 import com.epitech.flatot.epicture.Model.ImgurInterface
 import com.epitech.flatot.epicture.Model.RetrofitInterface
 import com.epitech.flatot.epicture.R
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.dialog_filters.*
 import kotlinx.android.synthetic.main.dialog_profile.*
 import kotlinx.android.synthetic.main.dialog_profile.view.*
-import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.fragment_profil.*
 import kotlinx.android.synthetic.main.fragment_profil.view.*
 import kotlinx.android.synthetic.main.fragment_search.*
@@ -29,8 +30,22 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.time.DayOfWeek
+import java.util.*
 
 class ProfilFragment : Fragment() {
+    var items: MutableList<ImgurInterface.ImgurItem>? = null
+
+    var jpeg: Boolean = true
+    var png: Boolean = true
+    var gif: Boolean = true
+
+    var last_week: Boolean = true
+    var all_time: Boolean = true
+
+    var sup_100: Boolean = true
+    var inf_100: Boolean = true
+
+    fun String.toEditable(): Editable =  Editable.Factory.getInstance().newEditable(this)
 
     companion object {
         fun newInstance(access_token: String, refresh_token: String, username: String): ProfilFragment {
@@ -52,10 +67,49 @@ class ProfilFragment : Fragment() {
         var rootView = inflater!!.inflate(R.layout.fragment_profil, container, false)
         GetProfil()
         openSetProfile(rootView, context!!)
+        if (items != null && items!!.isNotEmpty())
+        {
+            val layoutManager = LinearLayoutManager(context)
+
+            rootView.ProfilRecyclerView?.layoutManager = layoutManager
+            val adapter = LoadingAdapter(arguments?.getString("access_token")!!, context!!, items!!)
+            rootView.ProfilRecyclerView?.adapter = adapter
+        }
+        else
+            getAlbums()
         return rootView
     }
 
-    fun String.toEditable(): Editable =  Editable.Factory.getInstance().newEditable(this)
+
+    fun getAlbums()
+    {
+        val imgurApi = RetrofitInterface().createRetrofitBuilder()
+        val token = arguments?.getString("access_token")
+        val call = imgurApi.getUser("Bearer " + token)
+        call.enqueue(object: Callback<ImgurInterface.Result> {
+            override fun onFailure(call: Call<ImgurInterface.Result>, t: Throwable?) {
+            }
+
+            override fun onResponse(call: Call<ImgurInterface.Result>, response: Response<ImgurInterface.Result>) {
+                if (response.isSuccessful) {
+                    items = ArrayList()
+                    val picList = response.body()
+                    picList!!.data.forEach {
+                        pic ->
+                        val item = ImgurInterface.ImgurItem(pic)
+                        items!!.add(item)
+                    }
+                    val layoutManager = LinearLayoutManager(context)
+                    ProfilRecyclerView.layoutManager = layoutManager
+                    val adapter = LoadingAdapter(arguments?.getString("access_token")!!, context!!, items!!)
+                    ProfilRecyclerView.adapter = adapter
+                } else {
+                    Toast.makeText(context, response.message(), Toast.LENGTH_SHORT).show()
+                    System.out.println(response.errorBody())
+                }
+            }
+        })
+    }
 
     fun editProfil(customDialog: android.support.v7.app.AlertDialog) {
         val imgurApi = RetrofitInterface().createRetrofitBuilder()
@@ -134,22 +188,23 @@ class ProfilFragment : Fragment() {
         call.enqueue(object: Callback<ImgurInterface.ProfilResult> {
             override fun onFailure(call: Call<ImgurInterface.ProfilResult>, t: Throwable?) {
                 txt_name.text = "No information"
-                txt_bio.text = "No information"
                 txt_time.text = "No information"
             }
 
             override fun onResponse(call: Call<ImgurInterface.ProfilResult>, response: Response<ImgurInterface.ProfilResult>) {
                 if (response.isSuccessful) {
                     var current = response.body()?.data?.account_url
-                    if (current == null || current == "")
-                        txt_name.text = "No username"
+                    var tmp = response.body()?.data?.email
+                    var final = ""
+                    if (current != null && current != "")
+                        final = final + current + " "
                     else
-                        txt_name.text = "Username: " + current
-                    current = response.body()?.data?.email
-                    if (current == null || current == "")
-                        txt_bio.text = "No email"
+                        final = final + "No username "
+                    if (tmp != null && tmp != "")
+                        final = final + "(" + tmp + ")"
                     else
-                        txt_bio.text = "Email: " + current
+                        final = final + " (No email)"
+                    txt_name.text = final
                     current = response.body()?.data?.birthdate
                     if (current == null || current == "")
                         txt_time.text = "No birthday filled"
@@ -162,7 +217,6 @@ class ProfilFragment : Fragment() {
                         txt_gender.text = "Gender: " + current
                 } else {
                     txt_name.text = "Server response: null"
-                    txt_bio.text = "Server response: null"
                     txt_time.text = "Server response: null"
                     txt_gender.text = "Server response: null"
                     txt_desc.text = "Server response: null"
@@ -203,9 +257,3 @@ class ProfilFragment : Fragment() {
         GetMyAvatar()
     }
 }
-
-//current = response.body()?.data?.
-//if (current == null || current == "")
-//txt_desc.text = "No description filled"
-//else
-//txt_desc.text = "Description: " + current

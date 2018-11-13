@@ -119,7 +119,7 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
             picList!!.data.forEach {
                 pic ->
                 val item = ImgurInterface.ImgurItem(pic)
-                //if (getValidItem(item))
+                if (getValidItem(item))
                     items!!.add(item)
             }
             val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
