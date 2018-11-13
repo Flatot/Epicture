@@ -5,6 +5,7 @@ import android.os.Bundle
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.epitech.flatot.epicture.Adapter.ViewPagerAdapter
+import com.epitech.flatot.epicture.Model.GlideInterface
 import com.epitech.flatot.epicture.R
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_zoomed.*
@@ -29,18 +30,7 @@ class ZoomedActivity : AppCompatActivity() {
             viewPager.adapter = adapter
         }
         else {
-            if (type == "image/gif")
-                Glide.with(this@ZoomedActivity).asGif()
-                        .load(urlimg)
-                        .apply(RequestOptions()
-                                .fitCenter())
-                        .into(img_imgur2)
-            else
-                Glide.with(this@ZoomedActivity)
-                        .load(urlimg)
-                        .apply(RequestOptions()
-                                .fitCenter())
-                        .into(img_imgur2)
+            GlideInterface().displayGlide(type, this@ZoomedActivity, urlimg, img_imgur2)
         }
         title2.text = title
         description2.text = description

@@ -1,6 +1,5 @@
 package com.epitech.flatot.epicture.Interface
 
-import com.epitech.flatot.epicture.Model.AccessToken
 import com.epitech.flatot.epicture.Model.ImgurInterface
 import okhttp3.MultipartBody
 import retrofit2.Call
@@ -10,20 +9,8 @@ import retrofit2.http.FormUrlEncoded
 import okhttp3.RequestBody
 import retrofit2.http.Multipart
 
-
-
-
-
 interface ImgurService {
-
-    @Headers("Accept: application/json")
-    @POST("/oauth2/token")
-    @FormUrlEncoded
-    fun getAccessToken(@Field("client_id") clientId: String,
-                       @Field("client_secret") clientSecret: String,
-                       @Field("access_token") accessToken: String):
-            Call<AccessToken>
-
+    
     @GET("/3/account/me/images")
     fun getUser(@Header("Authorization") authHeader: String): Call<ImgurInterface.Result>
 
@@ -74,11 +61,4 @@ interface ImgurService {
 
     @GET("/3/account/me/available_avatars")
     fun availableAvatar(@Header("Authorization") authHeader: String): Call<ImgurInterface.AvailableAvatarResult>
-
-    //@POST("/token")
-    //@FormUrlEncoded
-    //@POST("/token")
-    //fun getAccessToken(
-    //        @Field("code") code: String,
-    //        @Field("grant_type") grantType: String): Call<AccessToken>
 }

@@ -7,10 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.epitech.flatot.epicture.Model.GlideInterface
 import com.epitech.flatot.epicture.Model.ImgurInterface
 import com.epitech.flatot.epicture.Model.RetrofitInterface
 import com.epitech.flatot.epicture.R
+import com.epitech.flatot.epicture.R.id.img_imgur2
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_zoomed.*
 import kotlinx.android.synthetic.main.dialog_template.*
 import kotlinx.android.synthetic.main.item_avatar.view.*
 import kotlinx.android.synthetic.main.item_linear.view.*
@@ -43,7 +46,7 @@ class AvatarsDialogAdapter(val access_token: String, val context: Context,
     {
         fun setPic(data: ImgurInterface.Available_avatar, pos: Int)
         {
-            Picasso.with(context).load(data.location).into(itemView.imgAvatar)
+            GlideInterface().displayGlide("image/jpeg", context, data.location, itemView.imgAvatar)
             itemView.setOnClickListener {
                 //c_avatar = data
                 myDialog.cancel()

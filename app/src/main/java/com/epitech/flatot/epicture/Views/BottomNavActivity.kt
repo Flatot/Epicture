@@ -54,7 +54,7 @@ class BottomNavActivity : AppCompatActivity() {
         false
     }
 
-    private fun createFragment(fragment: Fragment)
+    fun createFragment(fragment: Fragment)
     {
         val transaction = manager.beginTransaction()
 
@@ -77,7 +77,6 @@ class BottomNavActivity : AppCompatActivity() {
         mySearchFragment = SearchFragment.newInstance(access_token!!)
         myFavoriteFragment = FavoriteFragment.newInstance(access_token!!)
         myProfilFragment = ProfilFragment.newInstance(access_token!!, refresh_token!!, username!!)
-
         myHomeFragment = HomeFragment.newInstance(access_token!!)
         createFragment(myHomeFragment as Fragment)
     }

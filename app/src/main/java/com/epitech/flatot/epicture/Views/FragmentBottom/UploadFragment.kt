@@ -2,6 +2,7 @@ package com.epitech.flatot.epicture.Views.FragmentBottom
 
 import android.Manifest
 import android.annotation.TargetApi
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -21,8 +22,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.epitech.flatot.epicture.Model.ImgurInterface
 import com.epitech.flatot.epicture.Model.RetrofitInterface
-
 import com.epitech.flatot.epicture.R
+import com.epitech.flatot.epicture.Views.BottomNavActivity
 import kotlinx.android.synthetic.main.fragment_upload.*
 import kotlinx.android.synthetic.main.fragment_upload.view.*
 import okhttp3.MediaType
@@ -31,6 +32,7 @@ import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.ByteArrayOutputStream
 import java.io.File
 
 
@@ -39,20 +41,17 @@ class UploadFragment : Fragment() {
     private val GALLERY = 1
     private val CAMERA = 2
     private var MyPicBinary: Uri? = null
-    private var ids: ArrayList<RequestBody>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
 
     private fun takePhotoFromCamera() {
-        //val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        //startActivityForResult(intent, CAMERA)
-        val intent = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         startActivityForResult(intent, CAMERA)
     }
 
-    private fun choosePhotoFromGallary() {
+    private fun choosePhotoFromGallery() {
         val galleryIntent = Intent(Intent.ACTION_PICK,
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         galleryIntent.type = "image/*"
@@ -69,7 +68,6 @@ class UploadFragment : Fragment() {
             {
                 MyPicBinary = data.data
                 val inputStream = activity!!.contentResolver.openInputStream(MyPicBinary)
-                imageView.background = null
                 imageView.setImageBitmap(BitmapFactory.decodeStream(inputStream))
                 Toast.makeText(context, "Image Saved!", Toast.LENGTH_SHORT).show()
 
@@ -83,7 +81,16 @@ class UploadFragment : Fragment() {
             imageView!!.setImageBitmap(thumbnail)
             Toast.makeText(context, "Image Saved!", Toast.LENGTH_SHORT).show()
             btn_upload_imgur.isEnabled = true
+
+            MyPicBinary = getImageUri(context!!, thumbnail!!)
         }
+    }
+
+    fun getImageUri(inContext: Context, inImage: Bitmap): Uri {
+        val bytes = ByteArrayOutputStream()
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+        val path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null)
+        return Uri.parse(path)
     }
 
     companion object {
@@ -96,35 +103,43 @@ class UploadFragment : Fragment() {
         }
     }
 
-    fun createFromString(string: String): RequestBody {
-        return RequestBody.create(MediaType.parse("text"), string)
+    fun dialogUpload()
+    {
+        val pictureDialog = AlertDialog.Builder(context!!)
+        pictureDialog.setTitle("Choose action")
+        val pictureDialogItems = arrayOf("Take a photo", "Gallery")
+        pictureDialog.setItems(pictureDialogItems
+        ) { dialog, which ->
+            when (which) {
+                0 -> takePhotoFromCamera()
+                1 -> choosePhotoFromGallery()
+            }
+        }
+        pictureDialog.show()
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
         val rootView = inflater!!.inflate(R.layout.fragment_upload, container, false)
-        if (checkSelfPermission(context!!, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+        if (checkSelfPermission(context!!, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                checkSelfPermission(context!!, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                checkSelfPermission(context!!, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activity!!,
-                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.CAMERA,
+                            Manifest.permission.READ_EXTERNAL_STORAGE),
                     777)
         }
-        ids = ArrayList()
-        choosePhotoFromGallary()
-        //TODO revenir sur l'ancienne nav
-        //if (rootView.imageView.drawable == null)
-        rootView.btn_upload_imgur.setOnClickListener {
-            upload_on_imgur()
+        else {
+            dialogUpload()
+            rootView.btn_upload_imgur.setOnClickListener {
+                upload_on_imgur()
+            }
+            rootView.imageView.setOnClickListener {
+                dialogUpload()
+            }
         }
-        rootView.imageView.setOnClickListener {
-            choosePhotoFromGallary()
-        }
-        //val btn = rootView.btn_load_img
-        //btn.setOnClickListener {
-        //showPictureDialog()
-        //choosePhotoFromGallary()
-        //}
         return rootView
     }
 
@@ -150,7 +165,6 @@ class UploadFragment : Fragment() {
             }
             override fun onResponse(call: Call<ImgurInterface.UploadResult>, response: Response<ImgurInterface.UploadResult>) {
                 if (response.isSuccessful) {
-                    ids!!.add(createFromString(response.body()!!.data.id))
                     Toast.makeText(context, "Uploaded Successfully", Toast.LENGTH_SHORT).show()
                     progressUpload.visibility = View.GONE
                 }

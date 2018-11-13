@@ -79,6 +79,7 @@ class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult>, ILoadM
         }
         val search = rootView.findViewById(R.id.searchView) as android.support.v7.widget.SearchView
         val searchEditText = search.findViewById<View>(android.support.v7.appcompat.R.id.search_src_text) as EditText
+        search.isIconified = false
         searchEditText.setTextColor(ContextCompat.getColor(context!!, R.color.colorWhite))
         searchEditText.setHintTextColor(ContextCompat.getColor(context!!, R.color.colorWhite))
         rootView.searchView.queryHint = "Search Pictures in Imgur"
@@ -91,7 +92,10 @@ class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult>, ILoadM
             override fun onQueryTextSubmit(query: String): Boolean {
                 searchQuery = query
                 items = ArrayList()
-                searchView.isIconified = true
+                rootView.searchView.isIconified = true
+                search.isIconified = true
+                rootView.progressBar.visibility = View.VISIBLE
+                rootView.searchView.clearFocus()
                 GetSearch()
                 return true
             }
@@ -135,6 +139,7 @@ class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult>, ILoadM
                 items!!.add(item)
             }
             get_first_items(items!!)
+            progressBar.visibility = View.GONE
             recyclerViewSearch.layoutManager = LinearLayoutManager(context)
             adapter = SearchAdapter(recyclerViewSearch, arguments?.getString("access_token")!!, context!!, new_items!!)
             recyclerViewSearch.adapter = adapter

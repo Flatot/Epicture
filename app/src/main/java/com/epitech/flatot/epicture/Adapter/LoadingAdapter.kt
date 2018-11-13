@@ -15,9 +15,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.epitech.flatot.epicture.Model.GlideInterface
 import com.epitech.flatot.epicture.Model.ImgurInterface
 import com.epitech.flatot.epicture.Model.ImgurInterface.ImgurItem
 import com.epitech.flatot.epicture.Model.RetrofitInterface
+import com.epitech.flatot.epicture.Model.ZoomedActivityInterface
 import com.epitech.flatot.epicture.R
 import com.epitech.flatot.epicture.Views.ZoomedActivity
 import com.squareup.picasso.Picasso
@@ -51,13 +53,9 @@ class LoadingAdapter(val access_token:String, val context: Context, val items:Mu
     inner class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView), Callback<ImgurInterface.FavoriteResult> {
 
         fun setZoomedClick (item: ImgurItem?, pos: Int) {
+
             itemView.setOnClickListener {
-                val intent = Intent(context, ZoomedActivity::class.java)
-                intent.putExtra("title", item!!.data.title)
-                intent.putExtra("img_imgur", item.data.link)
-                intent.putExtra("description", item.data.description)
-                intent.putExtra("type", item.data.type)
-                context.startActivity(intent)
+                ZoomedActivityInterface().setZoomed(context, item!!)
             }
 
             itemView.favorite.setOnClickListener {
@@ -193,17 +191,7 @@ class LoadingAdapter(val access_token:String, val context: Context, val items:Mu
 
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         fun setData(item: ImgurItem?, pos: Int) : Boolean {
-            if (item!!.data.type == "image/gif")
-                Glide.with(context).asGif()
-                        .load(item!!.data.link)
-                        .apply(RequestOptions()
-                                .fitCenter())
-                        .into(itemView.img_imgur)
-            else
-                Glide.with(context).load(item!!.data.link)
-                        .apply(RequestOptions()
-                                .fitCenter())
-                        .into(itemView.img_imgur)
+            GlideInterface().displayGlide(item!!.data.type, context, item!!.data.link, itemView.img_imgur)
             if (item.data.favorite)
                 itemView.favorite.background = context.getDrawable(R.drawable.ic_favorite_black_24dp)
             else

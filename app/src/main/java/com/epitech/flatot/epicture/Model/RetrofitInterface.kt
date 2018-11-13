@@ -16,5 +16,4 @@ class RetrofitInterface() {
         val imgurApi = retrofit.create(ImgurService::class.java)
         return imgurApi
     }
-    
 }

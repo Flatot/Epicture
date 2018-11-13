@@ -8,7 +8,8 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@drawable/epicture_background">
 
         <ImageView
             android:id="@+id/imageView"
@@ -30,7 +31,7 @@
 
         <EditText
             android:id="@+id/text_description"
-            android:layout_width="145dp"
+            android:layout_width="168dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
@@ -40,6 +41,9 @@
             android:layout_marginBottom="8dp"
             android:gravity="center"
             android:hint="@string/put_a_description"
+            android:textColor="@color/colorWhite"
+            android:textColorHint="@color/colorWhite"
+            android:theme="@style/myEditText"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.502"
@@ -59,6 +63,10 @@
             android:layout_marginBottom="8dp"
             android:gravity="center"
             android:hint="@string/put_a_title_name"
+            android:textColor="@color/colorWhite"
+            android:textColorHint="@color/colorWhite"
+            android:textColorLink="@color/colorWhite"
+            android:theme="@style/myEditText"
             app:layout_constraintBottom_toTopOf="@+id/imageView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -94,6 +102,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:visibility="invisible"
+            android:theme="@style/CircularProgress"
             app:layout_constraintBottom_toTopOf="@+id/text_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

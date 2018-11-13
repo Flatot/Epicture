@@ -9,10 +9,15 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.epitech.flatot.epicture.Model.GlideInterface
 import com.epitech.flatot.epicture.Model.ImgurInterface
+import com.epitech.flatot.epicture.Model.ZoomedActivityInterface
 import com.epitech.flatot.epicture.R
+import com.epitech.flatot.epicture.R.id.img_imgur2
 import com.epitech.flatot.epicture.Views.ZoomedActivity
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_zoomed.*
+import kotlinx.android.synthetic.main.item_avatar.view.*
 import kotlinx.android.synthetic.main.item_cardview.view.*
 import kotlinx.android.synthetic.main.item_favorite_cardview.view.*
 import retrofit2.Call
@@ -41,24 +46,7 @@ class FavoriteAdapter(val context: Context, val items:MutableList<ImgurInterface
 
         fun setZoomedClick (item: ImgurInterface.ImgurFavoriteItem?, pos: Int) {
             itemView.setOnClickListener {
-                val intent = Intent(context, ZoomedActivity::class.java)
-                intent.putExtra("title", item!!.data.title)
-                intent.putExtra("img_imgur", item.data.link)
-                intent.putExtra("description", item.data.description)
-                intent.putExtra("type", item.data.type)
-                if (item.data.images != null) {
-                    var list_link: MutableList<String> = ArrayList()
-                    item.data.images.forEach { img ->
-                        list_link.add(img.link)
-                    }
-                    var list_description: MutableList<String> = ArrayList()
-                    item.data.images.forEach { img ->
-                        list_description.add(img.description)
-                    }
-                    intent.putStringArrayListExtra("list_link", list_link as ArrayList<String>)
-                    intent.putStringArrayListExtra("list_description", list_description as ArrayList<String>)
-                }
-                context.startActivity(intent)
+                ZoomedActivityInterface().setZoomed(context, item!!)
             }
         }
 
@@ -73,31 +61,12 @@ class FavoriteAdapter(val context: Context, val items:MutableList<ImgurInterface
 
         fun setData(item: ImgurInterface.ImgurFavoriteItem?, pos: Int) : Boolean
         {
-            //if (itemView.img_imgur.drawable == null) {
-                if (item!!.data.images != null && !item!!.data.images.isEmpty()) {
-                    if (item!!.data.images[0].type == "image/gif")
-                        Glide.with(context).asGif()
-                                .load(item.data.images[0].link)
-                                .apply(RequestOptions()
-                                        .fitCenter())
-                                .into(itemView.favoriteImg)
-                    else
-                        Picasso.with(context).load(item.data.images[0].link)
-                                .into(itemView.favoriteImg)
-                } else {
-                    if (item!!.data.type == "image/gif")
-                        Glide.with(context).asGif()
-                                .load(item!!.data.link)
-                                .apply(RequestOptions()
-                                        .fitCenter())
-                                .into(itemView.favoriteImg)
-                    else
-                        Picasso.with(context).load(item!!.data.link)
-                                .into(itemView.favoriteImg)
-                }
-                return true
-            //}
-            //return false
+            if (item!!.data.images != null && !item!!.data.images.isEmpty()) {
+                GlideInterface().displayGlide(item!!.data.images[0].type, context, item.data.images[0].link, itemView.favoriteImg)
+            } else {
+                GlideInterface().displayGlide(item!!.data.type, context, item!!.data.link, itemView.favoriteImg)
+            }
+            return true
         }
     }
 }

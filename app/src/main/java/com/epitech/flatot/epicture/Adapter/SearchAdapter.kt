@@ -13,10 +13,14 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.epitech.flatot.epicture.Interface.ILoadMore
+import com.epitech.flatot.epicture.Model.GlideInterface
 import com.epitech.flatot.epicture.Model.ImgurInterface
 import com.epitech.flatot.epicture.Model.RetrofitInterface
+import com.epitech.flatot.epicture.Model.ZoomedActivityInterface
 import com.epitech.flatot.epicture.R
+import com.epitech.flatot.epicture.R.id.img_imgur2
 import com.epitech.flatot.epicture.Views.ZoomedActivity
+import kotlinx.android.synthetic.main.activity_zoomed.*
 import kotlinx.android.synthetic.main.item_search_cardview.view.*
 import kotlinx.android.synthetic.main.loading_layout.view.*
 import retrofit2.Call
@@ -60,29 +64,7 @@ class SearchAdapter(val myRecyclerView: RecyclerView, val access_token:String, v
 
         fun setZoomedClick (item: ImgurInterface.ImgurSearchItem?, pos: Int) {
             itemView.setOnClickListener {
-                val intent = Intent(context, ZoomedActivity::class.java)
-                intent.putExtra("title", item!!.data.title)
-                intent.putExtra("img_imgur", item.data.link)
-                intent.putExtra("description", item.data.description)
-                intent.putExtra("type", item.data.type)
-                if (item.data.images != null) {
-                    var list_link: MutableList<String> = ArrayList()
-                    item.data.images.forEach { img ->
-                        list_link.add(img.link)
-                    }
-                    var list_description: MutableList<String> = ArrayList()
-                    item.data.images.forEach { img ->
-                        list_description.add(img.description)
-                    }
-                    var list_type: MutableList<String> = ArrayList()
-                    item.data.images.forEach { img ->
-                        list_type.add(img.type)
-                    }
-                    intent.putStringArrayListExtra("list_type", list_type as ArrayList<String>)
-                    intent.putStringArrayListExtra("list_link", list_link as ArrayList<String>)
-                    intent.putStringArrayListExtra("list_description", list_description as ArrayList<String>)
-                }
-                context.startActivity(intent)
+                ZoomedActivityInterface().setZoomed(context, item!!)
             }
             itemView.favorite2.setOnClickListener {
                 val imgurApi = RetrofitInterface().createRetrofitBuilder()
@@ -115,31 +97,10 @@ class SearchAdapter(val myRecyclerView: RecyclerView, val access_token:String, v
         fun setData(item: ImgurInterface.ImgurSearchItem?, pos: Int)
         {
             if (item!!.data.images != null && !item!!.data.images.isEmpty()) {
-                if (item!!.data.images[0].type == "image/gif")
-                    Glide.with(context).asGif()
-                            .load(item.data.images[0].link)
-                            .apply(RequestOptions()
-                                    .fitCenter())
-                            .into(itemView.img_imgur2)
-                else
-                    Glide.with(context).load(item.data.images[0].link)
-                            .apply(RequestOptions()
-                                    .fitCenter())
-                            .into(itemView.img_imgur2)
+                GlideInterface().displayGlide(item!!.data.images[0].type, context, item!!.data.images[0].link, itemView.img_imgur2)
             }
-            else
-            {
-                if (item!!.data.type == "image/gif")
-                    Glide.with(context).asGif()
-                            .load(item!!.data.link)
-                            .apply(RequestOptions()
-                                    .fitCenter())
-                            .into(itemView.img_imgur2)
-                else
-                    Glide.with(context).load(item!!.data.link)
-                            .apply(RequestOptions()
-                                    .fitCenter())
-                            .into(itemView.img_imgur2)
+            else {
+                GlideInterface().displayGlide(item!!.data.type, context, item!!.data.link, itemView.img_imgur2)
             }
 
             if (item.data.favorite)
