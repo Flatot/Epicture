@@ -1,13 +1,15 @@
 package com.epitech.flatot.epicture.Views.FragmentBottom
 
+import android.annotation.TargetApi
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
+import android.widget.Toolbar
 import com.epitech.flatot.epicture.Adapter.LoadingAdapter
 import com.epitech.flatot.epicture.Adapter.SearchAdapter
 import com.epitech.flatot.epicture.Model.ImgurInterface
@@ -174,10 +176,6 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     fun checkTrue(customDialog: android.support.v7.app.AlertDialog) {
         if (inf_100) customDialog.view_100.setChecked(true) else customDialog.view_100.setChecked(false)
         if (sup_100) customDialog.view_500.setChecked(true) else customDialog.view_500.setChecked(false)
@@ -230,7 +228,7 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
     }
 
     fun openFilters(rootView: View, context: Context) { //jpeg, png, gif && all time, last week && views
-        rootView.header_filters.setOnClickListener {
+        //rootView.header_filters.setOnClickListener {
             val myDialog = android.support.v7.app.AlertDialog.Builder(context)
             val myDialogView = LayoutInflater.from(context).inflate(R.layout.dialog_filters, null)
             myDialog.setView(myDialogView)
@@ -240,11 +238,19 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
             checkTrue(customDialog)
             getCheckbox(customDialog)
             leaveFilters(customDialog)
-        }
+        //}
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater!!.inflate(R.layout.fragment_home, container, false)
+        setHasOptionsMenu(true)
+        val toolbar = rootView.findViewById(R.id.home_toolbar) as android.support.v7.widget.Toolbar
+        toolbar.setOnMenuItemClickListener {
+            openFilters(rootView, context!!)
+            true
+        }
+        toolbar.inflateMenu(R.menu.menu_filters)
         if (bool_album && albums_items != null && albums_items!!.isNotEmpty())
         {
             val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
@@ -262,11 +268,34 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
         }
         else
             getGallery()
-        openFilters(rootView, context!!)
+        //openFilters(rootView, context!!)
         return rootView
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view!!, savedInstanceState)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        activity!!.menuInflater.inflate(R.menu.menu_filters, menu)
+        (activity as AppCompatActivity).supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        //super.onCreateOptionsMenu(menu, inflater)
+        //menuInflater.inflate(R.menu.menu_filters, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here.
+        val id = item.itemId
+
+        if (id == R.id.filters) {
+            openFilters(view!!, context!!)
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

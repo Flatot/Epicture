@@ -4,12 +4,11 @@ package com.epitech.flatot.epicture.Views.FragmentBottom
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import com.epitech.flatot.epicture.Adapter.FavoriteAdapter
 import com.epitech.flatot.epicture.Adapter.LoadingAdapter
@@ -177,21 +176,26 @@ class FavoriteFragment : Fragment(), Callback<ImgurInterface.GetFavoriteResult> 
     }
 
     fun openFiltersFav(rootView: View, context: Context) { //jpeg, png, gif && all time, last week && views
-        rootView.header_filters_fav.setOnClickListener {
-            val myDialog = android.support.v7.app.AlertDialog.Builder(context)
-            val myDialogView = LayoutInflater.from(context).inflate(R.layout.dialog_filters, null)
-            myDialog.setView(myDialogView)
-            //myDialog.setCancelable(false)
-            val customDialog = myDialog.create()
-            customDialog.show()
-            checkTrueFav(customDialog)
-            getCheckboxFav(customDialog)
-            leaveFiltersFav(customDialog)
-        }
+        val myDialog = android.support.v7.app.AlertDialog.Builder(context)
+        val myDialogView = LayoutInflater.from(context).inflate(R.layout.dialog_fav_filters, null)
+        myDialog.setView(myDialogView)
+        //myDialog.setCancelable(false)
+        val customDialog = myDialog.create()
+        customDialog.show()
+        checkTrueFav(customDialog)
+        getCheckboxFav(customDialog)
+        leaveFiltersFav(customDialog)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater!!.inflate(R.layout.fragment_favorite, container, false)
+        setHasOptionsMenu(true)
+        val toolbar = rootView.findViewById(R.id.fav_toolbar) as android.support.v7.widget.Toolbar
+        toolbar.setOnMenuItemClickListener {
+            openFiltersFav(rootView, context!!)
+            true
+        }
+        toolbar.inflateMenu(R.menu.menu_filters)
         if (items != null && items!!.isNotEmpty())
         {
             val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
@@ -202,11 +206,29 @@ class FavoriteFragment : Fragment(), Callback<ImgurInterface.GetFavoriteResult> 
         }
         else
             getFavorites()
-        openFiltersFav(rootView, context!!)
         return rootView
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view!!, savedInstanceState)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        activity!!.menuInflater.inflate(R.menu.menu_filters, menu)
+        (activity as AppCompatActivity).supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        //super.onCreateOptionsMenu(menu, inflater)
+        //menuInflater.inflate(R.menu.menu_filters, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here.
+        val id = item.itemId
+
+        if (id == R.id.filters) {
+            openFiltersFav(view!!, context!!)
+            return true
+        }
+        return super.onOptionsItemSelected(item)
     }
 }

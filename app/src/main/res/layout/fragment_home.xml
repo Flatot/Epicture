@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".Views.FragmentBottom.TabLayoutHome.HomeFragment"
+    tools:context=".Views.FragmentBottom.HomeFragment"
     android:background="@drawable/epicture_background">
 
         <android.support.design.widget.AppBarLayout
@@ -15,7 +15,7 @@
             android:theme="@style/AppTheme.AppBarOverlay">
 
             <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
+                android:id="@+id/home_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="@color/colorSecondary"
@@ -39,14 +39,6 @@
                     android:text="@string/app_name"
                     android:textSize="20sp"
                     android:textColor="@color/colorWhite"/>
-
-                <ImageView
-                    android:id="@+id/header_filters"
-                    android:layout_marginStart="200dp"
-                    android:layout_marginLeft="200dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@drawable/ic_filters"/>
 
             </android.support.v7.widget.Toolbar>
 

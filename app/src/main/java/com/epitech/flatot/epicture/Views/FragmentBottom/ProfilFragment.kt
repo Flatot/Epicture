@@ -135,7 +135,6 @@ class ProfilFragment : Fragment() {
                 }
             }
         })
-        Toast.makeText(context, arguments?.getString("username")!!, Toast.LENGTH_SHORT).show()
         val avatar = imgurApi.myAvatar("Bearer " + token, arguments?.getString("username")!!)
         avatar.enqueue(object: Callback<ImgurInterface.AvatarResult> {
             override fun onFailure(call: Call<ImgurInterface.AvatarResult>, t: Throwable) {
