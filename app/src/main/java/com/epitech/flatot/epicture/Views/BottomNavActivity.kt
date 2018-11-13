@@ -73,11 +73,12 @@ class BottomNavActivity : AppCompatActivity() {
         refresh_token = intent.getStringExtra("refresh_token")
         username = intent.getStringExtra("account_username")
 
+        myHomeFragment = HomeFragment.newInstance(access_token!!)
         myUploadFragment = UploadFragment.newInstance(access_token!!)
         mySearchFragment = SearchFragment.newInstance(access_token!!)
         myFavoriteFragment = FavoriteFragment.newInstance(access_token!!)
         myProfilFragment = ProfilFragment.newInstance(access_token!!, refresh_token!!, username!!)
-        myHomeFragment = HomeFragment.newInstance(access_token!!)
+
         createFragment(myHomeFragment as Fragment)
     }
 }

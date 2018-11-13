@@ -61,4 +61,7 @@ interface ImgurService {
 
     @GET("/3/account/me/available_avatars")
     fun availableAvatar(@Header("Authorization") authHeader: String): Call<ImgurInterface.AvailableAvatarResult>
+
+    @GET("/3/account/me")
+    fun myBio(@Header("Authorization") authHeader: String): Call<ImgurInterface.BioResult>
 }

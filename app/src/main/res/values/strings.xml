@@ -47,4 +47,5 @@
     <string name="yes">Yes</string>
     <string name="show_albums">Show albums</string>
     <string name="available_avatars">Available avatars:</string>
+    <string name="edit">Edit</string>
 </resources>
