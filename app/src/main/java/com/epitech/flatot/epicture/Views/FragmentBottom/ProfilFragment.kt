@@ -19,6 +19,7 @@ import com.epitech.flatot.epicture.Model.ImgurInterface
 import com.epitech.flatot.epicture.Model.RetrofitInterface
 import com.epitech.flatot.epicture.R
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_bottom_nav.*
 import kotlinx.android.synthetic.main.dialog_filters.*
 import kotlinx.android.synthetic.main.dialog_profile.*
 import kotlinx.android.synthetic.main.dialog_profile.view.*
@@ -32,18 +33,9 @@ import retrofit2.Response
 import java.time.DayOfWeek
 import java.util.*
 
+
 class ProfilFragment : Fragment() {
     var items: MutableList<ImgurInterface.ImgurItem>? = null
-
-    var jpeg: Boolean = true
-    var png: Boolean = true
-    var gif: Boolean = true
-
-    var last_week: Boolean = true
-    var all_time: Boolean = true
-
-    var sup_100: Boolean = true
-    var inf_100: Boolean = true
 
     fun String.toEditable(): Editable =  Editable.Factory.getInstance().newEditable(this)
 
@@ -63,6 +55,7 @@ class ProfilFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var rootView = inflater!!.inflate(R.layout.fragment_profil, container, false)
         GetProfil()
@@ -70,7 +63,6 @@ class ProfilFragment : Fragment() {
         if (items != null && items!!.isNotEmpty())
         {
             val layoutManager = LinearLayoutManager(context)
-
             rootView.ProfilRecyclerView?.layoutManager = layoutManager
             val adapter = LoadingAdapter(arguments?.getString("access_token")!!, context!!, items!!)
             rootView.ProfilRecyclerView?.adapter = adapter
