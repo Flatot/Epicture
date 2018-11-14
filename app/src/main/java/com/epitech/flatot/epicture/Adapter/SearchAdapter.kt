@@ -102,7 +102,6 @@ class SearchAdapter(val myRecyclerView: RecyclerView, val access_token:String, v
             else {
                 GlideInterface().displayGlide(item!!.data.type, context, item!!.data.link, itemView.img_imgur2)
             }
-
             if (item.data.favorite)
                 itemView.favorite2.background = context.getDrawable(R.drawable.ic_favorite_black_24dp)
             else

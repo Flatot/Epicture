@@ -51,21 +51,21 @@
         app:layout_constraintBottom_toTopOf="@+id/textView2"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/username_label"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.291" />
 
     <CheckBox
         android:id="@+id/cb_png"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="72dp"
-        android:layout_marginLeft="72dp"
+        android:layout_marginStart="56dp"
+        android:layout_marginLeft="56dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:text="@string/png"
         app:layout_constraintBottom_toTopOf="@+id/textView2"
         app:layout_constraintStart_toEndOf="@+id/cb_jpeg"
         app:layout_constraintTop_toBottomOf="@+id/username_label"
-        app:layout_constraintVertical_bias="0.281" />
+        app:layout_constraintVertical_bias="0.291" />
 
     <CheckBox
         android:id="@+id/cb_gif"
@@ -80,10 +80,10 @@
         android:text="@string/gif"
         app:layout_constraintBottom_toTopOf="@+id/textView2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.719"
+        app:layout_constraintHorizontal_bias="0.561"
         app:layout_constraintStart_toEndOf="@+id/cb_png"
         app:layout_constraintTop_toBottomOf="@+id/username_label"
-        app:layout_constraintVertical_bias="0.333" />
+        app:layout_constraintVertical_bias="0.291" />
 
     <TextView
         android:id="@+id/textView2"

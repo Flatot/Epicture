@@ -112,22 +112,26 @@ class FavoriteFragment : Fragment(), Callback<ImgurInterface.GetFavoriteResult> 
     }
 
     override fun onResponse(call: Call<ImgurInterface.GetFavoriteResult>, response: Response<ImgurInterface.GetFavoriteResult>) {
-        if (response.isSuccessful) {
-            val picList = response.body()
-            items = ArrayList()
-            picList!!.data.forEach {
-                pic ->
-                val item = ImgurInterface.ImgurFavoriteItem(pic)
-                if (getValidItemFav(item))
-                    items!!.add(item)
+        try {
+            if (response.isSuccessful) {
+                val picList = response.body()
+                items = ArrayList()
+                picList!!.data.forEach { pic ->
+                    val item = ImgurInterface.ImgurFavoriteItem(pic)
+                    if (getValidItemFav(item))
+                        items!!.add(item)
+                }
+                val layoutManager = LinearLayoutManager(context)
+                FavoriteRecyclerView.layoutManager = layoutManager
+                val adapter = FavoriteAdapter(context!!, items!!)
+                FavoriteRecyclerView.adapter = adapter
+            } else {
+                Toast.makeText(context, response.message(), Toast.LENGTH_SHORT).show()
+                System.out.println(response.errorBody())
             }
-            val layoutManager = LinearLayoutManager(context)
-            FavoriteRecyclerView.layoutManager = layoutManager
-            val adapter = FavoriteAdapter(context!!, items!!)
-            FavoriteRecyclerView.adapter = adapter
-        } else {
-            Toast.makeText(context, response.message(), Toast.LENGTH_SHORT).show()
-            System.out.println(response.errorBody())
+        }
+        catch (e:Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -189,23 +193,26 @@ class FavoriteFragment : Fragment(), Callback<ImgurInterface.GetFavoriteResult> 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater!!.inflate(R.layout.fragment_favorite, container, false)
-        setHasOptionsMenu(true)
-        val toolbar = rootView.findViewById(R.id.fav_toolbar) as android.support.v7.widget.Toolbar
-        toolbar.setOnMenuItemClickListener {
-            openFiltersFav(rootView, context!!)
-            true
-        }
-        toolbar.inflateMenu(R.menu.menu_filters)
-        if (items != null && items!!.isNotEmpty())
-        {
-            val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        try {
+            setHasOptionsMenu(true)
+            val toolbar = rootView.findViewById(R.id.fav_toolbar) as android.support.v7.widget.Toolbar
+            toolbar.setOnMenuItemClickListener {
+                openFiltersFav(rootView, context!!)
+                true
+            }
+            toolbar.inflateMenu(R.menu.menu_filters)
+            if (items != null && items!!.isNotEmpty()) {
+                val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
-            rootView.FavoriteRecyclerView?.layoutManager = layoutManager
-            val adapter = FavoriteAdapter(context!!, items!!)
-            rootView.FavoriteRecyclerView?.adapter = adapter
+                rootView.FavoriteRecyclerView?.layoutManager = layoutManager
+                val adapter = FavoriteAdapter(context!!, items!!)
+                rootView.FavoriteRecyclerView?.adapter = adapter
+            } else
+                getFavorites()
         }
-        else
-            getFavorites()
+        catch (e:Exception) {
+            e.printStackTrace()
+        }
         return rootView
     }
 
