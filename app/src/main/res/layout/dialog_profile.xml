@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <Button
+        android:id="@+id/save_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="93dp"
+        android:layout_marginLeft="93dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="68dp"
+        android:layout_marginRight="68dp"
+        android:text="Save"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/back_profile"
+        app:layout_constraintTop_toBottomOf="@+id/i_desc" />
+
     <TextView
         android:id="@+id/username_label"
         android:layout_width="wrap_content"
@@ -146,6 +160,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/desc_label"
         app:layout_constraintTop_toBottomOf="@+id/i_gender" />
+
+    <Button
+        android:id="@+id/back_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="68dp"
+        android:layout_marginLeft="68dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:text="Back"
+        app:layout_constraintEnd_toStartOf="@+id/save_profile"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/desc_label" />
 
 
 </android.support.constraint.ConstraintLayout>
