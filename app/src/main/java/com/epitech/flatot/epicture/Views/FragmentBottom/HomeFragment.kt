@@ -52,7 +52,6 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
 
     private fun getAlbums() {
         val imgurApi = RetrofitInterface().createRetrofitBuilder()
-
         val token = arguments?.getString("access_token")
         val call = imgurApi.getAlbums("Bearer " + token)
         call.enqueue(object: Callback<ImgurInterface.Result> {

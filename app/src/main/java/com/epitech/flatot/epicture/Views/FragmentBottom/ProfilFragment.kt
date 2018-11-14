@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.epitech.flatot.epicture.Adapter.AvatarsDialogAdapter
 import com.epitech.flatot.epicture.Adapter.LoadingAdapter
 import com.epitech.flatot.epicture.Adapter.SearchAdapter
@@ -259,24 +260,29 @@ class ProfilFragment : Fragment() {
             description = "Empty description"
         else
             description = customDialog.i_desc.text.toString()
+
         val imgurApi = RetrofitInterface().createRetrofitBuilder()
         val token = arguments?.getString("access_token")
         val user = arguments?.getString("username")
         val call = imgurApi.mySet("Bearer " + token, user!!, username , description)
         call.enqueue(object: Callback<ImgurInterface.SetResult> {
             override fun onFailure(call: Call<ImgurInterface.SetResult>, t: Throwable?) {
-                Toast.makeText(context, "Some fields contain error(s). Changes were not saved", Toast.LENGTH_SHORT)
+                Toast.makeText(context, "Some fields contain error(s). Changes were not saved", Toast.LENGTH_SHORT).show()
             }
 
             override fun onResponse(call: Call<ImgurInterface.SetResult>, response: Response<ImgurInterface.SetResult>) {
                 try {
                     if (response.isSuccessful) {
                         if (radio_albums.isChecked) {
-                            getAlbums()
+                            Toast.makeText(context, "Changes saved... Loading Album(s)", Toast.LENGTH_SHORT).show()
+                        }
+                        else {
+                            Toast.makeText(context, "Changes saved", Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
                 catch (e:Exception) {
+                    Toast.makeText(context, "Can't save changes...", Toast.LENGTH_SHORT).show()
                     e.printStackTrace()
                 }
             }
@@ -288,9 +294,11 @@ class ProfilFragment : Fragment() {
             customDialog.hide()
         }
         customDialog.save_profile.setOnClickListener {
-            customDialog.hide()
             setDatas(customDialog)
+            customDialog.hide()
             GetProfil()
+            if (customDialog.radio_albums.isChecked)
+                getAlbums()
         }
         customDialog.radio_albums.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) bool_album_pro = true else bool_album_pro = false
@@ -325,10 +333,13 @@ class ProfilFragment : Fragment() {
                     if (response.isSuccessful) {
                         if (response.body()!!.data.avatar == null || response.body()!!.data.avatar == "")
                             profil_pic.setImageDrawable(ContextCompat.getDrawable(context!!, R.drawable.grow))
-                        else
-                            Glide.with(context).load(response.body()!!.data.avatar).into(profil_pic)
+                        else {
+                            var pic = Glide.with(context).load(response.body()!!.data.avatar).apply(RequestOptions.circleCropTransform())
+                            pic.into(profil_pic)
+                        }
                     } else {
-                        Glide.with(context).load(response.body()!!.data.avatar).into(profil_pic)
+                        var pic = Glide.with(context).load(response.body()!!.data.avatar).apply(RequestOptions.circleCropTransform())
+                        pic.into(profil_pic)
                     }
                 }
                 catch (e:Exception) {
