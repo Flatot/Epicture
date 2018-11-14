@@ -1,5 +1,6 @@
 package com.epitech.flatot.epicture.Views
 
+import android.app.PendingIntent.getActivity
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
@@ -57,7 +58,6 @@ class BottomNavActivity : AppCompatActivity() {
     fun createFragment(fragment: Fragment)
     {
         val transaction = manager.beginTransaction()
-
         transaction.replace(R.id.mainFrame, fragment)
         transaction.commit()
     }
