@@ -15,6 +15,7 @@ import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.epitech.flatot.epicture.Adapter.AvatarsDialogAdapter
 import com.epitech.flatot.epicture.Adapter.LoadingAdapter
+import com.epitech.flatot.epicture.Adapter.SearchAdapter
 import com.epitech.flatot.epicture.Model.ImgurInterface
 import com.epitech.flatot.epicture.Model.RetrofitInterface
 import com.epitech.flatot.epicture.R
@@ -22,7 +23,9 @@ import com.epitech.flatot.epicture.R.string.available_avatars
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.dialog_add_to_album.*
 import kotlinx.android.synthetic.main.dialog_add_to_album.view.*
+import kotlinx.android.synthetic.main.dialog_filters.*
 import kotlinx.android.synthetic.main.dialog_profile.*
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_profil.*
 import kotlinx.android.synthetic.main.fragment_profil.view.*
 import retrofit2.Call
@@ -33,11 +36,15 @@ import java.util.*
 
 class ProfilFragment : Fragment() {
     var items: MutableList<ImgurInterface.ImgurItem>? = null
+    var albums_items_pro: MutableList<ImgurInterface.ImgurSearchItem>? = null
 
     fun String.toEditable(): Editable =  Editable.Factory.getInstance().newEditable(this)
 
     val available_avatars: MutableList<ImgurInterface.Available_avatar> = ArrayList()
     val c_avatar: ImgurInterface.Available_avatar? = null
+    var nameUser: String = ""
+    var bool_album_pro: Boolean = false
+
 
     companion object {
         fun newInstance(access_token: String, refresh_token: String, username: String): ProfilFragment {
@@ -102,7 +109,7 @@ class ProfilFragment : Fragment() {
                 val adapter = LoadingAdapter(arguments?.getString("access_token")!!, context!!, items!!)
                 rootView.ProfilRecyclerView?.adapter = adapter
             } else
-                getAlbums()
+                getGallery()
         }
         catch (e:Exception){
             e.printStackTrace()
@@ -110,8 +117,61 @@ class ProfilFragment : Fragment() {
         return rootView
     }
 
+    private fun getAlbums() {
+        val imgurApi = RetrofitInterface().createRetrofitBuilder()
 
-    fun getAlbums()
+        val token = arguments?.getString("access_token")
+        val call = imgurApi.getAlbums("Bearer " + token)
+        call.enqueue(object: Callback<ImgurInterface.Result> {
+            override fun onFailure(call: Call<ImgurInterface.Result>, t: Throwable) {
+                Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onResponse(call: Call<ImgurInterface.Result>, response: Response<ImgurInterface.Result>) {
+                if (response.isSuccessful)
+                {
+                    albums_items_pro = ArrayList()
+                    val picList = response.body()
+                    picList!!.data.forEach {
+                        pic ->
+                        val album = imgurApi.getAlbum("Bearer " + token, pic.id)
+                        album.enqueue(object: Callback<ImgurInterface.ImgurSearchItem> {
+                            override fun onFailure(call: Call<ImgurInterface.ImgurSearchItem>, t: Throwable) {
+                                Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
+                            }
+
+                            override fun onResponse(call: Call<ImgurInterface.ImgurSearchItem>, response: Response<ImgurInterface.ImgurSearchItem>) {
+                                try {
+                                    if (response.isSuccessful) {
+                                        val albumList = response.body()
+                                        val alb_item = ImgurInterface.ImgurSearchItem(albumList!!.data)
+                                        albums_items_pro!!.add(alb_item)
+
+                                        if (albums_items_pro!!.size == picList.data.size) {
+                                            val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
+                                            HomeRecyclerView.layoutManager = layoutManager
+                                            val adapter = SearchAdapter(HomeRecyclerView, arguments?.getString("access_token")!!, context!!, albums_items_pro!!)
+                                            HomeRecyclerView.adapter = adapter
+                                        }
+                                    } else
+                                        Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+                                }
+                                catch (e:Exception) {
+                                    e.printStackTrace()
+                                }
+                            }
+                        })
+                    }
+                }
+                else
+                    Toast.makeText(context, "Failed load album", Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
+
+
+
+    fun getGallery()
     {
         val imgurApi = RetrofitInterface().createRetrofitBuilder()
         val token = arguments?.getString("access_token")
@@ -145,7 +205,10 @@ class ProfilFragment : Fragment() {
         })
     }
 
+
+
     fun editProfil(customDialog: android.support.v7.app.AlertDialog) {
+        if (bool_album_pro) customDialog.radio_albums.setChecked(true) else customDialog.radio_albums.setChecked(false)
         val imgurApi = RetrofitInterface().createRetrofitBuilder()
         val token = arguments?.getString("access_token")
         val call = imgurApi.myProfil("Bearer " + token)
@@ -157,8 +220,6 @@ class ProfilFragment : Fragment() {
                     if (response.isSuccessful) {
                         var current = response.body()?.data?.account_url
                         customDialog.i_username.text = current?.toEditable()
-                        current = response.body()?.data?.email
-                        customDialog.i_email.text = current?.toEditable()
                     }
                 }
                 catch (e:Exception) {
@@ -187,6 +248,55 @@ class ProfilFragment : Fragment() {
         })
     }
 
+    fun setDatas(customDialog: AlertDialog) {
+        var username: String
+        if (customDialog.i_username.text.toString() == "")
+            username = nameUser
+        else
+            username = customDialog.i_username.text.toString()
+        var description: String
+        if (customDialog.i_username.text.toString() == "")
+            description = "Empty description"
+        else
+            description = customDialog.i_desc.text.toString()
+        val imgurApi = RetrofitInterface().createRetrofitBuilder()
+        val token = arguments?.getString("access_token")
+        val user = arguments?.getString("username")
+        val call = imgurApi.mySet("Bearer " + token, user!!, username , description)
+        call.enqueue(object: Callback<ImgurInterface.SetResult> {
+            override fun onFailure(call: Call<ImgurInterface.SetResult>, t: Throwable?) {
+                Toast.makeText(context, "Some fields contain error(s). Changes were not saved", Toast.LENGTH_SHORT)
+            }
+
+            override fun onResponse(call: Call<ImgurInterface.SetResult>, response: Response<ImgurInterface.SetResult>) {
+                try {
+                    if (response.isSuccessful) {
+                        if (radio_albums.isChecked) {
+                            getAlbums()
+                        }
+                    }
+                }
+                catch (e:Exception) {
+                    e.printStackTrace()
+                }
+            }
+        })
+    }
+
+    fun clickSetProfile(customDialog: AlertDialog) {
+        customDialog.back_profile.setOnClickListener {
+            customDialog.hide()
+        }
+        customDialog.save_profile.setOnClickListener {
+            customDialog.hide()
+            setDatas(customDialog)
+            GetProfil()
+        }
+        customDialog.radio_albums.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) bool_album_pro = true else bool_album_pro = false
+        }
+    }
+
     fun openSetProfile(rootView: View, context: Context) { //jpeg, png, gif && all time, last week && views
         rootView.set_profile.setOnClickListener {
             val myDialog = android.support.v7.app.AlertDialog.Builder(context)
@@ -196,7 +306,9 @@ class ProfilFragment : Fragment() {
             val customDialog = myDialog.create()
             customDialog.show()
             editProfil(customDialog)
+            clickSetProfile(customDialog)
         }
+
     }
 
     fun GetMyAvatar() {
@@ -241,8 +353,10 @@ class ProfilFragment : Fragment() {
                         var current = response.body()?.data?.account_url
                         var tmp = response.body()?.data?.email
                         var final = ""
-                        if (current != null && current != "")
+                        if (current != null && current != "") {
                             final = final + current + " "
+                            nameUser = current
+                        }
                         else
                             final = final + "No username "
                         if (tmp != null && tmp != "")

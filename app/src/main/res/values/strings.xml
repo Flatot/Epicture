@@ -49,4 +49,8 @@
     <string name="available_avatars">Available avatars:</string>
     <string name="edit">Edit</string>
     <string name="filters">Filters</string>
+    <string name="personal_information">Personal information</string>
+    <string name="account_preferences">Account preferences</string>
+    <string name="yes_pro">Yes</string>
+    <string name="no_pro">No</string>
 </resources>

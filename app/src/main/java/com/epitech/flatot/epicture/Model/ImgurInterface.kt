@@ -198,4 +198,6 @@ class ImgurInterface {
     data class AvailableAvatarResult(val data: Data_available_avatar, val success: Boolean, val status: String)
 
     data class BioResult(val data: DataBio, val success: Boolean, val status: String)
+
+    data class SetResult(val data: Boolean, val success: Boolean, val status: String)
 }

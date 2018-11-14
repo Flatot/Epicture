@@ -64,4 +64,12 @@ interface ImgurService {
 
     @GET("/3/account/me")
     fun myBio(@Header("Authorization") authHeader: String): Call<ImgurInterface.BioResult>
+
+    @PUT("3/account/{user}/settings")
+    fun mySet(@Header("Authorization") authHeader: String,
+              @Path("user") user: String,
+              @Query("username") username: String,
+              @Query("bio") bio: String): Call<ImgurInterface.SetResult>
+
+
 }
