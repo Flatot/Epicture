@@ -76,21 +76,24 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
                             }
 
                             override fun onResponse(call: Call<ImgurInterface.ImgurSearchItem>, response: Response<ImgurInterface.ImgurSearchItem>) {
-                                if (response.isSuccessful) {
-                                    val albumList = response.body()
-                                    val alb_item = ImgurInterface.ImgurSearchItem(albumList!!.data)
-                                    albums_items!!.add(alb_item)
+                                try {
+                                    if (response.isSuccessful) {
+                                        val albumList = response.body()
+                                        val alb_item = ImgurInterface.ImgurSearchItem(albumList!!.data)
+                                        albums_items!!.add(alb_item)
 
-                                    if (albums_items!!.size == picList.data.size)
-                                    {
-                                        val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
-                                        HomeRecyclerView.layoutManager = layoutManager
-                                        val adapter = SearchAdapter(HomeRecyclerView, arguments?.getString("access_token")!!, context!!, albums_items!!)
-                                        HomeRecyclerView.adapter = adapter
-                                    }
+                                        if (albums_items!!.size == picList.data.size) {
+                                            val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
+                                            HomeRecyclerView.layoutManager = layoutManager
+                                            val adapter = SearchAdapter(HomeRecyclerView, arguments?.getString("access_token")!!, context!!, albums_items!!)
+                                            HomeRecyclerView.adapter = adapter
+                                        }
+                                    } else
+                                        Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
                                 }
-                                else
-                                    Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+                                catch (e:Exception) {
+                                    e.printStackTrace()
+                                }
                             }
                         })
                     }
@@ -157,22 +160,26 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
     }
 
     override fun onResponse(call: Call<ImgurInterface.Result>, response: Response<ImgurInterface.Result>) {
-        if (response.isSuccessful) {
-            items = ArrayList()
-            val picList = response.body()
-            picList!!.data.forEach {
-                pic ->
-                val item = ImgurInterface.ImgurItem(pic)
-                if (getValidItem(item))
-                    items!!.add(item)
+        try {
+            if (response.isSuccessful) {
+                items = ArrayList()
+                val picList = response.body()
+                picList!!.data.forEach { pic ->
+                    val item = ImgurInterface.ImgurItem(pic)
+                    if (getValidItem(item))
+                        items!!.add(item)
+                }
+                val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
+                HomeRecyclerView.layoutManager = layoutManager
+                val adapter = LoadingAdapter(arguments?.getString("access_token")!!, context!!, items!!)
+                HomeRecyclerView.adapter = adapter
+            } else {
+                Toast.makeText(context, response.message(), Toast.LENGTH_SHORT).show()
+                System.out.println(response.errorBody())
             }
-            val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
-            HomeRecyclerView.layoutManager = layoutManager
-            val adapter = LoadingAdapter(arguments?.getString("access_token")!!, context!!, items!!)
-            HomeRecyclerView.adapter = adapter
-        } else {
-            Toast.makeText(context, response.message(), Toast.LENGTH_SHORT).show()
-            System.out.println(response.errorBody())
+        }
+        catch (e:Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -228,45 +235,47 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
     }
 
     fun openFilters(rootView: View, context: Context) {
-            val myDialog = android.support.v7.app.AlertDialog.Builder(context)
-            val myDialogView = LayoutInflater.from(context).inflate(R.layout.dialog_filters, null)
-            myDialog.setView(myDialogView)
-            //myDialog.setCancelable(false)
-            val customDialog = myDialog.create()
-            customDialog.show()
-            checkTrue(customDialog)
-            getCheckbox(customDialog)
-            leaveFilters(customDialog)
+        val myDialog = android.support.v7.app.AlertDialog.Builder(context)
+        val myDialogView = LayoutInflater.from(context).inflate(R.layout.dialog_filters, null)
+        myDialog.setView(myDialogView)
+        //myDialog.setCancelable(false)
+        val customDialog = myDialog.create()
+        customDialog.show()
+        checkTrue(customDialog)
+        getCheckbox(customDialog)
+        leaveFilters(customDialog)
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater!!.inflate(R.layout.fragment_home, container, false)
-        setHasOptionsMenu(true)
-        val toolbar = rootView.findViewById(R.id.home_toolbar) as android.support.v7.widget.Toolbar
-        toolbar.setOnMenuItemClickListener {
-            openFilters(rootView, context!!)
-            true
-        }
-        toolbar.inflateMenu(R.menu.menu_filters)
-        if (bool_album && albums_items != null && albums_items!!.isNotEmpty())
-        {
-            val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
-            rootView.HomeRecyclerView.layoutManager = layoutManager
-            val adapter = SearchAdapter(rootView.HomeRecyclerView, arguments?.getString("access_token")!!, context!!, albums_items!!)
-            rootView.HomeRecyclerView.adapter = adapter
-        }
-        else if (items != null && items!!.isNotEmpty())
-        {
-            val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        try {
+            setHasOptionsMenu(true)
+            val toolbar = rootView.findViewById(R.id.home_toolbar) as android.support.v7.widget.Toolbar
+            toolbar.setOnMenuItemClickListener {
+                openFilters(rootView, context!!)
+                true
+            }
+            toolbar.inflateMenu(R.menu.menu_filters)
+            if (bool_album) { // && albums_items != null && albums_items!!.isNotEmpty()
+                //val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
+                //rootView.HomeRecyclerView.layoutManager = layoutManager
+                //val adapter = SearchAdapter(rootView.HomeRecyclerView, arguments?.getString("access_token")!!, context!!, albums_items!!)
+                //rootView.HomeRecyclerView.adapter = adapter
+                getAlbums()
+            } else { //if (items != null && items!!.isNotEmpty()
+                //val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
-            rootView.HomeRecyclerView?.layoutManager = layoutManager
-            val adapter = LoadingAdapter(arguments?.getString("access_token")!!, context!!, items!!)
-            rootView.HomeRecyclerView?.adapter = adapter
+                //rootView.HomeRecyclerView?.layoutManager = layoutManager
+                //val adapter = LoadingAdapter(arguments?.getString("access_token")!!, context!!, items!!)
+                //rootView.HomeRecyclerView?.adapter = adapter
+
+                getGallery()
+            }
         }
-        else
-            getGallery()
-        //openFilters(rootView, context!!)
+        catch (e:Exception) {
+            e.printStackTrace()
+        }
         return rootView
     }
 
@@ -280,8 +289,13 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        activity!!.menuInflater.inflate(R.menu.menu_filters, menu)
-        (activity as AppCompatActivity).supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        try {
+            activity!!.menuInflater.inflate(R.menu.menu_filters, menu)
+            (activity as AppCompatActivity).supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        }
+        catch (e:Exception) {
+            e.printStackTrace()
+        }
         //super.onCreateOptionsMenu(menu, inflater)
         //menuInflater.inflate(R.menu.menu_filters, menu)
     }

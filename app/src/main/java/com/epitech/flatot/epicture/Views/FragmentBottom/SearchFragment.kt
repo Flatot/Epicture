@@ -92,8 +92,8 @@ class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult>, ILoadM
             override fun onQueryTextSubmit(query: String): Boolean {
                 searchQuery = query
                 items = ArrayList()
-                rootView.searchView.isIconified = true
-                search.isIconified = true
+                //rootView.searchView.isIconified = true
+                //search.isIconified = true
                 rootView.progressBar.visibility = View.VISIBLE
                 rootView.searchView.clearFocus()
                 GetSearch()
