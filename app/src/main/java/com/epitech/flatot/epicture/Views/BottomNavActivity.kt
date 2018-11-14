@@ -56,12 +56,12 @@ class BottomNavActivity : AppCompatActivity() {
 
     fun createFragment(fragment: Fragment)
     {
+        //this.supportFragmentManager.popBackStackImmediate()
         val transaction = manager.beginTransaction()
-
         transaction.replace(R.id.mainFrame, fragment)
+        transaction.addToBackStack(null)
         transaction.commit()
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

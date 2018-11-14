@@ -12,11 +12,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.bumptech.glide.Glide
 import com.epitech.flatot.epicture.Adapter.AvatarsDialogAdapter
 import com.epitech.flatot.epicture.Adapter.LoadingAdapter
 import com.epitech.flatot.epicture.Model.ImgurInterface
 import com.epitech.flatot.epicture.Model.RetrofitInterface
 import com.epitech.flatot.epicture.R
+import com.epitech.flatot.epicture.R.string.available_avatars
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.dialog_add_to_album.*
 import kotlinx.android.synthetic.main.dialog_add_to_album.view.*
@@ -53,7 +55,6 @@ class ProfilFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var rootView = inflater!!.inflate(R.layout.fragment_profil, container, false)
         val token = arguments?.getString("access_token")
@@ -77,32 +78,35 @@ class ProfilFragment : Fragment() {
                 }
             })
         }
-        rootView.profil_pic.setOnClickListener {
-            val myDialog = AlertDialog.Builder(context!!)
-            val myDialogView = LayoutInflater.from(context).inflate(R.layout.dialog_add_to_album, null)
-            myDialogView.text_dialog.text = getString(R.string.available_avatars)
-            myDialogView.text_dialog.setTextColor(ContextCompat.getColor(context!!, R.color.colorPrimaryDark))
-            myDialog.setView(myDialogView)
-            //myDialog.setCancelable(false)
-            val customDialog = myDialog.create()
-            customDialog.show()
-            customDialog.dialogRecyclerView.layoutManager = StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL)
-            val adapter = AvatarsDialogAdapter(token!!, context!!, available_avatars, customDialog)
-            customDialog.dialogRecyclerView.adapter = adapter
+        try {
+            rootView.profil_pic.setOnClickListener {
+                val myDialog = AlertDialog.Builder(context!!)
+                val myDialogView = LayoutInflater.from(context).inflate(R.layout.dialog_add_to_album, null)
+                myDialogView.text_dialog.text = getString(R.string.available_avatars)
+                myDialogView.text_dialog.setTextColor(ContextCompat.getColor(context!!, R.color.colorPrimaryDark))
+                myDialog.setView(myDialogView)
+                //myDialog.setCancelable(false)
+                val customDialog = myDialog.create()
+                customDialog.show()
+                customDialog.dialogRecyclerView.layoutManager = StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL)
+                val adapter = AvatarsDialogAdapter(token!!, context!!, available_avatars, customDialog)
+                customDialog.dialogRecyclerView.adapter = adapter
+            }
+            if (c_avatar != null)
+                Toast.makeText(context, c_avatar.name, Toast.LENGTH_SHORT).show()
+            GetProfil()
+            openSetProfile(rootView, context!!)
+            if (items != null && items!!.isNotEmpty()) {
+                val layoutManager = LinearLayoutManager(context)
+                rootView.ProfilRecyclerView?.layoutManager = layoutManager
+                val adapter = LoadingAdapter(arguments?.getString("access_token")!!, context!!, items!!)
+                rootView.ProfilRecyclerView?.adapter = adapter
+            } else
+                getAlbums()
         }
-        if (c_avatar != null)
-            Toast.makeText(context, c_avatar.name, Toast.LENGTH_SHORT).show()
-        GetProfil()
-        openSetProfile(rootView, context!!)
-        if (items != null && items!!.isNotEmpty())
-        {
-            val layoutManager = LinearLayoutManager(context)
-            rootView.ProfilRecyclerView?.layoutManager = layoutManager
-            val adapter = LoadingAdapter(arguments?.getString("access_token")!!, context!!, items!!)
-            rootView.ProfilRecyclerView?.adapter = adapter
+        catch (e:Exception){
+            e.printStackTrace()
         }
-        else
-            getAlbums()
         return rootView
     }
 
@@ -117,21 +121,25 @@ class ProfilFragment : Fragment() {
             }
 
             override fun onResponse(call: Call<ImgurInterface.Result>, response: Response<ImgurInterface.Result>) {
-                if (response.isSuccessful) {
-                    items = ArrayList()
-                    val picList = response.body()
-                    picList!!.data.forEach {
-                        pic ->
-                        val item = ImgurInterface.ImgurItem(pic)
-                        items!!.add(item)
+                try {
+                    if (response.isSuccessful) {
+                        items = ArrayList()
+                        val picList = response.body()
+                        picList!!.data.forEach { pic ->
+                            val item = ImgurInterface.ImgurItem(pic)
+                            items!!.add(item)
+                        }
+                        val layoutManager = LinearLayoutManager(context)
+                        ProfilRecyclerView.layoutManager = layoutManager
+                        val adapter = LoadingAdapter(arguments?.getString("access_token")!!, context!!, items!!)
+                        ProfilRecyclerView.adapter = adapter
+                    } else {
+                        Toast.makeText(context, response.message(), Toast.LENGTH_SHORT).show()
+                        System.out.println(response.errorBody())
                     }
-                    val layoutManager = LinearLayoutManager(context)
-                    ProfilRecyclerView.layoutManager = layoutManager
-                    val adapter = LoadingAdapter(arguments?.getString("access_token")!!, context!!, items!!)
-                    ProfilRecyclerView.adapter = adapter
-                } else {
-                    Toast.makeText(context, response.message(), Toast.LENGTH_SHORT).show()
-                    System.out.println(response.errorBody())
+                }
+                catch (e:Exception) {
+                    e.printStackTrace()
                 }
             }
         })
@@ -145,11 +153,16 @@ class ProfilFragment : Fragment() {
             override fun onFailure(call: Call<ImgurInterface.ProfilResult>, t: Throwable?) { }
 
             override fun onResponse(call: Call<ImgurInterface.ProfilResult>, response: Response<ImgurInterface.ProfilResult>) {
-                if (response.isSuccessful) {
-                    var current = response.body()?.data?.account_url
-                    customDialog.i_username.text = current?.toEditable()
-                    current = response.body()?.data?.email
-                    customDialog.i_email.text = current?.toEditable()
+                try {
+                    if (response.isSuccessful) {
+                        var current = response.body()?.data?.account_url
+                        customDialog.i_username.text = current?.toEditable()
+                        current = response.body()?.data?.email
+                        customDialog.i_email.text = current?.toEditable()
+                    }
+                }
+                catch (e:Exception) {
+                    e.printStackTrace()
                 }
             }
         })
@@ -160,10 +173,14 @@ class ProfilFragment : Fragment() {
             }
 
             override fun onResponse(call: Call<ImgurInterface.BioResult>, response: Response<ImgurInterface.BioResult>) {
-                if (response.isSuccessful)
-                {
-                    var current = response.body()?.data?.bio
-                    customDialog.i_desc.text = current?.toEditable()
+                try {
+                    if (response.isSuccessful) {
+                        var current = response.body()?.data?.bio
+                        customDialog.i_desc.text = current?.toEditable()
+                    }
+                }
+                catch (e:Exception) {
+                    e.printStackTrace()
                 }
             }
 
@@ -192,15 +209,18 @@ class ProfilFragment : Fragment() {
             }
 
             override fun onResponse(call: Call<ImgurInterface.AvatarResult>, response: Response<ImgurInterface.AvatarResult>) {
-                if (response.isSuccessful)
-                {
-                    if (response.body()!!.data.avatar == null || response.body()!!.data.avatar == "")
-                        profil_pic.setImageDrawable(ContextCompat.getDrawable(context!!, R.drawable.grow))
-                    else
-                        Picasso.with(context).load(response.body()!!.data.avatar).into(profil_pic)
+                try {
+                    if (response.isSuccessful) {
+                        if (response.body()!!.data.avatar == null || response.body()!!.data.avatar == "")
+                            profil_pic.setImageDrawable(ContextCompat.getDrawable(context!!, R.drawable.grow))
+                        else
+                            Glide.with(context).load(response.body()!!.data.avatar).into(profil_pic)
+                    } else {
+                        Glide.with(context).load(response.body()!!.data.avatar).into(profil_pic)
+                    }
                 }
-                else {
-                    Picasso.with(context).load(response.body()!!.data.avatar).into(profil_pic)
+                catch (e:Exception) {
+                    e.printStackTrace()
                 }
             }
 
@@ -213,39 +233,42 @@ class ProfilFragment : Fragment() {
         val call = imgurApi.myProfil("Bearer " + token)
         call.enqueue(object: Callback<ImgurInterface.ProfilResult> {
             override fun onFailure(call: Call<ImgurInterface.ProfilResult>, t: Throwable?) {
-                txt_name.text = "No information"
-                txt_time.text = "No information"
             }
 
             override fun onResponse(call: Call<ImgurInterface.ProfilResult>, response: Response<ImgurInterface.ProfilResult>) {
-                if (response.isSuccessful) {
-                    var current = response.body()?.data?.account_url
-                    var tmp = response.body()?.data?.email
-                    var final = ""
-                    if (current != null && current != "")
-                        final = final + current + " "
-                    else
-                        final = final + "No username "
-                    if (tmp != null && tmp != "")
-                        final = final + "(" + tmp + ")"
-                    else
-                        final = final + " (No email)"
-                    txt_name.text = final
-                    current = response.body()?.data?.birthdate
-                    if (current == null || current == "")
-                        txt_time.text = "No birthday filled"
-                    else
-                        txt_time.text = "Birthday: " + current
-                    current = response.body()?.data?.gender
-                    if (current == null || current == "")
-                        txt_gender.text = "No gender filled"
-                    else
-                        txt_gender.text = "Gender: " + current
-                } else {
-                    txt_name.text = "Server response: null"
-                    txt_time.text = "Server response: null"
-                    txt_gender.text = "Server response: null"
-                    txt_desc.text = "Server response: null"
+                try {
+                    if (response.isSuccessful) {
+                        var current = response.body()?.data?.account_url
+                        var tmp = response.body()?.data?.email
+                        var final = ""
+                        if (current != null && current != "")
+                            final = final + current + " "
+                        else
+                            final = final + "No username "
+                        if (tmp != null && tmp != "")
+                            final = final + "(" + tmp + ")"
+                        else
+                            final = final + " (No email)"
+                        txt_name.text = final
+                        current = response.body()?.data?.birthdate
+                        if (current == null || current == "")
+                            txt_time.text = "No birthday filled"
+                        else
+                            txt_time.text = "Birthday: " + current
+                        current = response.body()?.data?.gender
+                        if (current == null || current == "")
+                            txt_gender.text = "No gender filled"
+                        else
+                            txt_gender.text = "Gender: " + current
+                    } else {
+                        txt_name.text = "Server response: null"
+                        txt_time.text = "Server response: null"
+                        txt_gender.text = "Server response: null"
+                        txt_desc.text = "Server response: null"
+                    }
+                }
+                catch (e:Exception) {
+                    e.printStackTrace()
                 }
             }
         })
@@ -261,16 +284,19 @@ class ProfilFragment : Fragment() {
             }
 
             override fun onResponse(call: Call<ImgurInterface.BioResult>, response: Response<ImgurInterface.BioResult>) {
-                if (response.isSuccessful)
-                {
-                    var current = response.body()?.data?.bio
-                    if (current == null || current == "")
+                try {
+                    if (response.isSuccessful) {
+                        var current = response.body()?.data?.bio
+                        if (current == null || current == "")
+                            txt_desc.text = "No description filled"
+                        else
+                            txt_desc.text = "Description: " + current
+                    } else {
                         txt_desc.text = "No description filled"
-                    else
-                        txt_desc.text = "Description: " + current
+                    }
                 }
-                else {
-                    txt_desc.text = "No description filled"
+                catch (e:Exception) {
+                    e.printStackTrace()
                 }
             }
 
@@ -278,8 +304,13 @@ class ProfilFragment : Fragment() {
     }
 
     fun GetProfil() {
-        GetInfoProfil()
-        GetBio()
-        GetMyAvatar()
+        try {
+            GetInfoProfil()
+            GetBio()
+            GetMyAvatar()
+        }
+        catch (e:Exception) {
+            e.printStackTrace()
+        }
     }
 }
