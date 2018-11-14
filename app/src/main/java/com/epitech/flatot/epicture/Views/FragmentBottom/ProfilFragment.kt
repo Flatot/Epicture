@@ -97,7 +97,8 @@ class ProfilFragment : Fragment() {
                 val customDialog = myDialog.create()
                 customDialog.show()
                 customDialog.dialogRecyclerView.layoutManager = StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL)
-                val adapter = AvatarsDialogAdapter(token!!, context!!, available_avatars, customDialog)
+                val username_c = arguments?.getString("username")
+                val adapter = AvatarsDialogAdapter(token!!, context!!, available_avatars, username_c!!, customDialog)
                 customDialog.dialogRecyclerView.adapter = adapter
             }
             if (c_avatar != null)
@@ -338,8 +339,7 @@ class ProfilFragment : Fragment() {
                             pic.into(profil_pic)
                         }
                     } else {
-                        var pic = Glide.with(context).load(response.body()!!.data.avatar).apply(RequestOptions.circleCropTransform())
-                        pic.into(profil_pic)
+                        profil_pic.setImageDrawable(ContextCompat.getDrawable(context!!, R.drawable.grow))
                     }
                 }
                 catch (e:Exception) {

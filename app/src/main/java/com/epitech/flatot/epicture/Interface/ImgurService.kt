@@ -71,5 +71,9 @@ interface ImgurService {
               @Query("username") username: String,
               @Query("bio") bio: String): Call<ImgurInterface.SetResult>
 
+    @PUT("3/account/{user}/settings")
+    fun mySetAvatar(@Header("Authorization") authHeader: String,
+              @Path("user") user: String,
+              @Query("avatar") avatar : String): Call<ImgurInterface.SetResult>
 
 }
