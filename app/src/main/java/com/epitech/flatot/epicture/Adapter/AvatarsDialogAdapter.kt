@@ -58,6 +58,7 @@ class AvatarsDialogAdapter(val access_token: String, val context: Context,
                 call.enqueue(object: Callback<ImgurInterface.SetResult> {
                     override fun onFailure(call: Call<ImgurInterface.SetResult>, t: Throwable) {
                         Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
+                        myDialog.cancel()
                     }
 
                     override fun onResponse(call: Call<ImgurInterface.SetResult>, response: Response<ImgurInterface.SetResult>) {
@@ -65,9 +66,9 @@ class AvatarsDialogAdapter(val access_token: String, val context: Context,
                         {
                             Toast.makeText(context, "Avatar changed", Toast.LENGTH_SHORT).show()
                         }
+                        myDialog.cancel()
                     }
                 })
-                myDialog.cancel()
             }
         }
     }

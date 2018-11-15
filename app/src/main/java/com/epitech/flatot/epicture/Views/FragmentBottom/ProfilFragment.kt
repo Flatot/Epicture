@@ -13,7 +13,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.signature.MediaStoreSignature
 import com.epitech.flatot.epicture.Adapter.AvatarsDialogAdapter
 import com.epitech.flatot.epicture.Adapter.LoadingAdapter
 import com.epitech.flatot.epicture.Adapter.SearchAdapter
@@ -32,6 +34,7 @@ import kotlinx.android.synthetic.main.fragment_profil.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.security.Signature
 import java.util.*
 
 
@@ -42,7 +45,6 @@ class ProfilFragment : Fragment() {
     fun String.toEditable(): Editable =  Editable.Factory.getInstance().newEditable(this)
 
     val available_avatars: MutableList<ImgurInterface.Available_avatar> = ArrayList()
-    val c_avatar: ImgurInterface.Available_avatar? = null
     var nameUser: String = ""
     var bool_album_pro: Boolean = false
 
@@ -87,7 +89,7 @@ class ProfilFragment : Fragment() {
             })
         }
         try {
-            rootView.profil_pic.setOnClickListener {
+            rootView.profil_pic.setOnClickListener { it ->
                 val myDialog = AlertDialog.Builder(context!!)
                 val myDialogView = LayoutInflater.from(context).inflate(R.layout.dialog_add_to_album, null)
                 myDialogView.text_dialog.text = getString(R.string.available_avatars)
@@ -100,17 +102,16 @@ class ProfilFragment : Fragment() {
                 val username_c = arguments?.getString("username")
                 val adapter = AvatarsDialogAdapter(token!!, context!!, available_avatars, username_c!!, customDialog)
                 customDialog.dialogRecyclerView.adapter = adapter
+
+                customDialog.setOnDismissListener {
+                    GetMyAvatar()
+                }
             }
-            if (c_avatar != null)
-                Toast.makeText(context, c_avatar.name, Toast.LENGTH_SHORT).show()
             GetProfil()
             openSetProfile(rootView, context!!)
-            if (items != null && items!!.isNotEmpty()) {
-                val layoutManager = LinearLayoutManager(context)
-                rootView.ProfilRecyclerView?.layoutManager = layoutManager
-                val adapter = LoadingAdapter(arguments?.getString("access_token")!!, context!!, items!!)
-                rootView.ProfilRecyclerView?.adapter = adapter
-            } else
+            if (bool_album_pro)
+                getAlbums()
+            else
                 getGallery()
         }
         catch (e:Exception){
@@ -151,9 +152,9 @@ class ProfilFragment : Fragment() {
 
                                         if (albums_items_pro!!.size == picList.data.size) {
                                             val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
-                                            HomeRecyclerView.layoutManager = layoutManager
-                                            val adapter = SearchAdapter(HomeRecyclerView, arguments?.getString("access_token")!!, context!!, albums_items_pro!!)
-                                            HomeRecyclerView.adapter = adapter
+                                            ProfilRecyclerView.layoutManager = layoutManager
+                                            val adapter = SearchAdapter(ProfilRecyclerView, arguments?.getString("access_token")!!, context!!, albums_items_pro!!)
+                                            ProfilRecyclerView.adapter = adapter
                                         }
                                     } else
                                         Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
@@ -170,8 +171,6 @@ class ProfilFragment : Fragment() {
             }
         })
     }
-
-
 
     fun getGallery()
     {
@@ -274,8 +273,9 @@ class ProfilFragment : Fragment() {
             override fun onResponse(call: Call<ImgurInterface.SetResult>, response: Response<ImgurInterface.SetResult>) {
                 try {
                     if (response.isSuccessful) {
-                        if (radio_albums.isChecked) {
+                        if (bool_album_pro) {
                             Toast.makeText(context, "Changes saved... Loading Album(s)", Toast.LENGTH_SHORT).show()
+                            getAlbums()
                         }
                         else {
                             Toast.makeText(context, "Changes saved", Toast.LENGTH_SHORT).show()
@@ -298,8 +298,6 @@ class ProfilFragment : Fragment() {
             setDatas(customDialog)
             customDialog.hide()
             GetProfil()
-            if (customDialog.radio_albums.isChecked)
-                getAlbums()
         }
         customDialog.radio_albums.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) bool_album_pro = true else bool_album_pro = false
@@ -331,12 +329,19 @@ class ProfilFragment : Fragment() {
 
             override fun onResponse(call: Call<ImgurInterface.AvatarResult>, response: Response<ImgurInterface.AvatarResult>) {
                 try {
+                    Toast.makeText(context, "a", Toast.LENGTH_SHORT).show()
                     if (response.isSuccessful) {
                         if (response.body()!!.data.avatar == null || response.body()!!.data.avatar == "")
                             profil_pic.setImageDrawable(ContextCompat.getDrawable(context!!, R.drawable.grow))
                         else {
-                            var pic = Glide.with(context).load(response.body()!!.data.avatar).apply(RequestOptions.circleCropTransform())
-                            pic.into(profil_pic)
+                            profil_pic.setImageDrawable(ContextCompat.getDrawable(context!!, R.drawable.grow))
+                            Glide.with(context).load(response.body()!!.data.avatar)
+                                    .apply(RequestOptions.circleCropTransform()
+                                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                                            .skipMemoryCache(true)
+                                            .signature(MediaStoreSignature("null", System.currentTimeMillis(), 1)))
+                                    .into(profil_pic)
+                            Toast.makeText(context, response.body()!!.data.avatar_name, Toast.LENGTH_SHORT).show()
                         }
                     } else {
                         profil_pic.setImageDrawable(ContextCompat.getDrawable(context!!, R.drawable.grow))
