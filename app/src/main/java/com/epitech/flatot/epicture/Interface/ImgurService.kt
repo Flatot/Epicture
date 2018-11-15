@@ -14,6 +14,13 @@ interface ImgurService {
     @GET("/3/account/me/images")
     fun getUser(@Header("Authorization") authHeader: String): Call<ImgurInterface.Result>
 
+    @GET("/3/gallery/hot/top/{pages}/week")
+    fun getGallery(@Header("Authorization") authHeader: String,
+                   @Path("pages") pages: Int,
+                   @Query("showViral") showViral: Boolean,
+                   @Query("mature") mature: Boolean,
+                   @Query("album_previews") album_previews: Boolean): Call<ImgurInterface.SearchResult>
+
     @GET("/3/gallery/search/{sort}/{window}/{page}")
     fun searchGallery(@Header("Authorization") authHeader: String,
                       @Path("sort") sort: String,

@@ -4,14 +4,15 @@ import android.annotation.TargetApi
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import android.widget.Toast
-import com.epitech.flatot.epicture.Adapter.LoadingAdapter
-import com.epitech.flatot.epicture.Adapter.SearchAdapter
+import com.epitech.flatot.epicture.Interface.ILoadMore
 import com.epitech.flatot.epicture.Model.ImgurInterface
+import com.epitech.flatot.epicture.Adapter.GalleryAdapter
 import com.epitech.flatot.epicture.Model.RetrofitInterface
 import com.epitech.flatot.epicture.R
 import kotlinx.android.synthetic.main.dialog_filters.*
@@ -20,12 +21,14 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
+import kotlin.collections.ArrayList
 
 
-class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
+class HomeFragment : Fragment(), Callback<ImgurInterface.SearchResult>, ILoadMore {
 
-    var items: MutableList<ImgurInterface.ImgurItem>? = null
-    var albums_items: MutableList<ImgurInterface.ImgurSearchItem>? = null
+    var items: MutableList<ImgurInterface.ImgurSearchItem>? = null
+    var new_items: MutableList<ImgurInterface.ImgurSearchItem>? = null
+    lateinit var adapter: GalleryAdapter
 
     var bool_album: Boolean = false
 
@@ -39,6 +42,62 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
     var sup_100: Boolean = true
     var inf_100: Boolean = true
 
+    var _pages = 0
+
+    override fun OnLoadMore() {
+        if (new_items!!.size == items!!.size) {
+            addAnotherPage()
+        }
+        val data = ImgurInterface.Data_search("null", "null", "null", 0, "null", false, 0, 0, 0, 0, 0, 0, false, false, "null", "null", "null", false, false, false, emptyList(), emptyList(), "null")
+        val item = ImgurInterface.ImgurSearchItem(data)
+        new_items!!.add(item)
+        adapter.notifyItemInserted(new_items!!.size-1)
+        Handler().postDelayed({
+            new_items!!.removeAt(new_items!!.size-1)
+            adapter.notifyItemRemoved(new_items!!.size)
+
+            var count = new_items!!.size
+            val need = count + 9
+
+            while (count != items!!.size && count < need)
+            {
+                new_items!!.add(items!![count])
+                count++
+            }
+            adapter.notifyDataSetChanged()
+            adapter.setLoaded()
+        }, 3000)
+    }
+
+    private fun addAnotherPage() {
+        val imgurApi = RetrofitInterface().createRetrofitBuilder()
+        val token = arguments?.getString("access_token")
+        _pages++
+        val call = imgurApi.getGallery("Bearer " + token, _pages, true, true, true)
+        call.enqueue(object: Callback<ImgurInterface.SearchResult> {
+            override fun onFailure(call: Call<ImgurInterface.SearchResult>, t: Throwable) {
+                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onResponse(call: Call<ImgurInterface.SearchResult>, response: Response<ImgurInterface.SearchResult>) {
+                try {
+                    if (response.isSuccessful) {
+                        val picLists = response.body()
+                        picLists!!.data.forEach { pic ->
+                            val item = ImgurInterface.ImgurSearchItem(pic)
+                            items!!.add(item)
+                        }
+                    } else {
+                        System.out.println(response.errorBody())
+
+                    }
+                }
+                catch (e:Exception) {
+                    e.printStackTrace()
+                }
+            }
+        })
+    }
 
     companion object {
         fun newInstance(access_token: String): HomeFragment {
@@ -50,55 +109,14 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
         }
     }
 
-    private fun getAlbums() {
-        val imgurApi = RetrofitInterface().createRetrofitBuilder()
-        val token = arguments?.getString("access_token")
-        val call = imgurApi.getAlbums("Bearer " + token)
-        call.enqueue(object: Callback<ImgurInterface.Result> {
-            override fun onFailure(call: Call<ImgurInterface.Result>, t: Throwable) {
-                Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
-            }
+    fun get_first_items(items: MutableList<ImgurInterface.ImgurSearchItem>) {
+        var count = 0
 
-            override fun onResponse(call: Call<ImgurInterface.Result>, response: Response<ImgurInterface.Result>) {
-                if (response.isSuccessful)
-                {
-                    albums_items = ArrayList()
-                    val picList = response.body()
-                    picList!!.data.forEach {
-                        pic ->
-                        val album = imgurApi.getAlbum("Bearer " + token, pic.id)
-                        album.enqueue(object: Callback<ImgurInterface.ImgurSearchItem> {
-                            override fun onFailure(call: Call<ImgurInterface.ImgurSearchItem>, t: Throwable) {
-                                Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
-                            }
-
-                            override fun onResponse(call: Call<ImgurInterface.ImgurSearchItem>, response: Response<ImgurInterface.ImgurSearchItem>) {
-                                try {
-                                    if (response.isSuccessful) {
-                                        val albumList = response.body()
-                                        val alb_item = ImgurInterface.ImgurSearchItem(albumList!!.data)
-                                        albums_items!!.add(alb_item)
-
-                                        if (albums_items!!.size == picList.data.size) {
-                                            val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
-                                            HomeRecyclerView.layoutManager = layoutManager
-                                            val adapter = SearchAdapter(HomeRecyclerView, arguments?.getString("access_token")!!, context!!, albums_items!!)
-                                            HomeRecyclerView.adapter = adapter
-                                        }
-                                    } else
-                                        Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
-                                }
-                                catch (e:Exception) {
-                                    e.printStackTrace()
-                                }
-                            }
-                        })
-                    }
-                }
-                else
-                    Toast.makeText(context, "Failed load album", Toast.LENGTH_SHORT).show()
-            }
-        })
+        while (count != items.size && count < 8)
+        {
+            new_items!!.add(items[count])
+            count++
+        }
     }
 
     fun getGallery()
@@ -106,15 +124,42 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
         val imgurApi = RetrofitInterface().createRetrofitBuilder()
 
         val token = arguments?.getString("access_token")
-        val call = imgurApi.getUser("Bearer " + token)
+        val call = imgurApi.getGallery("Bearer " + token, _pages, true, true, true)
         call.enqueue(this)
     }
 
-    override fun onFailure(call: Call<ImgurInterface.Result>, t: Throwable) {
+    override fun onFailure(call: Call<ImgurInterface.SearchResult>, t: Throwable) {
         Toast.makeText(context, "fail", Toast.LENGTH_SHORT).show()
     }
 
-    fun ValidType(item: ImgurInterface.ImgurItem): Boolean {
+    override fun onResponse(call: Call<ImgurInterface.SearchResult>, response: Response<ImgurInterface.SearchResult>) {
+        try {
+            if (response.isSuccessful) {
+                items = ArrayList()
+                new_items = ArrayList()
+                val picList = response.body()
+                picList!!.data.forEach { pic ->
+                    val item = ImgurInterface.ImgurSearchItem(pic)
+                    if (getValidItem(item))
+                        items!!.add(item)
+                }
+                get_first_items(items!!)
+                val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
+                HomeRecyclerView.layoutManager = layoutManager
+                adapter = GalleryAdapter(HomeRecyclerView, arguments?.getString("access_token")!!, context!!, new_items!!)
+                HomeRecyclerView.adapter = adapter
+                adapter.setLoadMore(this)
+            } else {
+                Toast.makeText(context, response.message(), Toast.LENGTH_SHORT).show()
+                System.out.println(response.errorBody())
+            }
+        }
+        catch (e:Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun ValidType(item: ImgurInterface.ImgurSearchItem): Boolean {
         if (png && gif && jpeg)
             return (true)
         if (png && item.data.type == "image/png")
@@ -126,7 +171,7 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
         return (false)
     }
 
-    fun ValidPeriod(item: ImgurInterface.ImgurItem): Boolean {
+    fun ValidPeriod(item: ImgurInterface.ImgurSearchItem): Boolean {
         val myDate = Date()
         val sevenDay = Date(myDate.getTime() - 604800000L) // 7 * 24 * 60 * 60 * 1000
         val valueSeven = sevenDay.getTime() / 1000
@@ -139,7 +184,7 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
         return (false)
     }
 
-    fun ValidViews(item: ImgurInterface.ImgurItem): Boolean {
+    fun ValidViews(item: ImgurInterface.ImgurSearchItem): Boolean {
         if (sup_100 && inf_100)
             return (true)
         if (inf_100 && item.data.views < 100)
@@ -149,35 +194,11 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
         return (false)
     }
 
-    fun getValidItem(item: ImgurInterface.ImgurItem): Boolean {
+    fun getValidItem(item: ImgurInterface.ImgurSearchItem): Boolean {
         if (ValidViews(item) && ValidPeriod(item) && ValidType(item))
             return (true)
         else
             return (false)
-    }
-
-    override fun onResponse(call: Call<ImgurInterface.Result>, response: Response<ImgurInterface.Result>) {
-        try {
-            if (response.isSuccessful) {
-                items = ArrayList()
-                val picList = response.body()
-                picList!!.data.forEach { pic ->
-                    val item = ImgurInterface.ImgurItem(pic)
-                    if (getValidItem(item))
-                        items!!.add(item)
-                }
-                val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
-                HomeRecyclerView.layoutManager = layoutManager
-                val adapter = LoadingAdapter(arguments?.getString("access_token")!!, context!!, items!!)
-                HomeRecyclerView.adapter = adapter
-            } else {
-                Toast.makeText(context, response.message(), Toast.LENGTH_SHORT).show()
-                System.out.println(response.errorBody())
-            }
-        }
-        catch (e:Exception) {
-            e.printStackTrace()
-        }
     }
 
     fun checkTrue(customDialog: android.support.v7.app.AlertDialog) {
@@ -224,10 +245,7 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
         }
         customDialog.save.setOnClickListener {
             customDialog.hide()
-            if (bool_album)
-                getAlbums()
-            else
-                getGallery()
+            getGallery()
         }
     }
 
@@ -254,21 +272,7 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
                 true
             }
             toolbar.inflateMenu(R.menu.menu_filters)
-            if (bool_album) { // && albums_items != null && albums_items!!.isNotEmpty()
-                //val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL)
-                //rootView.HomeRecyclerView.layoutManager = layoutManager
-                //val adapter = SearchAdapter(rootView.HomeRecyclerView, arguments?.getString("access_token")!!, context!!, albums_items!!)
-                //rootView.HomeRecyclerView.adapter = adapter
-                getAlbums()
-            } else { //if (items != null && items!!.isNotEmpty()
-                //val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-
-                //rootView.HomeRecyclerView?.layoutManager = layoutManager
-                //val adapter = LoadingAdapter(arguments?.getString("access_token")!!, context!!, items!!)
-                //rootView.HomeRecyclerView?.adapter = adapter
-
-                getGallery()
-            }
+            getGallery()
         }
         catch (e:Exception) {
             e.printStackTrace()
@@ -285,7 +289,6 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         try {
             activity!!.menuInflater.inflate(R.menu.menu_filters, menu)
             (activity as AppCompatActivity).supportActionBar!!.setDisplayHomeAsUpEnabled(true)
@@ -293,12 +296,9 @@ class HomeFragment : Fragment(), Callback<ImgurInterface.Result> {
         catch (e:Exception) {
             e.printStackTrace()
         }
-        //super.onCreateOptionsMenu(menu, inflater)
-        //menuInflater.inflate(R.menu.menu_filters, menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here.
         val id = item.itemId
 
         if (id == R.id.filters) {
