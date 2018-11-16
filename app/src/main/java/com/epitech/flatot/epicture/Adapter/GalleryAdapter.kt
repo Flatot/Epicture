@@ -2,7 +2,6 @@ package com.epitech.flatot.epicture.Adapter
 
 import android.annotation.TargetApi
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -10,25 +9,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.epitech.flatot.epicture.Interface.ILoadMore
-import com.epitech.flatot.epicture.Model.GlideInterface
-import com.epitech.flatot.epicture.Model.ImgurInterface
-import com.epitech.flatot.epicture.Model.RetrofitInterface
-import com.epitech.flatot.epicture.Model.ZoomedActivityInterface
+import com.epitech.flatot.epicture.Model.GlideModel
+import com.epitech.flatot.epicture.Model.ImgurModel
+import com.epitech.flatot.epicture.Model.RetrofitModel
+import com.epitech.flatot.epicture.Model.ZoomedActivityModel
 import com.epitech.flatot.epicture.R
-import com.epitech.flatot.epicture.R.id.img_imgur2
-import com.epitech.flatot.epicture.Views.ZoomedActivity
-import kotlinx.android.synthetic.main.activity_zoomed.*
 import kotlinx.android.synthetic.main.item_gallery_cardview.view.*
-import kotlinx.android.synthetic.main.item_search_cardview.view.*
 import kotlinx.android.synthetic.main.loading_layout.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class GalleryAdapter(val myRecyclerView: RecyclerView, val access_token:String, val context: Context, val items:MutableList<ImgurInterface.ImgurSearchItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>()
+class GalleryAdapter(val myRecyclerView: RecyclerView, val access_token:String, val context: Context, val items:MutableList<ImgurModel.ImgurSearchItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 {
     val VIEW_ITEMTYPE = 0
     val VIEW_LOADINGTYPE = 1
@@ -61,14 +54,14 @@ class GalleryAdapter(val myRecyclerView: RecyclerView, val access_token:String, 
         var progressBar = itemView.progressBarSearch
     }
 
-    inner class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView), Callback<ImgurInterface.FavoriteResult> {
+    inner class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView), Callback<ImgurModel.FavoriteResult> {
 
-        fun setZoomedClick (item: ImgurInterface.ImgurSearchItem?, pos: Int) {
+        fun setZoomedClick (item: ImgurModel.ImgurSearchItem?, pos: Int) {
             itemView.setOnClickListener {
-                ZoomedActivityInterface().setZoomed(context, item!!)
+                ZoomedActivityModel().setZoomed(context, item!!)
             }
             itemView.favoriteGallery.setOnClickListener {
-                val imgurApi = RetrofitInterface().createRetrofitBuilder()
+                val imgurApi = RetrofitModel().createRetrofitBuilder()
 
                 InverseFavoriteDrawable(item)
                 val call = imgurApi.favoriteImage("Bearer " + access_token, item!!.data.images[0].id)
@@ -76,17 +69,17 @@ class GalleryAdapter(val myRecyclerView: RecyclerView, val access_token:String, 
             }
         }
 
-        override fun onFailure(call: Call<ImgurInterface.FavoriteResult>, t: Throwable) {
+        override fun onFailure(call: Call<ImgurModel.FavoriteResult>, t: Throwable) {
             Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
         }
 
-        override fun onResponse(call: Call<ImgurInterface.FavoriteResult>, response: Response<ImgurInterface.FavoriteResult>) {
+        override fun onResponse(call: Call<ImgurModel.FavoriteResult>, response: Response<ImgurModel.FavoriteResult>) {
             if (!response.isSuccessful)
                 Toast.makeText(context, "Failed to favorite this picture !", Toast.LENGTH_SHORT).show()
         }
 
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-        fun InverseFavoriteDrawable(item: ImgurInterface.ImgurSearchItem?)
+        fun InverseFavoriteDrawable(item: ImgurModel.ImgurSearchItem?)
         {
             if (item!!.data.favorite)
                 itemView.favoriteGallery.background = context.getDrawable(R.drawable.ic_favorite_border_black_24dp)
@@ -95,13 +88,13 @@ class GalleryAdapter(val myRecyclerView: RecyclerView, val access_token:String, 
         }
 
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-        fun setData(item: ImgurInterface.ImgurSearchItem?, pos: Int)
+        fun setData(item: ImgurModel.ImgurSearchItem?, pos: Int)
         {
             if (item!!.data.images != null && !item!!.data.images.isEmpty()) {
-                GlideInterface().displayGlide(item!!.data.images[0].type, context, item!!.data.images[0].link, itemView.galleryImg)
+                GlideModel().displayGlide(item!!.data.images[0].type, context, item!!.data.images[0].link, itemView.galleryImg)
             }
             else {
-                GlideInterface().displayGlide(item!!.data.type, context, item!!.data.link, itemView.galleryImg)
+                GlideModel().displayGlide(item!!.data.type, context, item!!.data.link, itemView.galleryImg)
             }
             if (item.data.favorite)
                 itemView.favoriteGallery.background = context.getDrawable(R.drawable.ic_favorite_black_24dp)

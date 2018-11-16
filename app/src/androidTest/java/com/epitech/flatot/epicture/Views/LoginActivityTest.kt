@@ -3,12 +3,6 @@ package com.epitech.flatot.epicture.Views
 
 import android.content.Intent
 import android.net.Uri
-import android.support.v7.app.AppCompatActivity
-import android.os.Bundle
-import com.epitech.flatot.epicture.Model.RetrofitInterface
-import com.epitech.flatot.epicture.R
-import kotlinx.android.synthetic.main.activity_login.*
-import android.support.v4.content.ContextCompat.startActivity
 import org.junit.Test
 
 import org.junit.Assert.*

@@ -14,8 +14,8 @@ import android.widget.EditText
 import android.widget.Toast
 import com.epitech.flatot.epicture.Adapter.SearchAdapter
 import com.epitech.flatot.epicture.Interface.ILoadMore
-import com.epitech.flatot.epicture.Model.ImgurInterface
-import com.epitech.flatot.epicture.Model.RetrofitInterface
+import com.epitech.flatot.epicture.Model.ImgurModel
+import com.epitech.flatot.epicture.Model.RetrofitModel
 import com.epitech.flatot.epicture.R
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.android.synthetic.main.fragment_search.view.*
@@ -23,9 +23,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult>, ILoadMore {
-    var items: MutableList<ImgurInterface.ImgurSearchItem>? = null
-    var new_items: MutableList<ImgurInterface.ImgurSearchItem>? = null
+class SearchFragment : Fragment(), Callback<ImgurModel.SearchResult>, ILoadMore {
+    var items: MutableList<ImgurModel.ImgurSearchItem>? = null
+    var new_items: MutableList<ImgurModel.ImgurSearchItem>? = null
     var searchQuery: String? = null
     lateinit var adapter: SearchAdapter
     var _page = 0
@@ -34,8 +34,8 @@ class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult>, ILoadM
         if (new_items!!.size == items!!.size) {
             addAnotherPage()
         }
-        val data = ImgurInterface.Data_search("null", "null", "null", 0, "null", false, 0, 0, 0, 0, 0, 0, false, false, "null", "null", "null", false, false, false, emptyList(), emptyList(), "null")
-        val item = ImgurInterface.ImgurSearchItem(data)
+        val data = ImgurModel.Data_search("null", "null", "null", 0, "null", false, 0, 0, 0, 0, 0, 0, false, false, "null", "null", "null", false, false, false, emptyList(), emptyList(), "null")
+        val item = ImgurModel.ImgurSearchItem(data)
         new_items!!.add(item)
         adapter.notifyItemInserted(new_items!!.size-1)
         Handler().postDelayed({
@@ -56,24 +56,24 @@ class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult>, ILoadM
     }
 
     private fun addAnotherPage() {
-        val imgurApi = RetrofitInterface().createRetrofitBuilder()
+        val imgurApi = RetrofitModel().createRetrofitBuilder()
         val token = arguments?.getString("access_token")
         val _window = "all"
         val _sort = "q_all"
         val _query = searchQuery!!
         _page++
         val call = imgurApi.searchGallery("Bearer " + token, _sort, _window, _page, _query)
-        call.enqueue(object: Callback<ImgurInterface.SearchResult> {
-            override fun onFailure(call: Call<ImgurInterface.SearchResult>, t: Throwable) {
+        call.enqueue(object: Callback<ImgurModel.SearchResult> {
+            override fun onFailure(call: Call<ImgurModel.SearchResult>, t: Throwable) {
                 Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
             }
 
-            override fun onResponse(call: Call<ImgurInterface.SearchResult>, response: Response<ImgurInterface.SearchResult>) {
+            override fun onResponse(call: Call<ImgurModel.SearchResult>, response: Response<ImgurModel.SearchResult>) {
                 try {
                     if (response.isSuccessful) {
                         val picLists = response.body()
                         picLists!!.data.forEach { pic ->
-                            val item = ImgurInterface.ImgurSearchItem(pic)
+                            val item = ImgurModel.ImgurSearchItem(pic)
                             items!!.add(item)
                         }
                     } else {
@@ -143,7 +143,7 @@ class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult>, ILoadM
     }
 
     fun GetSearch() {
-        val imgurApi = RetrofitInterface().createRetrofitBuilder()
+        val imgurApi = RetrofitModel().createRetrofitBuilder()
         val token = arguments?.getString("access_token")
         val _window = "all"
         val _sort = "q_all"
@@ -152,7 +152,7 @@ class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult>, ILoadM
         call.enqueue(this)
     }
 
-    fun get_first_items(items: MutableList<ImgurInterface.ImgurSearchItem>) {
+    fun get_first_items(items: MutableList<ImgurModel.ImgurSearchItem>) {
         var count = 0
 
         while (count != items.size && count < 8)
@@ -163,16 +163,16 @@ class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult>, ILoadM
 
     }
 
-    override fun onFailure(call: Call<ImgurInterface.SearchResult>, t: Throwable) {
+    override fun onFailure(call: Call<ImgurModel.SearchResult>, t: Throwable) {
         Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
     }
 
-    override fun onResponse(call: Call<ImgurInterface.SearchResult>, response: Response<ImgurInterface.SearchResult>) {
+    override fun onResponse(call: Call<ImgurModel.SearchResult>, response: Response<ImgurModel.SearchResult>) {
         try {
             if (response.isSuccessful) {
                 val picLists = response.body()
                 picLists!!.data.forEach { pic ->
-                    val item = ImgurInterface.ImgurSearchItem(pic)
+                    val item = ImgurModel.ImgurSearchItem(pic)
                     items!!.add(item)
                 }
                 get_first_items(items!!)

@@ -20,10 +20,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.epitech.flatot.epicture.Model.ImgurInterface
-import com.epitech.flatot.epicture.Model.RetrofitInterface
+import com.epitech.flatot.epicture.Model.ImgurModel
+import com.epitech.flatot.epicture.Model.RetrofitModel
 import com.epitech.flatot.epicture.R
-import com.epitech.flatot.epicture.Views.BottomNavActivity
 import kotlinx.android.synthetic.main.fragment_upload.*
 import kotlinx.android.synthetic.main.fragment_upload.view.*
 import okhttp3.MediaType
@@ -34,7 +33,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.util.*
 
 
 class UploadFragment : Fragment() {
@@ -158,13 +156,13 @@ class UploadFragment : Fragment() {
         val descriptionBody = RequestBody.create(okhttp3.MultipartBody.FORM, text_description.text.toString())
         val optinalBodyMap = mapOf("title" to titleBody, "description" to descriptionBody)
 
-        val retrofit = RetrofitInterface().createRetrofitBuilder()
+        val retrofit = RetrofitModel().createRetrofitBuilder()
         val token = arguments?.getString("access_token")
         val call = retrofit.uploadImage("Bearer " + token, imageBody, optinalBodyMap)
         progressUpload.visibility = View.VISIBLE
 
-        call.enqueue(object: Callback<ImgurInterface.UploadResult> {
-            override fun onFailure(call: Call<ImgurInterface.UploadResult>, t: Throwable) {
+        call.enqueue(object: Callback<ImgurModel.UploadResult> {
+            override fun onFailure(call: Call<ImgurModel.UploadResult>, t: Throwable) {
                 try {
                     Toast.makeText(context, "Upload failed", Toast.LENGTH_SHORT).show()
                     progressUpload.visibility = View.GONE
@@ -173,7 +171,7 @@ class UploadFragment : Fragment() {
                     e.printStackTrace()
                 }
             }
-            override fun onResponse(call: Call<ImgurInterface.UploadResult>, response: Response<ImgurInterface.UploadResult>) {
+            override fun onResponse(call: Call<ImgurModel.UploadResult>, response: Response<ImgurModel.UploadResult>) {
                 try {
                     if (response.isSuccessful) {
                         Toast.makeText(context, "Uploaded Successfully", Toast.LENGTH_SHORT).show()

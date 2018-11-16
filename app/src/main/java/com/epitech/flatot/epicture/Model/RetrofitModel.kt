@@ -4,7 +4,7 @@ import com.epitech.flatot.epicture.Interface.ImgurService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class RetrofitInterface() {
+class RetrofitModel() {
 
     fun createRetrofitBuilder(): ImgurService
     {

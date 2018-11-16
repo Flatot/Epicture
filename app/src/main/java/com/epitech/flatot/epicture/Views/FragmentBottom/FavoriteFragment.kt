@@ -9,8 +9,8 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.*
 import android.widget.Toast
 import com.epitech.flatot.epicture.Adapter.FavoriteAdapter
-import com.epitech.flatot.epicture.Model.ImgurInterface
-import com.epitech.flatot.epicture.Model.RetrofitInterface
+import com.epitech.flatot.epicture.Model.ImgurModel
+import com.epitech.flatot.epicture.Model.RetrofitModel
 import com.epitech.flatot.epicture.R
 import kotlinx.android.synthetic.main.dialog_fav_filters.*
 import kotlinx.android.synthetic.main.fragment_favorite.*
@@ -20,9 +20,9 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
 
-class FavoriteFragment : Fragment(), Callback<ImgurInterface.GetFavoriteResult> {
+class FavoriteFragment : Fragment(), Callback<ImgurModel.GetFavoriteResult> {
 
-    var items: MutableList<ImgurInterface.ImgurFavoriteItem>? = null
+    var items: MutableList<ImgurModel.ImgurFavoriteItem>? = null
 
     var jpeg_fav: Boolean = true
     var png_fav: Boolean = true
@@ -49,7 +49,7 @@ class FavoriteFragment : Fragment(), Callback<ImgurInterface.GetFavoriteResult> 
         super.onCreate(savedInstanceState)
     }
 
-    fun ValidTypeFav(item: ImgurInterface.ImgurFavoriteItem): Boolean {
+    fun ValidTypeFav(item: ImgurModel.ImgurFavoriteItem): Boolean {
         if (png_fav && gif_fav && jpeg_fav)
             return (true)
         if (png_fav && item.data.type == "image/png")
@@ -61,7 +61,7 @@ class FavoriteFragment : Fragment(), Callback<ImgurInterface.GetFavoriteResult> 
         return (false)
     }
 
-    fun ValidPeriodFav(item: ImgurInterface.ImgurFavoriteItem): Boolean {
+    fun ValidPeriodFav(item: ImgurModel.ImgurFavoriteItem): Boolean {
         val myDate = Date()
         val sevenDay = Date(myDate.getTime() - 604800000L) // 7 * 24 * 60 * 60 * 1000
         val valueSeven = sevenDay.getTime() / 1000
@@ -74,7 +74,7 @@ class FavoriteFragment : Fragment(), Callback<ImgurInterface.GetFavoriteResult> 
         return (false)
     }
 
-    fun ValidViewsFav(item: ImgurInterface.ImgurFavoriteItem): Boolean {
+    fun ValidViewsFav(item: ImgurModel.ImgurFavoriteItem): Boolean {
         if (sup_100_fav && inf_100_fav)
             return (true)
         if (inf_100_fav && item.data.views < 100)
@@ -84,7 +84,7 @@ class FavoriteFragment : Fragment(), Callback<ImgurInterface.GetFavoriteResult> 
         return (false)
     }
 
-    fun getValidItemFav(item: ImgurInterface.ImgurFavoriteItem): Boolean {
+    fun getValidItemFav(item: ImgurModel.ImgurFavoriteItem): Boolean {
         if (ValidViewsFav(item) && ValidPeriodFav(item) && ValidTypeFav(item))
             return (true)
         else
@@ -93,25 +93,25 @@ class FavoriteFragment : Fragment(), Callback<ImgurInterface.GetFavoriteResult> 
 
     fun getFavorites()
     {
-        val imgurApi = RetrofitInterface().createRetrofitBuilder()
+        val imgurApi = RetrofitModel().createRetrofitBuilder()
 
         val token = arguments?.getString("access_token")
         val call = imgurApi.getFavorite("Bearer " + token)
         call.enqueue(this)
     }
 
-    override fun onFailure(call: Call<ImgurInterface.GetFavoriteResult>, t: Throwable) {
+    override fun onFailure(call: Call<ImgurModel.GetFavoriteResult>, t: Throwable) {
         println(t.message)
         Toast.makeText(context, "fail", Toast.LENGTH_SHORT).show()
     }
 
-    override fun onResponse(call: Call<ImgurInterface.GetFavoriteResult>, response: Response<ImgurInterface.GetFavoriteResult>) {
+    override fun onResponse(call: Call<ImgurModel.GetFavoriteResult>, response: Response<ImgurModel.GetFavoriteResult>) {
         try {
             if (response.isSuccessful) {
                 val picList = response.body()
                 items = ArrayList()
                 picList!!.data.forEach { pic ->
-                    val item = ImgurInterface.ImgurFavoriteItem(pic)
+                    val item = ImgurModel.ImgurFavoriteItem(pic)
                     if (getValidItemFav(item))
                         items!!.add(item)
                 }

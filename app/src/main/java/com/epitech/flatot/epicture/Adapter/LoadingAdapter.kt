@@ -2,31 +2,23 @@ package com.epitech.flatot.epicture.Adapter
 
 import android.annotation.TargetApi
 import android.content.Context
-import android.content.Intent
 import android.os.Build
 import android.support.v7.app.AlertDialog
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
-import com.epitech.flatot.epicture.Model.GlideInterface
-import com.epitech.flatot.epicture.Model.ImgurInterface
-import com.epitech.flatot.epicture.Model.ImgurInterface.ImgurItem
-import com.epitech.flatot.epicture.Model.RetrofitInterface
-import com.epitech.flatot.epicture.Model.ZoomedActivityInterface
+import com.epitech.flatot.epicture.Model.GlideModel
+import com.epitech.flatot.epicture.Model.ImgurModel
+import com.epitech.flatot.epicture.Model.ImgurModel.ImgurItem
+import com.epitech.flatot.epicture.Model.RetrofitModel
+import com.epitech.flatot.epicture.Model.ZoomedActivityModel
 import com.epitech.flatot.epicture.R
-import com.epitech.flatot.epicture.Views.ZoomedActivity
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.dialog_add_to_album.*
 import kotlinx.android.synthetic.main.dialog_template.*
 import kotlinx.android.synthetic.main.item_cardview.view.*
-import kotlinx.android.synthetic.main.item_search_cardview.view.*
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -50,16 +42,16 @@ class LoadingAdapter(val access_token:String, val context: Context, val items:Mu
             p0.setZoomedClick(item, p1)
     }
 
-    inner class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView), Callback<ImgurInterface.FavoriteResult> {
+    inner class MyViewHolder(itemView: View): RecyclerView.ViewHolder(itemView), Callback<ImgurModel.FavoriteResult> {
 
         fun setZoomedClick (item: ImgurItem?, pos: Int) {
 
             itemView.setOnClickListener {
-                ZoomedActivityInterface().setZoomed(context, item!!)
+                ZoomedActivityModel().setZoomed(context, item!!)
             }
 
             itemView.favorite.setOnClickListener {
-                val imgurApi = RetrofitInterface().createRetrofitBuilder()
+                val imgurApi = RetrofitModel().createRetrofitBuilder()
                 val call = imgurApi.favoriteImage("Bearer " + access_token, item!!.data.id)
                 InverseFavoriteDrawable(item)
                 call.enqueue(this)
@@ -105,16 +97,16 @@ class LoadingAdapter(val access_token:String, val context: Context, val items:Mu
             val descriptionBody = RequestBody.create(okhttp3.MultipartBody.FORM, myDialog.dialogDescription.text.toString())
             val optinalBodyMap = mapOf("ids" to idsBody, "title" to titleBody, "description" to descriptionBody, "privacy" to privacyBody)
 
-            val retrofit = RetrofitInterface().createRetrofitBuilder()
+            val retrofit = RetrofitModel().createRetrofitBuilder()
             val call = retrofit.createAlbum("Bearer " + access_token, optinalBodyMap)
 
-            call.enqueue(object : Callback<ImgurInterface.UploadResult> {
-                override fun onFailure(call: Call<ImgurInterface.UploadResult>, t: Throwable) {
+            call.enqueue(object : Callback<ImgurModel.UploadResult> {
+                override fun onFailure(call: Call<ImgurModel.UploadResult>, t: Throwable) {
                     Toast.makeText(context, "Fail to create album", Toast.LENGTH_SHORT).show()
                     myDialog.cancel()
                 }
 
-                override fun onResponse(call: Call<ImgurInterface.UploadResult>, response: Response<ImgurInterface.UploadResult>) {
+                override fun onResponse(call: Call<ImgurModel.UploadResult>, response: Response<ImgurModel.UploadResult>) {
                     if (response.isSuccessful) {
                         Toast.makeText(context, "Created Successfully", Toast.LENGTH_SHORT).show()
                     }
@@ -139,15 +131,15 @@ class LoadingAdapter(val access_token:String, val context: Context, val items:Mu
 
         fun addToAlbum(item: ImgurItem?)
         {
-            val retrofit = RetrofitInterface().createRetrofitBuilder()
+            val retrofit = RetrofitModel().createRetrofitBuilder()
             val call = retrofit.getAlbums("Bearer " + access_token)
 
-            call.enqueue(object : Callback<ImgurInterface.Result> {
-                override fun onFailure(call: Call<ImgurInterface.Result>, t: Throwable) {
+            call.enqueue(object : Callback<ImgurModel.Result> {
+                override fun onFailure(call: Call<ImgurModel.Result>, t: Throwable) {
                     println(t.message)
                 }
 
-                override fun onResponse(call: Call<ImgurInterface.Result>, response: Response<ImgurInterface.Result>) {
+                override fun onResponse(call: Call<ImgurModel.Result>, response: Response<ImgurModel.Result>) {
                     if (response.isSuccessful) {
                         val dialogItems = ArrayList<String>()
                         val dialogIds = ArrayList<String>()
@@ -171,17 +163,17 @@ class LoadingAdapter(val access_token:String, val context: Context, val items:Mu
             })
         }
 
-        override fun onFailure(call: Call<ImgurInterface.FavoriteResult>, t: Throwable) {
+        override fun onFailure(call: Call<ImgurModel.FavoriteResult>, t: Throwable) {
             Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
         }
 
-        override fun onResponse(call: Call<ImgurInterface.FavoriteResult>, response: Response<ImgurInterface.FavoriteResult>) {
+        override fun onResponse(call: Call<ImgurModel.FavoriteResult>, response: Response<ImgurModel.FavoriteResult>) {
             if (!response.isSuccessful)
                 Toast.makeText(context, "Failed to favorite this picture !", Toast.LENGTH_SHORT).show()
         }
 
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-        fun InverseFavoriteDrawable(item: ImgurInterface.ImgurItem?)
+        fun InverseFavoriteDrawable(item: ImgurModel.ImgurItem?)
         {
             if (item!!.data.favorite)
                 itemView.favorite.background = context.getDrawable(R.drawable.ic_favorite_border_black_24dp)
@@ -191,7 +183,7 @@ class LoadingAdapter(val access_token:String, val context: Context, val items:Mu
 
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         fun setData(item: ImgurItem?, pos: Int) : Boolean {
-            GlideInterface().displayGlide(item!!.data.type, context, item!!.data.link, itemView.img_imgur)
+            GlideModel().displayGlide(item!!.data.type, context, item!!.data.link, itemView.img_imgur)
             if (item.data.favorite)
                 itemView.favorite.background = context.getDrawable(R.drawable.ic_favorite_black_24dp)
             else

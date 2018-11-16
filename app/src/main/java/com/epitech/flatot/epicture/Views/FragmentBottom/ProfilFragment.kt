@@ -19,32 +19,27 @@ import com.bumptech.glide.signature.MediaStoreSignature
 import com.epitech.flatot.epicture.Adapter.AvatarsDialogAdapter
 import com.epitech.flatot.epicture.Adapter.LoadingAdapter
 import com.epitech.flatot.epicture.Adapter.SearchAdapter
-import com.epitech.flatot.epicture.Model.ImgurInterface
-import com.epitech.flatot.epicture.Model.RetrofitInterface
+import com.epitech.flatot.epicture.Model.ImgurModel
+import com.epitech.flatot.epicture.Model.RetrofitModel
 import com.epitech.flatot.epicture.R
-import com.epitech.flatot.epicture.R.string.available_avatars
-import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.dialog_add_to_album.*
 import kotlinx.android.synthetic.main.dialog_add_to_album.view.*
-import kotlinx.android.synthetic.main.dialog_filters.*
 import kotlinx.android.synthetic.main.dialog_profile.*
-import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_profil.*
 import kotlinx.android.synthetic.main.fragment_profil.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.security.Signature
 import java.util.*
 
 
 class ProfilFragment : Fragment() {
-    var items: MutableList<ImgurInterface.ImgurItem>? = null
-    var albums_items_pro: MutableList<ImgurInterface.ImgurSearchItem>? = null
+    var items: MutableList<ImgurModel.ImgurItem>? = null
+    var albums_items_pro: MutableList<ImgurModel.ImgurSearchItem>? = null
 
     fun String.toEditable(): Editable =  Editable.Factory.getInstance().newEditable(this)
 
-    val available_avatars: MutableList<ImgurInterface.Available_avatar> = ArrayList()
+    val available_avatars: MutableList<ImgurModel.Available_avatar> = ArrayList()
     var nameUser: String = ""
     var bool_album_pro: Boolean = false
 
@@ -70,14 +65,14 @@ class ProfilFragment : Fragment() {
         val token = arguments?.getString("access_token")
         if (available_avatars.isEmpty())
         {
-            val imgurApi = RetrofitInterface().createRetrofitBuilder()
+            val imgurApi = RetrofitModel().createRetrofitBuilder()
             val call = imgurApi.availableAvatar("Bearer " + token)
-            call.enqueue(object: Callback<ImgurInterface.AvailableAvatarResult> {
-                override fun onFailure(call: Call<ImgurInterface.AvailableAvatarResult>, t: Throwable) {
+            call.enqueue(object: Callback<ImgurModel.AvailableAvatarResult> {
+                override fun onFailure(call: Call<ImgurModel.AvailableAvatarResult>, t: Throwable) {
                     Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
                 }
 
-                override fun onResponse(call: Call<ImgurInterface.AvailableAvatarResult>, response: Response<ImgurInterface.AvailableAvatarResult>) {
+                override fun onResponse(call: Call<ImgurModel.AvailableAvatarResult>, response: Response<ImgurModel.AvailableAvatarResult>) {
                     if (response.isSuccessful)
                     {
                         response.body()!!.data.available_avatars.forEach {
@@ -121,16 +116,16 @@ class ProfilFragment : Fragment() {
     }
 
     private fun getAlbums() {
-        val imgurApi = RetrofitInterface().createRetrofitBuilder()
+        val imgurApi = RetrofitModel().createRetrofitBuilder()
 
         val token = arguments?.getString("access_token")
         val call = imgurApi.getAlbums("Bearer " + token)
-        call.enqueue(object: Callback<ImgurInterface.Result> {
-            override fun onFailure(call: Call<ImgurInterface.Result>, t: Throwable) {
+        call.enqueue(object: Callback<ImgurModel.Result> {
+            override fun onFailure(call: Call<ImgurModel.Result>, t: Throwable) {
                 Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
             }
 
-            override fun onResponse(call: Call<ImgurInterface.Result>, response: Response<ImgurInterface.Result>) {
+            override fun onResponse(call: Call<ImgurModel.Result>, response: Response<ImgurModel.Result>) {
                 if (response.isSuccessful)
                 {
                     albums_items_pro = ArrayList()
@@ -138,16 +133,16 @@ class ProfilFragment : Fragment() {
                     picList!!.data.forEach {
                         pic ->
                         val album = imgurApi.getAlbum("Bearer " + token, pic.id)
-                        album.enqueue(object: Callback<ImgurInterface.ImgurSearchItem> {
-                            override fun onFailure(call: Call<ImgurInterface.ImgurSearchItem>, t: Throwable) {
+                        album.enqueue(object: Callback<ImgurModel.ImgurSearchItem> {
+                            override fun onFailure(call: Call<ImgurModel.ImgurSearchItem>, t: Throwable) {
                                 Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
                             }
 
-                            override fun onResponse(call: Call<ImgurInterface.ImgurSearchItem>, response: Response<ImgurInterface.ImgurSearchItem>) {
+                            override fun onResponse(call: Call<ImgurModel.ImgurSearchItem>, response: Response<ImgurModel.ImgurSearchItem>) {
                                 try {
                                     if (response.isSuccessful) {
                                         val albumList = response.body()
-                                        val alb_item = ImgurInterface.ImgurSearchItem(albumList!!.data)
+                                        val alb_item = ImgurModel.ImgurSearchItem(albumList!!.data)
                                         albums_items_pro!!.add(alb_item)
 
                                         if (albums_items_pro!!.size == picList.data.size) {
@@ -174,20 +169,20 @@ class ProfilFragment : Fragment() {
 
     fun getGallery()
     {
-        val imgurApi = RetrofitInterface().createRetrofitBuilder()
+        val imgurApi = RetrofitModel().createRetrofitBuilder()
         val token = arguments?.getString("access_token")
         val call = imgurApi.getUser("Bearer " + token)
-        call.enqueue(object: Callback<ImgurInterface.Result> {
-            override fun onFailure(call: Call<ImgurInterface.Result>, t: Throwable?) {
+        call.enqueue(object: Callback<ImgurModel.Result> {
+            override fun onFailure(call: Call<ImgurModel.Result>, t: Throwable?) {
             }
 
-            override fun onResponse(call: Call<ImgurInterface.Result>, response: Response<ImgurInterface.Result>) {
+            override fun onResponse(call: Call<ImgurModel.Result>, response: Response<ImgurModel.Result>) {
                 try {
                     if (response.isSuccessful) {
                         items = ArrayList()
                         val picList = response.body()
                         picList!!.data.forEach { pic ->
-                            val item = ImgurInterface.ImgurItem(pic)
+                            val item = ImgurModel.ImgurItem(pic)
                             items!!.add(item)
                         }
                         val layoutManager = LinearLayoutManager(context)
@@ -210,13 +205,13 @@ class ProfilFragment : Fragment() {
 
     fun editProfil(customDialog: android.support.v7.app.AlertDialog) {
         if (bool_album_pro) customDialog.radio_albums.setChecked(true) else customDialog.radio_albums.setChecked(false)
-        val imgurApi = RetrofitInterface().createRetrofitBuilder()
+        val imgurApi = RetrofitModel().createRetrofitBuilder()
         val token = arguments?.getString("access_token")
         val call = imgurApi.myProfil("Bearer " + token)
-        call.enqueue(object: Callback<ImgurInterface.ProfilResult> {
-            override fun onFailure(call: Call<ImgurInterface.ProfilResult>, t: Throwable?) { }
+        call.enqueue(object: Callback<ImgurModel.ProfilResult> {
+            override fun onFailure(call: Call<ImgurModel.ProfilResult>, t: Throwable?) { }
 
-            override fun onResponse(call: Call<ImgurInterface.ProfilResult>, response: Response<ImgurInterface.ProfilResult>) {
+            override fun onResponse(call: Call<ImgurModel.ProfilResult>, response: Response<ImgurModel.ProfilResult>) {
                 try {
                     if (response.isSuccessful) {
                         var current = response.body()?.data?.account_url
@@ -229,12 +224,12 @@ class ProfilFragment : Fragment() {
             }
         })
         val avatar = imgurApi.myBio("Bearer " + token)
-        avatar.enqueue(object: Callback<ImgurInterface.BioResult> {
-            override fun onFailure(call: Call<ImgurInterface.BioResult>, t: Throwable) {
+        avatar.enqueue(object: Callback<ImgurModel.BioResult> {
+            override fun onFailure(call: Call<ImgurModel.BioResult>, t: Throwable) {
                 Toast.makeText(context, "Failed to load bio", Toast.LENGTH_SHORT).show()
             }
 
-            override fun onResponse(call: Call<ImgurInterface.BioResult>, response: Response<ImgurInterface.BioResult>) {
+            override fun onResponse(call: Call<ImgurModel.BioResult>, response: Response<ImgurModel.BioResult>) {
                 try {
                     if (response.isSuccessful) {
                         var current = response.body()?.data?.bio
@@ -261,16 +256,16 @@ class ProfilFragment : Fragment() {
         else
             description = customDialog.i_desc.text.toString()
 
-        val imgurApi = RetrofitInterface().createRetrofitBuilder()
+        val imgurApi = RetrofitModel().createRetrofitBuilder()
         val token = arguments?.getString("access_token")
         val user = arguments?.getString("username")
         val call = imgurApi.mySet("Bearer " + token, user!!, username , description)
-        call.enqueue(object: Callback<ImgurInterface.SetResult> {
-            override fun onFailure(call: Call<ImgurInterface.SetResult>, t: Throwable?) {
+        call.enqueue(object: Callback<ImgurModel.SetResult> {
+            override fun onFailure(call: Call<ImgurModel.SetResult>, t: Throwable?) {
                 Toast.makeText(context, "Some fields contain error(s). Changes were not saved", Toast.LENGTH_SHORT).show()
             }
 
-            override fun onResponse(call: Call<ImgurInterface.SetResult>, response: Response<ImgurInterface.SetResult>) {
+            override fun onResponse(call: Call<ImgurModel.SetResult>, response: Response<ImgurModel.SetResult>) {
                 try {
                     if (response.isSuccessful) {
                         if (bool_album_pro) {
@@ -319,17 +314,16 @@ class ProfilFragment : Fragment() {
     }
 
     fun GetMyAvatar() {
-        val imgurApi = RetrofitInterface().createRetrofitBuilder()
+        val imgurApi = RetrofitModel().createRetrofitBuilder()
         val token = arguments?.getString("access_token")
         val avatar = imgurApi.myAvatar("Bearer " + token, arguments?.getString("username")!!)
-        avatar.enqueue(object: Callback<ImgurInterface.AvatarResult> {
-            override fun onFailure(call: Call<ImgurInterface.AvatarResult>, t: Throwable) {
+        avatar.enqueue(object: Callback<ImgurModel.AvatarResult> {
+            override fun onFailure(call: Call<ImgurModel.AvatarResult>, t: Throwable) {
                 Toast.makeText(context, "Failed to load Picture", Toast.LENGTH_SHORT).show()
             }
 
-            override fun onResponse(call: Call<ImgurInterface.AvatarResult>, response: Response<ImgurInterface.AvatarResult>) {
+            override fun onResponse(call: Call<ImgurModel.AvatarResult>, response: Response<ImgurModel.AvatarResult>) {
                 try {
-                    Toast.makeText(context, "a", Toast.LENGTH_SHORT).show()
                     if (response.isSuccessful) {
                         if (response.body()!!.data.avatar == null || response.body()!!.data.avatar == "")
                             profil_pic.setImageDrawable(ContextCompat.getDrawable(context!!, R.drawable.grow))
@@ -341,7 +335,6 @@ class ProfilFragment : Fragment() {
                                             .skipMemoryCache(true)
                                             .signature(MediaStoreSignature("null", System.currentTimeMillis(), 1)))
                                     .into(profil_pic)
-                            Toast.makeText(context, response.body()!!.data.avatar_name, Toast.LENGTH_SHORT).show()
                         }
                     } else {
                         profil_pic.setImageDrawable(ContextCompat.getDrawable(context!!, R.drawable.grow))
@@ -356,14 +349,14 @@ class ProfilFragment : Fragment() {
     }
 
     fun GetInfoProfil() {
-        val imgurApi = RetrofitInterface().createRetrofitBuilder()
+        val imgurApi = RetrofitModel().createRetrofitBuilder()
         val token = arguments?.getString("access_token")
         val call = imgurApi.myProfil("Bearer " + token)
-        call.enqueue(object: Callback<ImgurInterface.ProfilResult> {
-            override fun onFailure(call: Call<ImgurInterface.ProfilResult>, t: Throwable?) {
+        call.enqueue(object: Callback<ImgurModel.ProfilResult> {
+            override fun onFailure(call: Call<ImgurModel.ProfilResult>, t: Throwable?) {
             }
 
-            override fun onResponse(call: Call<ImgurInterface.ProfilResult>, response: Response<ImgurInterface.ProfilResult>) {
+            override fun onResponse(call: Call<ImgurModel.ProfilResult>, response: Response<ImgurModel.ProfilResult>) {
                 try {
                     if (response.isSuccessful) {
                         var current = response.body()?.data?.account_url
@@ -405,15 +398,15 @@ class ProfilFragment : Fragment() {
     }
 
     fun GetBio() {
-        val imgurApi = RetrofitInterface().createRetrofitBuilder()
+        val imgurApi = RetrofitModel().createRetrofitBuilder()
         val token = arguments?.getString("access_token")
         val avatar = imgurApi.myBio("Bearer " + token)
-        avatar.enqueue(object: Callback<ImgurInterface.BioResult> {
-            override fun onFailure(call: Call<ImgurInterface.BioResult>, t: Throwable) {
+        avatar.enqueue(object: Callback<ImgurModel.BioResult> {
+            override fun onFailure(call: Call<ImgurModel.BioResult>, t: Throwable) {
                 Toast.makeText(context, "Failed to load bio", Toast.LENGTH_SHORT).show()
             }
 
-            override fun onResponse(call: Call<ImgurInterface.BioResult>, response: Response<ImgurInterface.BioResult>) {
+            override fun onResponse(call: Call<ImgurModel.BioResult>, response: Response<ImgurModel.BioResult>) {
                 try {
                     if (response.isSuccessful) {
                         var current = response.body()?.data?.bio

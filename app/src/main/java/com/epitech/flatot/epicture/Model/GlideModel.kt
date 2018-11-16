@@ -5,7 +5,7 @@ import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 
-class GlideInterface {
+class GlideModel {
 
     fun displayGlide(type: String, context: Context, url: String, img: ImageView)
     {

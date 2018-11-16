@@ -1,6 +1,6 @@
 package com.epitech.flatot.epicture.Model
 
-class ImgurInterface {
+class ImgurModel {
 
     data class Data(
             val id: String,

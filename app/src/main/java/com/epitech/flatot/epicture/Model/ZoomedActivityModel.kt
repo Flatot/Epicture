@@ -3,11 +3,10 @@ package com.epitech.flatot.epicture.Model
 import android.content.Context
 import android.content.Intent
 import com.epitech.flatot.epicture.Views.ZoomedActivity
-import kotlinx.android.synthetic.main.item_cardview.view.*
 
-class ZoomedActivityInterface {
+class ZoomedActivityModel {
 
-    fun setZoomed(context: Context, item: ImgurInterface.ImgurItem)
+    fun setZoomed(context: Context, item: ImgurModel.ImgurItem)
     {
         val intent = Intent(context, ZoomedActivity::class.java)
         intent.putExtra("title", item!!.data.title)
@@ -17,7 +16,7 @@ class ZoomedActivityInterface {
         context.startActivity(intent)
     }
 
-    fun setZoomed(context: Context, item: ImgurInterface.ImgurFavoriteItem)
+    fun setZoomed(context: Context, item: ImgurModel.ImgurFavoriteItem)
     {
         val intent = Intent(context, ZoomedActivity::class.java)
         intent.putExtra("title", item!!.data.title)
@@ -44,7 +43,7 @@ class ZoomedActivityInterface {
         context.startActivity(intent)
     }
 
-    fun setZoomed(context: Context, item: ImgurInterface.ImgurSearchItem)
+    fun setZoomed(context: Context, item: ImgurModel.ImgurSearchItem)
     {
 
         val intent = Intent(context, ZoomedActivity::class.java)
