@@ -48,4 +48,13 @@
     <string name="show_albums">Show albums</string>
     <string name="available_avatars">Available avatars:</string>
     <string name="filters">Filters</string>
+    <string name="which_section_of_pictures">Which section of pictures</string>
+    <string name="hot">Hot</string>
+    <string name="top">Top</string>
+    <string name="user">User</string>
+    <string name="which_sort">Which sort</string>
+    <string name="viral">Viral</string>
+    <string name="time">Time</string>
+    <string name="show_viral">Show viral</string>
+    <string name="show_mature">Show mature</string>
 </resources>
