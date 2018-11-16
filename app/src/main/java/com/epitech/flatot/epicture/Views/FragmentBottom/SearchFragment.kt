@@ -28,9 +28,12 @@ class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult>, ILoadM
     var new_items: MutableList<ImgurInterface.ImgurSearchItem>? = null
     var searchQuery: String? = null
     lateinit var adapter: SearchAdapter
+    var _page = 0
 
     override fun OnLoadMore() {
-        //if (new_items!!.size < 50) {
+        if (new_items!!.size == items!!.size) {
+            addAnotherPage()
+        }
         val data = ImgurInterface.Data_search("null", "null", "null", 0, "null", false, 0, 0, 0, 0, 0, 0, false, false, "null", "null", "null", false, false, false, emptyList(), emptyList(), "null")
         val item = ImgurInterface.ImgurSearchItem(data)
         new_items!!.add(item)
@@ -47,11 +50,42 @@ class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult>, ILoadM
                 new_items!!.add(items!![count])
                 count++
             }
-
             adapter.notifyDataSetChanged()
             adapter.setLoaded()
         }, 3000)
-        //}
+    }
+
+    private fun addAnotherPage() {
+        val imgurApi = RetrofitInterface().createRetrofitBuilder()
+        val token = arguments?.getString("access_token")
+        val _window = "all"
+        val _sort = "q_all"
+        val _query = searchQuery!!
+        _page++
+        val call = imgurApi.searchGallery("Bearer " + token, _sort, _window, _page, _query)
+        call.enqueue(object: Callback<ImgurInterface.SearchResult> {
+            override fun onFailure(call: Call<ImgurInterface.SearchResult>, t: Throwable) {
+                Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onResponse(call: Call<ImgurInterface.SearchResult>, response: Response<ImgurInterface.SearchResult>) {
+                try {
+                    if (response.isSuccessful) {
+                        val picLists = response.body()
+                        picLists!!.data.forEach { pic ->
+                            val item = ImgurInterface.ImgurSearchItem(pic)
+                            items!!.add(item)
+                        }
+                    } else {
+                        System.out.println(response.errorBody())
+
+                    }
+                }
+                catch (e:Exception) {
+                    e.printStackTrace()
+                }
+            }
+        })
     }
 
     companion object {
@@ -71,35 +105,40 @@ class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult>, ILoadM
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         var rootView = inflater!!.inflate(R.layout.fragment_search, container, false)
-        if (items != null)
-        {
-            rootView.recyclerViewSearch.layoutManager = LinearLayoutManager(context)
-            adapter = SearchAdapter(rootView.recyclerViewSearch, arguments?.getString("access_token")!!, context!!, items!!)
-            rootView.recyclerViewSearch.adapter = adapter
+        try {
+            if (items != null) {
+                rootView.recyclerViewSearch.layoutManager = LinearLayoutManager(context)
+                adapter = SearchAdapter(rootView.recyclerViewSearch, arguments?.getString("access_token")!!, context!!, items!!)
+                rootView.recyclerViewSearch.adapter = adapter
+            }
+            val search = rootView.findViewById(R.id.searchView) as android.support.v7.widget.SearchView
+            val searchEditText = search.findViewById<View>(android.support.v7.appcompat.R.id.search_src_text) as EditText
+            search.isIconified = false
+            searchEditText.setTextColor(ContextCompat.getColor(context!!, R.color.colorWhite))
+            searchEditText.setHintTextColor(ContextCompat.getColor(context!!, R.color.colorWhite))
+            rootView.searchView.queryHint = "Search Pictures in Imgur"
+            rootView.searchView.setOnQueryTextListener(object : android.support.v7.widget.SearchView.OnQueryTextListener {
+
+                override fun onQueryTextChange(newText: String): Boolean {
+                    return false
+                }
+
+                override fun onQueryTextSubmit(query: String): Boolean {
+                    searchQuery = query
+                    items = ArrayList()
+                    new_items = ArrayList()
+                    //rootView.searchView.isIconified = true
+                    //search.isIconified = true
+                    rootView.progressBar.visibility = View.VISIBLE
+                    rootView.searchView.clearFocus()
+                    GetSearch()
+                    return true
+                }
+            })
         }
-        val search = rootView.findViewById(R.id.searchView) as android.support.v7.widget.SearchView
-        val searchEditText = search.findViewById<View>(android.support.v7.appcompat.R.id.search_src_text) as EditText
-        search.isIconified = false
-        searchEditText.setTextColor(ContextCompat.getColor(context!!, R.color.colorWhite))
-        searchEditText.setHintTextColor(ContextCompat.getColor(context!!, R.color.colorWhite))
-        rootView.searchView.queryHint = "Search Pictures in Imgur"
-        rootView.searchView.setOnQueryTextListener(object : android.support.v7.widget.SearchView.OnQueryTextListener {
-
-            override fun onQueryTextChange(newText: String): Boolean {
-                return false
-            }
-
-            override fun onQueryTextSubmit(query: String): Boolean {
-                searchQuery = query
-                items = ArrayList()
-                rootView.searchView.isIconified = true
-                search.isIconified = true
-                rootView.progressBar.visibility = View.VISIBLE
-                rootView.searchView.clearFocus()
-                GetSearch()
-                return true
-            }
-        })
+        catch (e:Exception) {
+            e.printStackTrace()
+        }
         return rootView
     }
 
@@ -108,7 +147,6 @@ class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult>, ILoadM
         val token = arguments?.getString("access_token")
         val _window = "all"
         val _sort = "q_all"
-        val _page = 1
         val _query = searchQuery!!
         val call = imgurApi.searchGallery("Bearer " + token, _sort, _window, _page, _query)
         call.enqueue(this)
@@ -117,7 +155,6 @@ class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult>, ILoadM
     fun get_first_items(items: MutableList<ImgurInterface.ImgurSearchItem>) {
         var count = 0
 
-        new_items = ArrayList()
         while (count != items.size && count < 8)
         {
             new_items!!.add(items[count])
@@ -131,23 +168,27 @@ class SearchFragment : Fragment(), Callback<ImgurInterface.SearchResult>, ILoadM
     }
 
     override fun onResponse(call: Call<ImgurInterface.SearchResult>, response: Response<ImgurInterface.SearchResult>) {
-        if (response.isSuccessful) {
-            val picLists = response.body()
-            picLists!!.data.forEach {
-                pic ->
-                val item = ImgurInterface.ImgurSearchItem(pic)
-                items!!.add(item)
-            }
-            get_first_items(items!!)
-            progressBar.visibility = View.GONE
-            recyclerViewSearch.layoutManager = LinearLayoutManager(context)
-            adapter = SearchAdapter(recyclerViewSearch, arguments?.getString("access_token")!!, context!!, new_items!!)
-            recyclerViewSearch.adapter = adapter
+        try {
+            if (response.isSuccessful) {
+                val picLists = response.body()
+                picLists!!.data.forEach { pic ->
+                    val item = ImgurInterface.ImgurSearchItem(pic)
+                    items!!.add(item)
+                }
+                get_first_items(items!!)
+                progressBar.visibility = View.GONE
+                recyclerViewSearch.layoutManager = LinearLayoutManager(context)
+                adapter = SearchAdapter(recyclerViewSearch, arguments?.getString("access_token")!!, context!!, new_items!!)
+                recyclerViewSearch.adapter = adapter
 
-            adapter.setLoadMore(this)
+                adapter.setLoadMore(this)
+            } else {
+                System.out.println(response.errorBody())
+
+            }
         }
-        else {
-            System.out.println(response.errorBody())
+        catch (e:Exception) {
+            e.printStackTrace()
         }
     }
 }

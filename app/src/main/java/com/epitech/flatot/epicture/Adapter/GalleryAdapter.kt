@@ -21,13 +21,14 @@ import com.epitech.flatot.epicture.R
 import com.epitech.flatot.epicture.R.id.img_imgur2
 import com.epitech.flatot.epicture.Views.ZoomedActivity
 import kotlinx.android.synthetic.main.activity_zoomed.*
+import kotlinx.android.synthetic.main.item_gallery_cardview.view.*
 import kotlinx.android.synthetic.main.item_search_cardview.view.*
 import kotlinx.android.synthetic.main.loading_layout.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class SearchAdapter(val myRecyclerView: RecyclerView, val access_token:String, val context: Context, val items:MutableList<ImgurInterface.ImgurSearchItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>()
+class GalleryAdapter(val myRecyclerView: RecyclerView, val access_token:String, val context: Context, val items:MutableList<ImgurInterface.ImgurSearchItem>) : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 {
     val VIEW_ITEMTYPE = 0
     val VIEW_LOADINGTYPE = 1
@@ -66,7 +67,7 @@ class SearchAdapter(val myRecyclerView: RecyclerView, val access_token:String, v
             itemView.setOnClickListener {
                 ZoomedActivityInterface().setZoomed(context, item!!)
             }
-            itemView.favorite2.setOnClickListener {
+            itemView.favoriteGallery.setOnClickListener {
                 val imgurApi = RetrofitInterface().createRetrofitBuilder()
 
                 InverseFavoriteDrawable(item)
@@ -88,24 +89,24 @@ class SearchAdapter(val myRecyclerView: RecyclerView, val access_token:String, v
         fun InverseFavoriteDrawable(item: ImgurInterface.ImgurSearchItem?)
         {
             if (item!!.data.favorite)
-                itemView.favorite2.background = context.getDrawable(R.drawable.ic_favorite_border_black_24dp)
+                itemView.favoriteGallery.background = context.getDrawable(R.drawable.ic_favorite_border_black_24dp)
             else
-                itemView.favorite2.background = context.getDrawable(R.drawable.ic_favorite_black_24dp)
+                itemView.favoriteGallery.background = context.getDrawable(R.drawable.ic_favorite_black_24dp)
         }
 
         @TargetApi(Build.VERSION_CODES.LOLLIPOP)
         fun setData(item: ImgurInterface.ImgurSearchItem?, pos: Int)
         {
             if (item!!.data.images != null && !item!!.data.images.isEmpty()) {
-                GlideInterface().displayGlide(item!!.data.images[0].type, context, item!!.data.images[0].link, itemView.img_imgur2)
+                GlideInterface().displayGlide(item!!.data.images[0].type, context, item!!.data.images[0].link, itemView.galleryImg)
             }
             else {
-                GlideInterface().displayGlide(item!!.data.type, context, item!!.data.link, itemView.img_imgur2)
+                GlideInterface().displayGlide(item!!.data.type, context, item!!.data.link, itemView.galleryImg)
             }
             if (item.data.favorite)
-                itemView.favorite2.background = context.getDrawable(R.drawable.ic_favorite_black_24dp)
+                itemView.favoriteGallery.background = context.getDrawable(R.drawable.ic_favorite_black_24dp)
             else
-                itemView.favorite2.background = context.getDrawable(R.drawable.ic_favorite_border_black_24dp)
+                itemView.favoriteGallery.background = context.getDrawable(R.drawable.ic_favorite_border_black_24dp)
         }
     }
 
@@ -122,13 +123,13 @@ class SearchAdapter(val myRecyclerView: RecyclerView, val access_token:String, v
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): RecyclerView.ViewHolder {
         if (p1 == VIEW_ITEMTYPE) {
-            val view = LayoutInflater.from(context).inflate(R.layout.item_search_cardview, p0, false)
+            val view = LayoutInflater.from(context).inflate(R.layout.item_gallery_cardview, p0, false)
             return MyViewHolder(view)
         } else if (p1 == VIEW_LOADINGTYPE) {
             val view = LayoutInflater.from(context).inflate(R.layout.loading_layout, p0, false)
             return LoadingViewHolder(view)
         }
-        val view = LayoutInflater.from(context).inflate(R.layout.item_search_cardview, p0, false)
+        val view = LayoutInflater.from(context).inflate(R.layout.item_gallery_cardview, p0, false)
         return MyViewHolder(view)
     }
 

@@ -34,6 +34,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.io.File
+import java.util.*
 
 
 class UploadFragment : Fragment() {
@@ -122,23 +123,27 @@ class UploadFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         val rootView = inflater!!.inflate(R.layout.fragment_upload, container, false)
-        if (checkSelfPermission(context!!, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-                checkSelfPermission(context!!, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
-                checkSelfPermission(context!!, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(activity!!,
-                    arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.CAMERA,
-                            Manifest.permission.READ_EXTERNAL_STORAGE),
-                    777)
-        }
-        else {
-            dialogUpload()
-            rootView.btn_upload_imgur.setOnClickListener {
-                upload_on_imgur()
-            }
-            rootView.imageView.setOnClickListener {
+        try {
+            if (checkSelfPermission(context!!, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                    checkSelfPermission(context!!, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+                    checkSelfPermission(context!!, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(activity!!,
+                        arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                Manifest.permission.CAMERA,
+                                Manifest.permission.READ_EXTERNAL_STORAGE),
+                        777)
+            } else {
                 dialogUpload()
+                rootView.btn_upload_imgur.setOnClickListener {
+                    upload_on_imgur()
+                }
+                rootView.imageView.setOnClickListener {
+                    dialogUpload()
+                }
             }
+        }
+        catch (e:Exception) {
+            e.printStackTrace()
         }
         return rootView
     }
@@ -160,13 +165,23 @@ class UploadFragment : Fragment() {
 
         call.enqueue(object: Callback<ImgurInterface.UploadResult> {
             override fun onFailure(call: Call<ImgurInterface.UploadResult>, t: Throwable) {
+                try {
                     Toast.makeText(context, "Upload failed", Toast.LENGTH_SHORT).show()
                     progressUpload.visibility = View.GONE
+                }
+                catch (e:Exception) {
+                    e.printStackTrace()
+                }
             }
             override fun onResponse(call: Call<ImgurInterface.UploadResult>, response: Response<ImgurInterface.UploadResult>) {
-                if (response.isSuccessful) {
-                    Toast.makeText(context, "Uploaded Successfully", Toast.LENGTH_SHORT).show()
-                    progressUpload.visibility = View.GONE
+                try {
+                    if (response.isSuccessful) {
+                        Toast.makeText(context, "Uploaded Successfully", Toast.LENGTH_SHORT).show()
+                        progressUpload.visibility = View.GONE
+                    }
+                }
+                catch (e:Exception) {
+                    e.printStackTrace()
                 }
             }
         })

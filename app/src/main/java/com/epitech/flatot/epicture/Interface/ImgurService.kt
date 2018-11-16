@@ -14,6 +14,15 @@ interface ImgurService {
     @GET("/3/account/me/images")
     fun getUser(@Header("Authorization") authHeader: String): Call<ImgurInterface.Result>
 
+    @GET("/3/gallery/{section}/{sort}/{pages}/week")
+    fun getGallery(@Header("Authorization") authHeader: String,
+                   @Path("section") section: String,
+                   @Path("sort") sort: String,
+                   @Path("pages") pages: Int,
+                   @Query("showViral") showViral: Boolean,
+                   @Query("mature") mature: Boolean,
+                   @Query("album_previews") album_previews: Boolean): Call<ImgurInterface.SearchResult>
+
     @GET("/3/gallery/search/{sort}/{window}/{page}")
     fun searchGallery(@Header("Authorization") authHeader: String,
                       @Path("sort") sort: String,
@@ -61,4 +70,19 @@ interface ImgurService {
 
     @GET("/3/account/me/available_avatars")
     fun availableAvatar(@Header("Authorization") authHeader: String): Call<ImgurInterface.AvailableAvatarResult>
+
+    @GET("/3/account/me")
+    fun myBio(@Header("Authorization") authHeader: String): Call<ImgurInterface.BioResult>
+
+    @PUT("3/account/{user}/settings")
+    fun mySet(@Header("Authorization") authHeader: String,
+              @Path("user") user: String,
+              @Query("username") username: String,
+              @Query("bio") bio: String): Call<ImgurInterface.SetResult>
+
+    @PUT("3/account/{user}/settings")
+    fun mySetAvatar(@Header("Authorization") authHeader: String,
+              @Path("user") user: String,
+              @Query("avatar") avatar : String): Call<ImgurInterface.SetResult>
+
 }

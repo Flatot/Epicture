@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/username_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -27,22 +27,19 @@
         android:text="@string/hot"
         app:layout_constraintBottom_toTopOf="@+id/textView2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.3" />
+        app:layout_constraintTop_toBottomOf="@+id/username_label"
+        app:layout_constraintVertical_bias="0.291" />
 
     <CheckBox
         android:id="@+id/cb_top"
         android:layout_width="65dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="72dp"
-        android:layout_marginLeft="72dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginStart="68dp"
+        android:layout_marginLeft="68dp"
+        android:layout_marginTop="16dp"
         android:text="@string/top"
-        app:layout_constraintBottom_toTopOf="@+id/textView2"
         app:layout_constraintStart_toEndOf="@+id/cb_hot"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.3" />
+        app:layout_constraintTop_toBottomOf="@+id/username_label" />
 
     <CheckBox
         android:id="@+id/cb_user"
@@ -57,9 +54,9 @@
         android:text="@string/user"
         app:layout_constraintBottom_toTopOf="@+id/textView2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.763"
         app:layout_constraintStart_toEndOf="@+id/cb_top"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintHorizontal_bias="0.561"
+        app:layout_constraintTop_toBottomOf="@+id/username_label"
         app:layout_constraintVertical_bias="0.291" />
 
     <TextView
@@ -75,7 +72,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/username_label" />
 
     <CheckBox
         android:id="@+id/cb_top_sort"
@@ -143,29 +140,37 @@
     <ToggleButton
         android:id="@+id/cb_show_viral"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="32dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="20dp"
+        android:textOn="@string/yes"
+        android:textOff="@string/no"
+        android:textColor="@color/colorWhite"
+        android:background="@color/colorPrimaryDark"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <ToggleButton
         android:id="@+id/cb_show_mature"
-        android:layout_width="130dp"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="32dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginTop="116dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:textOn="@string/yes"
+        android:textOff="@string/no"
+        android:textColor="@color/colorWhite"
+        android:background="@color/colorPrimaryDark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.912"
         app:layout_constraintStart_toEndOf="@+id/cb_show_viral"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <Button
-        android:id="@+id/save"
+        android:id="@+id/saveHome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
@@ -179,22 +184,22 @@
         app:layout_constraintVertical_bias="0.106" />
 
     <Button
-        android:id="@+id/back"
+        android:id="@+id/backHome"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginLeft="60dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginBottom="8dp"
         android:text="@string/back"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/save"
-        app:layout_constraintHorizontal_bias="0.416"
+        app:layout_constraintEnd_toStartOf="@+id/saveHome"
+        app:layout_constraintHorizontal_bias="0.044"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cb_show_viral"
-        app:layout_constraintVertical_bias="0.106" />
+        app:layout_constraintVertical_bias="0.107" />
 
 
 </android.support.constraint.ConstraintLayout>

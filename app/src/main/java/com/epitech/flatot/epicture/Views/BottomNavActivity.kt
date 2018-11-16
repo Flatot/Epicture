@@ -1,5 +1,6 @@
 package com.epitech.flatot.epicture.Views
 
+import android.app.PendingIntent.getActivity
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
@@ -57,11 +58,10 @@ class BottomNavActivity : AppCompatActivity() {
     fun createFragment(fragment: Fragment)
     {
         val transaction = manager.beginTransaction()
-
         transaction.replace(R.id.mainFrame, fragment)
+        transaction.addToBackStack(null)
         transaction.commit()
     }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -73,11 +73,12 @@ class BottomNavActivity : AppCompatActivity() {
         refresh_token = intent.getStringExtra("refresh_token")
         username = intent.getStringExtra("account_username")
 
+        myHomeFragment = HomeFragment.newInstance(access_token!!)
         myUploadFragment = UploadFragment.newInstance(access_token!!)
         mySearchFragment = SearchFragment.newInstance(access_token!!)
         myFavoriteFragment = FavoriteFragment.newInstance(access_token!!)
         myProfilFragment = ProfilFragment.newInstance(access_token!!, refresh_token!!, username!!)
-        myHomeFragment = HomeFragment.newInstance(access_token!!)
+
         createFragment(myHomeFragment as Fragment)
     }
 }

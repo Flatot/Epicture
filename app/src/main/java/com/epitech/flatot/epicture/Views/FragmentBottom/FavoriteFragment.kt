@@ -6,21 +6,15 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.StaggeredGridLayoutManager
 import android.view.*
 import android.widget.Toast
 import com.epitech.flatot.epicture.Adapter.FavoriteAdapter
-import com.epitech.flatot.epicture.Adapter.LoadingAdapter
-import com.epitech.flatot.epicture.Adapter.SearchAdapter
 import com.epitech.flatot.epicture.Model.ImgurInterface
 import com.epitech.flatot.epicture.Model.RetrofitInterface
-
 import com.epitech.flatot.epicture.R
-import kotlinx.android.synthetic.main.dialog_filters.*
+import kotlinx.android.synthetic.main.dialog_fav_filters.*
 import kotlinx.android.synthetic.main.fragment_favorite.*
 import kotlinx.android.synthetic.main.fragment_favorite.view.*
-import kotlinx.android.synthetic.main.fragment_home.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -112,56 +106,60 @@ class FavoriteFragment : Fragment(), Callback<ImgurInterface.GetFavoriteResult> 
     }
 
     override fun onResponse(call: Call<ImgurInterface.GetFavoriteResult>, response: Response<ImgurInterface.GetFavoriteResult>) {
-        if (response.isSuccessful) {
-            val picList = response.body()
-            items = ArrayList()
-            picList!!.data.forEach {
-                pic ->
-                val item = ImgurInterface.ImgurFavoriteItem(pic)
-                if (getValidItemFav(item))
-                    items!!.add(item)
+        try {
+            if (response.isSuccessful) {
+                val picList = response.body()
+                items = ArrayList()
+                picList!!.data.forEach { pic ->
+                    val item = ImgurInterface.ImgurFavoriteItem(pic)
+                    if (getValidItemFav(item))
+                        items!!.add(item)
+                }
+                val layoutManager = LinearLayoutManager(context)
+                FavoriteRecyclerView.layoutManager = layoutManager
+                val adapter = FavoriteAdapter(context!!, items!!)
+                FavoriteRecyclerView.adapter = adapter
+            } else {
+                Toast.makeText(context, response.message(), Toast.LENGTH_SHORT).show()
+                System.out.println(response.errorBody())
             }
-            val layoutManager = LinearLayoutManager(context)
-            FavoriteRecyclerView.layoutManager = layoutManager
-            val adapter = FavoriteAdapter(context!!, items!!)
-            FavoriteRecyclerView.adapter = adapter
-        } else {
-            Toast.makeText(context, response.message(), Toast.LENGTH_SHORT).show()
-            System.out.println(response.errorBody())
+        }
+        catch (e:Exception) {
+            e.printStackTrace()
         }
     }
 
     fun checkTrueFav(customDialog: android.support.v7.app.AlertDialog) {
-        if (inf_100_fav === true) customDialog.view_100.setChecked(true) else customDialog.view_100.setChecked(false)
-        if (sup_100_fav === true) customDialog.view_500.setChecked(true) else customDialog.view_500.setChecked(false)
-        if (png_fav === true) customDialog.cb_png.setChecked(true) else customDialog.cb_png.setChecked(false)
-        if (jpeg_fav === true) customDialog.cb_jpeg.setChecked(true) else customDialog.cb_jpeg.setChecked(false)
-        if (gif_fav === true) customDialog.cb_gif.setChecked(true) else customDialog.cb_gif.setChecked(false)
-        if (last_week_fav === true) customDialog.cb_week.setChecked(true) else customDialog.cb_week.setChecked(false)
-        if (all_time_fav === true) customDialog.cb_single.setChecked(true) else customDialog.cb_single.setChecked(false)
+        customDialog.view_100.isChecked = inf_100_fav
+        customDialog.view_500.isChecked = sup_100_fav
+        customDialog.cb_png.isChecked = png_fav
+        customDialog.cb_jpeg.isChecked = jpeg_fav
+        customDialog.cb_gif.isChecked = gif_fav
+        customDialog.cb_week.isChecked = last_week_fav
+        customDialog.cb_single.isChecked = all_time_fav
     }
 
     fun getCheckboxFav(customDialog: android.support.v7.app.AlertDialog) {
         customDialog.view_100.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) inf_100_fav = true else inf_100_fav = false
+            inf_100_fav = isChecked
         }
         customDialog.view_500.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) sup_100_fav = true else sup_100_fav = false
+            sup_100_fav = isChecked
         }
         customDialog.cb_single.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) all_time_fav = true else all_time_fav = false
+            all_time_fav = isChecked
         }
         customDialog.cb_week.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) last_week_fav = true else last_week_fav = false
+            last_week_fav = isChecked
         }
         customDialog.cb_gif.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) gif_fav = true else gif_fav = false
+            gif_fav = isChecked
         }
         customDialog.cb_jpeg.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) jpeg_fav = true else jpeg_fav = false
+            jpeg_fav = isChecked
         }
         customDialog.cb_png.setOnCheckedChangeListener { buttonView, isChecked ->
-            if (isChecked) png_fav = true else png_fav = false
+            png_fav = isChecked
         }
     }
 
@@ -189,23 +187,26 @@ class FavoriteFragment : Fragment(), Callback<ImgurInterface.GetFavoriteResult> 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater!!.inflate(R.layout.fragment_favorite, container, false)
-        setHasOptionsMenu(true)
-        val toolbar = rootView.findViewById(R.id.fav_toolbar) as android.support.v7.widget.Toolbar
-        toolbar.setOnMenuItemClickListener {
-            openFiltersFav(rootView, context!!)
-            true
-        }
-        toolbar.inflateMenu(R.menu.menu_filters)
-        if (items != null && items!!.isNotEmpty())
-        {
-            val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
+        try {
+            setHasOptionsMenu(true)
+            val toolbar = rootView.findViewById(R.id.fav_toolbar) as android.support.v7.widget.Toolbar
+            toolbar.setOnMenuItemClickListener {
+                openFiltersFav(rootView, context!!)
+                true
+            }
+            toolbar.inflateMenu(R.menu.menu_filters)
+            if (items != null && items!!.isNotEmpty()) {
+                val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
 
-            rootView.FavoriteRecyclerView?.layoutManager = layoutManager
-            val adapter = FavoriteAdapter(context!!, items!!)
-            rootView.FavoriteRecyclerView?.adapter = adapter
+                rootView.FavoriteRecyclerView?.layoutManager = layoutManager
+                val adapter = FavoriteAdapter(context!!, items!!)
+                rootView.FavoriteRecyclerView?.adapter = adapter
+            } else
+                getFavorites()
         }
-        else
-            getFavorites()
+        catch (e:Exception) {
+            e.printStackTrace()
+        }
         return rootView
     }
 

@@ -47,6 +47,7 @@
     <string name="yes">Yes</string>
     <string name="show_albums">Show albums</string>
     <string name="available_avatars">Available avatars:</string>
+    <string name="edit">Edit</string>
     <string name="filters">Filters</string>
     <string name="which_section_of_pictures">Which section of pictures</string>
     <string name="hot">Hot</string>
@@ -57,4 +58,8 @@
     <string name="time">Time</string>
     <string name="show_viral">Show viral</string>
     <string name="show_mature">Show mature</string>
+    <string name="personal_information">Personal information</string>
+    <string name="account_preferences">Account preferences</string>
+    <string name="yes_pro">Yes</string>
+    <string name="no_pro">No</string>
 </resources>
