@@ -7,6 +7,8 @@ import org.junit.Test
 
 import org.junit.Assert.*
 
+// 4 tests
+
 class LoginActivityTest {
 
     private val clientId: String? = "18acc2840b12049"
@@ -21,7 +23,7 @@ class LoginActivityTest {
     @Test
     fun onCreate() {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(baseUrl + "?client_id=" + clientId + "&response_type=" + responseType))
-        assertNotNull(intent)
+        assertNotNull(intent) //The request is not null in order to go further
     }
 
     @Test
@@ -34,8 +36,8 @@ class LoginActivityTest {
                 accessToken = newUri.getQueryParameter("access_token")
                 refreshToken = newUri.getQueryParameter("refresh_token")
                 accountUsername = newUri.getQueryParameter("account_username")
-                assertNotNull(accessToken)
-                assertNotNull(refreshToken)
+                assertNotNull(accessToken) //Check all informations exists
+                assertNotNull(refreshToken) //Without these variables, we can't make requests
                 assertNotNull(accountUsername)
             }
         }

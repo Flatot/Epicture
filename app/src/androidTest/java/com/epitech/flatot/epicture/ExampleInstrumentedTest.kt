@@ -2,7 +2,7 @@ package com.epitech.flatot.epicture
 
 import android.support.test.InstrumentationRegistry
 import android.support.test.runner.AndroidJUnit4
-import com.epitech.flatot.epicture.Views.FragmentBottom.TabLayoutHome.HomeFragment
+import com.epitech.flatot.epicture.Views.FragmentBottom.HomeFragment
 
 import org.junit.Test
 import org.junit.runner.RunWith

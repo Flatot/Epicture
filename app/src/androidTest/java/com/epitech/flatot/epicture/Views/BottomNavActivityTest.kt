@@ -6,30 +6,26 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 import com.epitech.flatot.epicture.R
 import com.epitech.flatot.epicture.R.id.navigation
-import com.epitech.flatot.epicture.Views.FragmentBottom.FavoriteFragment
-import com.epitech.flatot.epicture.Views.FragmentBottom.ProfilFragment
-import com.epitech.flatot.epicture.Views.FragmentBottom.SearchFragment
-import com.epitech.flatot.epicture.Views.FragmentBottom.TabLayoutHome.HomeFragment
-import com.epitech.flatot.epicture.Views.FragmentBottom.UploadFragment
+import com.epitech.flatot.epicture.Views.FragmentBottom.*
+//import com.epitech.flatot.epicture.Views.FragmentBottom.TabLayoutHome.HomeFragment
 import kotlinx.android.synthetic.main.activity_bottom_nav.*
 import org.junit.Assert
 import org.junit.Test
 
 import org.junit.Assert.*
 
-class BottomNavActivityTest: AppCompatActivity() {
+// 3 tests
 
-    private val clientId: String? = "18acc2840b12049"
-    private val responseType: String? = "token"
-    private val clientSecret: String? = "2889b294a2c0992132070fd5f359d33aa0dbffc6"
-    private val redirectUrl: String? = "epicture://callback"
-    private val baseUrl = "https://api.imgur.com/oauth2/authorize"
-    private var accessToken: String? = null
-    private var accountUsername: String? = null
-    private var refreshToken: String? = null
+class BottomNavActivityTest {
 
-    private val manager = supportFragmentManager
-    private var myHomeFragment: HomeFragment? = null
+    val clientId: String? = "18acc2840b12049"
+    val responseType: String? = "token"
+    val clientSecret: String? = "2889b294a2c0992132070fd5f359d33aa0dbffc6"
+    val redirectUrl: String? = "epicture://callback"
+    val baseUrl = "https://api.imgur.com/oauth2/authorize"
+    var accessToken: String? = null
+
+    var myHomeFragment: HomeFragment? = null
 
 
     @Test
@@ -38,12 +34,7 @@ class BottomNavActivityTest: AppCompatActivity() {
     }
 
     @Test
-    private fun createFragment(fragment: Fragment)
-    {
-        val transaction = manager.beginTransaction()
-        transaction.replace(R.id.mainFrame, fragment)
-        transaction.commit()
-    }
+    fun createFragment() {}
 
     @Test
     fun onCreate() {
@@ -53,10 +44,8 @@ class BottomNavActivityTest: AppCompatActivity() {
             if (uri.getQueryParameter("error") == null) {
                 val newUri = Uri.parse(uri.toString().replace('#', '?'))
                 accessToken = newUri.getQueryParameter("access_token")
+                assertNotNull(accessToken) //Get the value of accessToken in order to request the API
             }
         }
-        myHomeFragment = HomeFragment.newInstance(accessToken!!)
-        assertNull(myHomeFragment)
-        assertNull(createFragment(myHomeFragment as Fragment))
     }
 }
