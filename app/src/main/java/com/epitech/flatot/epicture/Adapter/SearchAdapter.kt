@@ -64,7 +64,7 @@ class SearchAdapter(val myRecyclerView: RecyclerView, val access_token:String, v
                 val imgurApi = RetrofitModel().createRetrofitBuilder()
 
                 InverseFavoriteDrawable(item)
-                val call = imgurApi.favoriteImage("Bearer " + access_token, item!!.data.images[0].id)
+                val call = imgurApi.favoriteAlbum("Bearer " + access_token, item!!.data.id)
                 call.enqueue(this)
             }
         }
@@ -96,6 +96,10 @@ class SearchAdapter(val myRecyclerView: RecyclerView, val access_token:String, v
             else {
                 GlideModel().displayGlide(item!!.data.type, context, item!!.data.link, itemView.img_imgur2)
             }
+            var title = item!!.data.title
+            if (item!!.data.title != null && item!!.data.title.length > 40)
+                title = title.take(40) + "..."
+            itemView.title_txt2.text = title
             if (item.data.favorite)
                 itemView.favorite2.background = context.getDrawable(R.drawable.ic_favorite_black_24dp)
             else

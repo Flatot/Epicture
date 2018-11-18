@@ -195,14 +195,7 @@ class FavoriteFragment : Fragment(), Callback<ImgurModel.GetFavoriteResult> {
                 true
             }
             toolbar.inflateMenu(R.menu.menu_filters)
-            if (items != null && items!!.isNotEmpty()) {
-                val layoutManager = LinearLayoutManager(context) //StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-
-                rootView.FavoriteRecyclerView?.layoutManager = layoutManager
-                val adapter = FavoriteAdapter(context!!, items!!)
-                rootView.FavoriteRecyclerView?.adapter = adapter
-            } else
-                getFavorites()
+            getFavorites()
         }
         catch (e:Exception) {
             e.printStackTrace()

@@ -15,6 +15,9 @@ import com.epitech.flatot.epicture.Model.ImgurModel
 import com.epitech.flatot.epicture.Model.RetrofitModel
 import com.epitech.flatot.epicture.Model.ZoomedActivityModel
 import com.epitech.flatot.epicture.R
+import com.epitech.flatot.epicture.R.id.title2
+import com.epitech.flatot.epicture.R.id.title_txt
+import kotlinx.android.synthetic.main.activity_zoomed.*
 import kotlinx.android.synthetic.main.item_gallery_cardview.view.*
 import kotlinx.android.synthetic.main.loading_layout.view.*
 import retrofit2.Call
@@ -64,7 +67,7 @@ class GalleryAdapter(val myRecyclerView: RecyclerView, val access_token:String, 
                 val imgurApi = RetrofitModel().createRetrofitBuilder()
 
                 InverseFavoriteDrawable(item)
-                val call = imgurApi.favoriteImage("Bearer " + access_token, item!!.data.images[0].id)
+                val call = imgurApi.favoriteAlbum("Bearer " + access_token, item!!.data.id)
                 call.enqueue(this)
             }
         }
@@ -96,6 +99,10 @@ class GalleryAdapter(val myRecyclerView: RecyclerView, val access_token:String, 
             else {
                 GlideModel().displayGlide(item!!.data.type, context, item!!.data.link, itemView.galleryImg)
             }
+            var title = item!!.data.title
+            if (item!!.data.title != null && item!!.data.title.length > 40)
+                 title = title.take(40) + "..."
+            itemView.title_txt.text = title
             if (item.data.favorite)
                 itemView.favoriteGallery.background = context.getDrawable(R.drawable.ic_favorite_black_24dp)
             else

@@ -13,8 +13,8 @@ class ZoomedActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_zoomed)
 
-        val title = intent.getStringExtra("title")
-        val description = intent.getStringExtra("description")
+        var title = intent.getStringExtra("title")
+        var description = intent.getStringExtra("description")
         val urlimg = intent.getStringExtra("img_imgur")
         val type = intent.getStringExtra("type")
 
@@ -28,7 +28,11 @@ class ZoomedActivity : AppCompatActivity() {
         else {
             GlideModel().displayGlide(type, this@ZoomedActivity, urlimg, img_imgur2)
         }
+        if (title != null && title.length > 40)
+            title = title.take(40) + "..."
         title2.text = title
+        if (description != null && description.length > 120)
+            description = description.take(120) + "..."
         description2.text = description
     }
 }

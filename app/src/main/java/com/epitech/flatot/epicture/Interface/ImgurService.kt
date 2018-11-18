@@ -36,6 +36,10 @@ interface ImgurService {
     fun favoriteImage(@Header("Authorization") authHeader: String,
                       @Path("imageHash") imageId: String): Call<ImgurModel.FavoriteResult>
 
+    @POST("/3/album/{albumHash}/favorite")
+    fun favoriteAlbum(@Header("Authorization") authHeader: String,
+                      @Path("albumHash") albumId: String): Call<ImgurModel.FavoriteResult>
+
     @Multipart
     @POST("/3/image")
     fun uploadImage(@Header("Authorization") authHeader: String,
